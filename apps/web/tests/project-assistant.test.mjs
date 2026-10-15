@@ -55,3 +55,24 @@ test("JSON object property order cannot invent a sensor change",()=>{
     const t=change();t.brief.sensors=[{part_id:"BME280",address:null}];
     assert.equal(parseTurn({...identity,turn:t},identity,selected),t);
 });
+
+test("chat retains escaped user turns and resets when revision changes",async()=>{
+    const ui=dom(), t=change();
+    const c=mountProjectAssistant(ui.root,{fetcher:async url=>url==="/api/health"?health():response({turn:t})});
+    c.setContext(context);
+    await c.ask("<img src=x> Make it smaller");
+    await c.ask("Make it 80 mm wide");
+    const html=ui.node("#assistant-response").innerHTML;
+    assert.equal((html.match(/class="assistant-user-message"/g)||[]).length,2);
+    assert.match(html,/&lt;img src=x&gt;/);assert.doesNotMatch(html,/<img/);
+    assert.equal(ui.node("#assistant-welcome").hidden,true);
+    c.setContext({...context,revision:{...revision,revision_id:"9".repeat(16)}});
+    assert.equal(ui.node("#assistant-response").innerHTML,"");
+    assert.equal(ui.node("#assistant-welcome").hidden,false);
+});
+
+test("generated parts render as escaped readable records",()=>{
+    const html=turnHtml({...change(),kind:"answer",facts:[{id:"report.bom.parts",label:"Parts used",source:"Saved BOM",basis:"recorded_result",value:[{part:"<script>",references:["U1"],quantity:1,description:"<img>"}]}]});
+    assert.match(html,/assistant-parts/);assert.match(html,/U1 · Quantity 1/);
+    assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>|<img>/);
+});

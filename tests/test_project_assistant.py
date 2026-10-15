@@ -15,7 +15,7 @@ class Provider:
         self.outputs, self.requests = list(outputs), []
 
     def generate_structured(self, request, schema):
-        assert schema is IterationResponse
+        assert issubclass(schema, IterationResponse)
         self.requests.append(request)
         return deepcopy(self.outputs.pop(0))
 
@@ -184,3 +184,35 @@ def test_a_new_run_result_invalidates_the_reviewed_context(tmp_path):
     with pytest.raises(PlanUnavailable, match="results changed"):
         service.apply(pid, rid, turn["turn_id"])
     assert len(service.projects.get(pid)["revisions"]) == 1
+
+
+def test_generated_parts_answer_uses_exact_bom_without_price_claims(tmp_path):
+    service, pid, rid = setup(tmp_path, {"kind": "answer", "fact_ids": ["report.bom.parts"]})
+    service.projects.claim_job(pid, rid, {"job_id": "a" * 12, "status": "complete",
+        "progress": [], "report": None, "error": None, "error_code": None})
+    service.jobs.value = {"status": "complete", "report": {"bom": {"lines": [
+        {"references": ["U1"], "part": "ESP32-WROOM-32E", "quantity": 1,
+         "package": "ESP32-WROOM", "unit_price": "0.01", "knowledge": "SYNTHETIC"}]}}}
+    turn = service.ask(pid, rid, "What parts are used?")
+    assert turn["facts"][0]["value"] == [{"references": ["U1"], "part": "ESP32-WROOM-32E",
+                                          "quantity": 1, "package": "ESP32-WROOM"}]
+    assert "generated bill of materials" in turn["facts"][0]["source"]
+    assert not turn["ready"] and len(service.projects.get(pid)["revisions"]) == 1
+
+
+def test_provider_schema_constrains_ids_and_response_shape_before_return(tmp_path):
+    service, pid, rid = setup(tmp_path)
+    class SchemaProvider:
+        def generate_structured(self, request, schema):
+            enum = schema.model_json_schema()["properties"]["fact_ids"]["items"]["enum"]
+            assert "brief.mcu_part_id" in enum and "report.bom.parts" not in enum
+            for invalid in ({"kind": "answer", "fact_ids": ["invented.part"]},
+                            {"kind": "answer", "fact_ids": []},
+                            {"kind": "unavailable", "fact_ids": ["run.status"]},
+                            {"kind": "answer", "fact_ids": ["run.status", "run.status"]}):
+                with pytest.raises(ValueError):
+                    schema.model_validate(invalid)
+            return schema.model_validate({"kind": "answer", "fact_ids": ["brief.mcu_part_id"]})
+    service.provider = SchemaProvider()
+    turn = service.ask(pid, rid, "Which processor did I select?")
+    assert turn["facts"][0]["value"] == "ESP32-WROOM-32E"

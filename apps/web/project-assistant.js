@@ -33,8 +33,15 @@ export function parseTurn(payload, identity, context) {
     return t;
 }
 
+function factValue(fact) {
+    if (fact.id === "report.bom.parts" && Array.isArray(fact.value)) {
+        return `<ul class="assistant-parts">${fact.value.map(part => `<li><strong>${e(String(part.part ?? "Recorded part"))}</strong><span>${e(display(part.references ?? []))} · Quantity ${e(String(part.quantity ?? "not recorded"))}</span><span>${e(String(part.description ?? part.package ?? ""))}</span></li>`).join("")}</ul>`;
+    }
+    return e(display(fact.value));
+}
+
 export function turnHtml(t) {
-    const facts = t.facts.length ? `<p>From revision ${t.revision_number}. AI selected these records; they may not fully answer your question.</p><dl class="assistant-facts">${t.facts.map(f=>`<div><dt>${e(label(f.label))}</dt><dd>${e(display(f.value))}<small>${e(f.source)} · ${e(f.basis.replaceAll("_"," "))}</small></dd></div>`).join("")}</dl>` : "";
+    const facts = t.facts.length ? `<p>From revision ${t.revision_number}. AI selected these records; they may not fully answer your question.</p><dl class="assistant-facts">${t.facts.map(f=>`<div><dt>${e(label(f.label))}</dt><dd>${factValue(f)}<small>${e(f.source)} · ${e(f.basis.replaceAll("_"," "))}</small></dd></div>`).join("")}</dl>` : "";
     const changes = t.kind === "change" ? `<h3>Review your changes</h3>${t.changes.length ? `<dl class="assistant-diff">${t.changes.map(c=>`<div><dt>${e(label(c.field))}</dt><dd><span>Before: ${e(display(c.before))}</span><strong>After: ${e(display(c.after))}</strong></dd></div>`).join("")}</dl>` : "<p>No changes were proposed.</p>"}<p>${e(t.invalidation)}</p>` : "";
     return `${facts}${t.kind === "unavailable" ? "<p>The saved project records do not provide an answer to this question. No engineering claim has been inferred.</p>" : ""}${changes}${t.questions.length ? `<h3>Clarify the request</h3><p>These are AI questions or support-policy limits, not verified engineering results.</p><ul>${t.questions.map(q=>`<li>${e(q)}</li>`).join("")}</ul>` : ""}<details><summary>This conversation (${t.messages.length})</summary>${t.messages.map(m=>`<p class="conversation-message">${e(m)}</p>`).join("")}</details>`;
 }
@@ -47,8 +54,12 @@ export function appliedProject(project, selected, proposed) {
 }
 
 export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied=()=>{}, onApplying=()=>{}, idPrefix=""}={}) {
-    let context=null, key=null, turn=null, identity=null, busy=false, version=0;
-    root.innerHTML=`<section class="project-assistant" aria-labelledby="assistant-title"><h2 id="assistant-title">Ask about your board. Shape what comes next.</h2><p id="assistant-context"></p><form id="assistant-form"><label for="assistant-message">Ask a question or describe a change</label><textarea id="assistant-message" rows="2" maxlength="2000" placeholder="Can I make the board 80 mm wide?"></textarea><div class="assistant-actions"><button class="primary" type="submit" id="assistant-send">Ask Ohmni</button><button class="ghost" type="button" id="assistant-reset">New question</button></div></form><p id="assistant-status" role="status" aria-live="polite"></p><p id="assistant-error" role="alert" hidden></p><div id="assistant-response"></div><button class="secondary" type="button" id="assistant-apply" hidden>Save changes as a new revision</button><p class="fineprint">Answers use saved project records. Proposed edits need your confirmation and new engineering checks. Use Your plan for detailed controls.</p></section>`;
+    let context=null, key=null, turn=null, identity=null, busy=false, version=0, transcript=[];
+    root.innerHTML=`<section class="project-assistant" aria-labelledby="assistant-title">
+      <header class="assistant-header"><span class="assistant-avatar" aria-hidden="true">Ω</span><div><h2 id="assistant-title">Board chat</h2><p id="assistant-context"></p></div><button class="ghost" type="button" id="assistant-reset">New chat</button></header>
+      <div class="assistant-thread"><div id="assistant-welcome" class="assistant-welcome"><span class="assistant-avatar" aria-hidden="true">Ω</span><h3>Let's talk about your board.</h3><p>Ask about its parts, check a result, or describe a change.</p><p class="assistant-example">Try “What parts are used?” or “Make the board 80 mm wide.”</p></div><div id="assistant-response" role="log" aria-label="Board conversation" aria-live="polite"></div><p id="assistant-status" role="status" aria-live="polite"></p><p id="assistant-error" role="alert" hidden></p><button class="secondary" type="button" id="assistant-apply" hidden>Save changes as a new revision</button></div>
+      <form id="assistant-form" class="assistant-composer"><label for="assistant-message">Message Ohmni</label><textarea id="assistant-message" rows="3" maxlength="2000" placeholder="Ask about your board or describe a change…"></textarea><div class="assistant-actions"><span>Up to 2,000 characters</span><button class="primary" type="submit" id="assistant-send">Send <span aria-hidden="true">↑</span></button></div></form>
+      <p class="assistant-footnote">Answers use saved project records. You review changes before saving; a new revision needs new checks.</p></section>`;
     if (idPrefix) root.innerHTML = root.innerHTML.replaceAll('id="assistant-', `id="${idPrefix}assistant-`).replaceAll('for="assistant-', `for="${idPrefix}assistant-`).replaceAll('aria-labelledby="assistant-', `aria-labelledby="${idPrefix}assistant-`);
     const $=s=>root.querySelector(s.replace("#assistant-", `#${idPrefix}assistant-`));
     const error=err=>{$("#assistant-error").textContent=err.message;$("#assistant-error").hidden=false;};
@@ -60,7 +71,7 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
         $("#assistant-apply").hidden=!turn?.ready;$("#assistant-apply").disabled=busy||!available;
         root.setAttribute("aria-busy",String(busy));
     }
-    function reset() {version++;busy=false;turn=null;identity=null;$("#assistant-response").innerHTML="";$("#assistant-status").textContent="";$("#assistant-error").hidden=true;sync();}
+    function reset() {version++;busy=false;transcript=[];$("#assistant-welcome").hidden=false;turn=null;identity=null;$("#assistant-response").innerHTML="";$("#assistant-status").textContent="";$("#assistant-error").hidden=true;sync();}
     async function ask(message) {
         if (busy||!context||context.dirty) return;
         if (!message.trim()||message.length>2000) return error(new Error("Enter a question or change in up to 2000 characters."));
@@ -69,7 +80,10 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
             const response=await projectRequest(`/api/projects/${selected.projectId}/revisions/${selected.revision.revision_id}/assistant`,{fetcher,timeoutMs:90000,method:"POST",data:{message,parent_id:turn?.turn_id||null},parse:(payload,current)=>parseTurn(payload,current,selected)});
             if (version!==current)return;
             turn=response.parsed;identity=response.identity;
-            $("#assistant-response").innerHTML=turnHtml(turn);$("#assistant-message").value="";
+            transcript.push(`<div class="assistant-user-message"><span>You</span><p>${e(message.trim())}</p></div><div class="assistant-reply"><span class="assistant-speaker">Ohmni</span>${turnHtml(turn)}</div>`);
+            $("#assistant-response").innerHTML=transcript.join("");$("#assistant-welcome").hidden=true;$("#assistant-message").value="";
+            const thread=root.querySelector(".assistant-thread");
+            thread.scrollTop=root.querySelector(".assistant-user-message:nth-last-child(2)")?.offsetTop ?? 0;
             $("#assistant-status").textContent=turn.ready ? "Review every change before saving. Nothing has changed yet." : "Your saved revision is unchanged.";
         } catch(err){if(version===current){error(err);$("#assistant-status").textContent="Your saved revision is unchanged. Your request is still in the text field.";}}
         finally{if(version===current){busy=false;sync();}}
