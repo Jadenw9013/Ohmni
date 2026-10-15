@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "id": "TEAM-T01",
+  "task": "TEAM-T01",
+  "scope": "TEAM-ONBOARDING-1",
+  "commit": "cb62c276521ef6be28a83dee3a0b1f5dd0a74dc5",
+  "status": "PASSED",
+  "environment": {
+    "os": "Windows 11",
+    "python": "3.13.3",
+    "node": "22.16.0",
+    "anthropic": "1.14.0",
+    "pydantic": "2.14.1",
+    "PyMuPDF": "1.28.2",
+    "pytest": "9.1.1",
+    "sentry_sdk": "2.72.0"
+  },
+  "commands": [
+    {
+      "command": "git clone --no-hardlinks --branch codex/team-onboarding . build/team-clean-clone; python -m venv .venv; .venv/Scripts/python.exe -m pip install -e \".[dev]\"",
+      "result": "PASS",
+      "note": "New clone and venv; no copied secrets, databases or source bundle. Advanced clone to evaluated commit before final suites."
+    },
+    {
+      "command": "python -S saved-demo HTTP smoke using scripts/serve_offline_demo.py make_server(0)",
+      "result": "PASS",
+      "checks": [
+        "Root page HTTP 200",
+        "Saved demo JSON HTTP 200",
+        "No .env; Python site packages disabled"
+      ]
+    },
+    {
+      "command": "python scripts/demo_server.py --port <ephemeral-loopback-port>",
+      "result": "PASS",
+      "note": "Homepage HTTP 200 with ANTHROPIC_*, OHMNI_*, SENTRY_* and PYTHONPATH removed from child environment; terminated owned server afterwards. No provider request."
+    },
+    {
+      "command": "python scripts/ai_state.py validate; python scripts/project_status.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 12
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2681,
+      "skipped": 95,
+      "deselected": 63,
+      "runtime_seconds": 372.13
+    },
+    {
+      "command": "node --test <enumerated apps/web/tests/*.test.mjs>",
+      "result": "PASS",
+      "tests": 1128,
+      "failed": 0
+    },
+    {
+      "command": "python -m pip check",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ohmni verify-all",
+      "result": "PASS",
+      "fixtures": 14
+    },
+    {
+      "command": "Local Markdown link targets and git diff --check",
+      "result": "PASS",
+      "link_targets": 28
+    }
+  ],
+  "initial_failure": {
+    "commit": "6d9ff871",
+    "result": "1 failed, 2680 passed, 95 skipped, 63 deselected",
+    "cause": "Workflow test enumerated prior approved scopes but not this newly owner-approved scope. Added scope and its explicit owner approval assertion; reran complete fast suite."
+  },
+  "self_review": {
+    "status": "PASSED",
+    "independent": false,
+    "checks": [
+      "Historical checkpoint preserved verbatim as parsed data",
+      "No protected behavior paths modified",
+      "Environment claims checked against loader and discovery code",
+      "No product/runtime/deployment edits"
+    ]
+  },
+  "limitations": [
+    "Fresh-clone execution was Windows only; no macOS execution claimed. Existing Linux CI runs on PR.",
+    "No new native EDA, browser acceptance, private source archive, paid AI or live Sentry qualification in this documentation task.",
+    "95 fast skips and 63 deselections are not passes; optional source/native/browser gates remain separately documented.",
+    "Python dependencies include ranges, not a complete lock; installed versions recorded above.",
+    "Subsequent ledger-only completion commit references this evaluated implementation; validate/workflow rerun after ledger update."
+  ]
+}
