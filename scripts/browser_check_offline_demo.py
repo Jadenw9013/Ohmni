@@ -370,8 +370,10 @@ def main(argv: list[str] | None = None) -> int:
             if sync_playwright is None:
                 raise RuntimeError("the playwright package is not installed")
             with sync_playwright() as playwright:
-                browser = playwright.chromium.launch(executable_path=args.chromium) if args.chromium \
-                    else playwright.chromium.launch()
+                # Every host but loopback also fails name resolution, beneath the request router.
+                launch = {"args": ["--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1"]}
+                browser = playwright.chromium.launch(executable_path=args.chromium, **launch) if args.chromium \
+                    else playwright.chromium.launch(**launch)
                 browser_version = browser.version
                 try:
                     context = browser.new_context(accept_downloads=True, service_workers="block",
@@ -406,7 +408,16 @@ def main(argv: list[str] | None = None) -> int:
                     context.on("response", lambda response: response.status >= 400 and failed(
                         response.request, f"{response.status} {response.url}", response.status))
                     context.on("page", lambda page: page.on("pageerror", lambda error: errors.append(str(error))))
-                    _exercise(context, origin, args, demo, controls, held, step)
+                    try:
+                        _exercise(context, origin, args, demo, controls, held, step)
+                    except Exception:
+                        # Keep what each open page showed when the check stopped.
+                        for index, open_page in enumerate(context.pages):
+                            try:
+                                open_page.screenshot(path=str(args.evidence / f"failure-{index}.png"), full_page=True)
+                            except Exception:  # noqa: BLE001, S110 -- evidence only; the failure is still recorded
+                                pass
+                        raise
                 finally:
                     browser.close()
         except Exception as error:  # noqa: BLE001 -- any harness error records FAIL, never success

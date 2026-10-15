@@ -63,6 +63,54 @@ jobs:
           npm ci --prefix scripts/telemetry-browser --no-audit --no-fund
           node scripts/telemetry-browser/build.mjs --check
 
+  # Real-browser acceptance: the saved demo under offline, site and static
+  # hosting (original, fault, restore, keyboard, recovery, verified downloads,
+  # desktop and 390/375/320 px layouts) and the six browser telemetry scenarios.
+  # Dependencies come from the network; the checks themselves deny every
+  # non-loopback request and use synthetic telemetry with recording transports.
+  # The runner fails on a missing browser, BLOCKED or skipped scenario, missing
+  # step or zero count, and kills each child's process group when it ends.
+  browser-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install -e ".[dev,browser]"
+      - name: install the Chromium build matching the pinned Playwright
+        run: python -m playwright install --with-deps chromium
+      - name: real-browser acceptance
+        run: python scripts/run_browser_acceptance.py --output build/browser-acceptance
+      - name: no browser or server process outlives the checks
+        if: always()
+        shell: bash
+        run: |
+          leftover=$(pgrep -fa 'chrome-linux|headless_shell|browser_check_offline_demo|smoke_browser_telemetry' || true)
+          if [ -n "$leftover" ]; then
+            echo "leftover processes:"; echo "$leftover"
+            pkill -9 -f 'chrome-linux|headless_shell|browser_check_offline_demo|smoke_browser_telemetry' || true
+            exit 1
+          fi
+          echo "no leftover browser or server processes"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-acceptance-summary
+          path: |
+            build/browser-acceptance/summary.json
+            build/browser-acceptance/saved-demo-*/browser-check.json
+            build/browser-acceptance/telemetry-smoke/summary.json
+            build/browser-acceptance/*.log
+          if-no-files-found: warn
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-acceptance-failure-screenshots
+          path: build/browser-acceptance/saved-demo-*/*.png
+          if-no-files-found: ignore
+
   # A bounded real-tool gate for the hackathon board. It runs inside the pinned
   # production KiCad image: real ERC, routing, DRC, Gerber/drill export and the
   # known-bad diagnostic copy, which must produce a real DRC unconnected item.
