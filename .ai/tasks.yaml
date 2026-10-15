@@ -375,6 +375,15 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/TEAM-ONBOARDING-1.yaml",
       "review_policy": "Self-review for documentation infrastructure; no independent review claimed."
+    },
+    {
+      "id": "DEMO-FINAL-1",
+      "title": "Core demo final readiness",
+      "type": "repository_infrastructure",
+      "status": "VERIFIED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/DEMO-FINAL-1.yaml",
+      "review_policy": "Self-review recorded honestly; do not claim independent review."
     }
   ],
   "tasks": [
@@ -3869,6 +3878,42 @@
           "workflow",
           "fast",
           "node"
+        ]
+      }
+    },
+    {
+      "id": "DEMO-FINAL-01",
+      "title": "Rehearse and finish supported core demo workflow",
+      "scope": "DEMO-FINAL-1",
+      "goal": "Qualify the existing supported planning, saved revision, generation, inspection and download path, with dependable recovery and presenter fallback.",
+      "priority": 100,
+      "status": "VERIFIED",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Existing supported controller flows through real local server, persistence and native engineering; artifact/check evidence is preserved.",
+        "Core browser navigation, recovery and download paths rehearsed; concrete defects fixed with regression tests.",
+        "Repeatable rehearsal and presenter instructions distinguish live, saved and unverified results.",
+        "Ledger, workflow, fast and relevant frontend/browser checks run; no Sentry/Paper or protected behavior edits.",
+        "Paid AI rehearsal and production changes only after separate explicit approval; unavailable checks are stated honestly."
+      ],
+      "implementation": {
+        "started_at_commit": "0941ac7ec0c65e9209a2f1ca0b71f083998ce3e1",
+        "approval_evidence": ".ai/approvals/DEMO-FINAL-1.yaml",
+        "completed_at_commit": "3e6dbb067e253dfcd69bfa49f671c2e1c01d8d09"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "verification": {
+        "record": ".ai/verification/DEMO-FINAL-01.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "node",
+          "core_flow"
         ]
       }
     },

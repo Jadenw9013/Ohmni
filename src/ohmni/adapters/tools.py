@@ -46,7 +46,8 @@ def _run_version(executable: str) -> tuple[bool, str]:
     lines = (completed.stdout or completed.stderr).strip().splitlines()
     if not lines:
         return False, "Tool returned no version information."
-    return True, lines[0][:100]
+    version_line = next((line for line in lines if line.strip(" *\t")), lines[0])
+    return True, version_line[:100]
 
 
 def find_kicad_cli() -> str | None:
@@ -128,7 +129,24 @@ class KicadCli:
 
 
 def find_ngspice() -> str | None:
-    return shutil.which("ngspice")
+    """Prefer PATH; also find the standard per-user Windows console install.
+
+    An already-open shell may not inherit a newly persisted user PATH. Discovery
+    does not establish compatibility: the simulation adapter still gates version 42.
+    Never select the GUI executable or guess a relative path when LOCALAPPDATA
+    is absent.
+    """
+    if found := shutil.which("ngspice"):
+        return found
+    local = os.environ.get("LOCALAPPDATA", "")
+    if not local or not Path(local).is_absolute():
+        return None
+    directory = Path(local) / "Programs" / "ngspice-42" / "Spice64" / "bin"
+    for name in ("ngspice.exe", "ngspice_con.exe"):
+        candidate = directory / name
+        if candidate.is_file():
+            return str(candidate)
+    return None
 
 
 #: An explicit path to the Freerouting executable or its jar. Freerouting ships
