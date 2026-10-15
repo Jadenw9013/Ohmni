@@ -643,7 +643,7 @@
       "independent": true,
       "status": "PASSED_WITH_OWNER_GATE",
       "commit": "42cd343e",
-      "notes": "Fresh current-tree review found no open BLOCKER/HIGH technical or source-integrity finding. Focused visual/server/frontend regressions passed. Later landing work reuses the renderer without changing the task’s declared actual/sample separation. Human visual acceptance remains PENDING, so VIS-T01 stays VERIFIED."
+      "notes": "Fresh current-tree review found no open BLOCKER/HIGH technical or source-integrity finding. Focused visual/server/frontend regressions passed. Later landing work reuses the renderer without changing the task\u2019s declared actual/sample separation. Human visual acceptance remains PENDING, so VIS-T01 stays VERIFIED."
     },
     {
       "id": "VIS-T02-INDEPENDENT-REREVIEW-2026-10-09",
@@ -942,6 +942,22 @@
         "HACK-SENTRY-01-IR10",
         "HACK-SENTRY-01-IR11"
       ]
+    },
+    {
+      "id": "HACK-BROWSER-01-INDEPENDENT-REVIEW",
+      "scope": "HACK-BROWSER-1",
+      "task": "HACK-BROWSER-01",
+      "reviewer": "Independent read-only Codex subagent rehearsal_gap_review; no implementation edits",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "946d281b781d78f4ac95132791a164046e113356",
+      "finding_ids": [
+        "HACK-BROWSER-01-IR01",
+        "HACK-BROWSER-01-IR02",
+        "HACK-BROWSER-01-IR03",
+        "HACK-BROWSER-01-IR04"
+      ],
+      "notes": "Reviewed caller outcome wiring, mobile checks, smoke synchronization, fail-closed gate, Windows cleanup and final merge of 041d6016. All findings fixed; no open BLOCKER/HIGH/MEDIUM. This does not claim live telemetry, paid-provider rehearsal or production deployment."
     }
   ],
   "findings": [
@@ -2416,6 +2432,70 @@
       "found_at_commit": "1e143537",
       "resolution": "Accepted for this PR; every caller now reads response.parsed, so removing parse breaks the feature.",
       "verification": "Final re-review"
+    },
+    {
+      "id": "HACK-BROWSER-01-IR01",
+      "scope": "HACK-BROWSER-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Named smoke assertions could be omitted",
+      "description": "Count-only summaries accepted arbitrary replacement assertions.",
+      "affected_files": [
+        "scripts/run_browser_acceptance.py",
+        "tests/test_browser_acceptance_gate.py"
+      ],
+      "found_at_commit": "b92568d0",
+      "resolution": "Require every named check, expected mode state and exact bounded envelope evidence.",
+      "resolution_commit": "946d281b781d78f4ac95132791a164046e113356",
+      "verification": ".ai/verification/HACK-BROWSER-01.yaml"
+    },
+    {
+      "id": "HACK-BROWSER-01-IR02",
+      "scope": "HACK-BROWSER-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Xfail or deselection could report a passing browser gate",
+      "description": "Pytest summary parsing ignored xfailed, xpassed and deselected outcomes.",
+      "affected_files": [
+        "scripts/run_browser_acceptance.py",
+        "tests/test_browser_acceptance_gate.py"
+      ],
+      "found_at_commit": "b92568d0",
+      "resolution": "All of those outcomes fail acceptance; dedicated parser regressions exercise each.",
+      "resolution_commit": "946d281b781d78f4ac95132791a164046e113356",
+      "verification": ".ai/verification/HACK-BROWSER-01.yaml"
+    },
+    {
+      "id": "HACK-BROWSER-01-IR03",
+      "scope": "HACK-BROWSER-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Readiness regression could race its own timer",
+      "description": "The delayed layout callback could fire before the initial measurement on a busy host.",
+      "affected_files": [
+        "tests/test_browser_acceptance.py"
+      ],
+      "found_at_commit": "b92568d0",
+      "resolution": "Release the layout update after observing the initial measurement; schedule brief completion after initial assertions.",
+      "resolution_commit": "946d281b781d78f4ac95132791a164046e113356",
+      "verification": ".ai/verification/HACK-BROWSER-01.yaml"
+    },
+    {
+      "id": "HACK-BROWSER-01-IR04",
+      "scope": "HACK-BROWSER-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Readiness arriving after the polling deadline could pass",
+      "description": "Claude follow-up helpers accepted late True evaluations; restored-focus polling result was ignored.",
+      "affected_files": [
+        "scripts/browser_check_offline_demo.py",
+        "scripts/smoke_browser_telemetry.py",
+        "tests/test_browser_acceptance.py"
+      ],
+      "found_at_commit": "041d6016",
+      "resolution": "Check elapsed time before and after evaluation and require the focus polling result. Fake-clock regressions cover late readiness. An unresponsive evaluate call is bounded by the outer 600 s process deadline.",
+      "resolution_commit": "946d281b781d78f4ac95132791a164046e113356",
+      "verification": ".ai/verification/HACK-BROWSER-01.yaml"
     }
   ]
 }
