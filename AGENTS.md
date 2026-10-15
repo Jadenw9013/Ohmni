@@ -9,6 +9,12 @@ and release artifacts. Start with [README.md](README.md),
 PROPOSED v1 product definition lives in [docs/product/](docs/product/README.md)
 and supersedes `PRD.md`/`MVP_SCOPE.md` as the product contract.
 
+## Teammate entrypoint
+
+For a new clone, follow [docs/TEAM_SETUP.md](docs/TEAM_SETUP.md). For a coding
+assistant handoff, use [docs/AI_TEAMMATE_HANDOFF.md](docs/AI_TEAMMATE_HANDOFF.md).
+`CLAUDE.md` is a pointer to this manual, not a separate policy or task ledger.
+
 ## Repository map
 
 - `src/ohmni/domain`: typed electrical intent, evidence, reports, notebook events
