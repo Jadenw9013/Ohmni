@@ -9,8 +9,8 @@ import pytest
 def test_build_motion_and_prefixed_board_chat(tmp_path):
     playwright = pytest.importorskip("playwright.sync_api")
     from ohmni.adapters.tools import find_kicad_cli
-    from scripts.verify_hackathon_demo import kicad_version
     from scripts.demo_server import DemoHandler, DemoHTTPServer, JobStore
+    from scripts.verify_hackathon_demo import kicad_version
 
     executable = find_kicad_cli()
     if not executable or kicad_version(executable) != "10.0.5":
@@ -95,6 +95,7 @@ def test_build_motion_and_prefixed_board_chat(tmp_path):
                 chat.get_by_role("button", name="Send", exact=False).click()
                 chat.get_by_text("After: 80", exact=True).wait_for()
                 assert chat.locator('[id$="assistant-apply"]').is_visible()
+                assert chat.locator('[id$="assistant-apply"]').evaluate("e => e.closest('.assistant-thread') === null")
                 pid = page.request.get(origin + "/api/projects").json()["projects"][0]["project_id"]
                 saved = page.request.get(origin + "/api/projects/" + pid).json()["project"]
                 assert len(saved["revisions"]) == 1 and saved["revisions"][0]["brief"]["board_width_mm"] == 100
