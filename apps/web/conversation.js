@@ -88,9 +88,9 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
         busy = true; failed = false; $("#conversation-error").hidden = true;
         $("#conversation-status").textContent = "Preparing your plan… Your project will only be saved when you confirm."; sync();
         try {
-            const response = await projectRequest("/api/project-plans", {fetcher, timeoutMs: 90000, method: "POST", data: {message, parent_id: plan?.plan_id || null}});
+            const response = await projectRequest("/api/project-plans", {fetcher, timeoutMs: 90000, method: "POST", data: {message, parent_id: plan?.plan_id || null}, parse: parsePlan});
             if (current !== version) return;
-            const next = parsePlan(response.payload, response.identity);
+            const next = response.parsed;
             plan = next; identity = response.identity; confirmed = null;
             $("#conversation-questions").innerHTML = plan.questions.length ? `<h2>Before we build</h2><ul>${plan.questions.map(q => `<li>${e(q)}</li>`).join("")}</ul>` : "";
             $("#conversation-summary").innerHTML = planSummaryHtml(plan.brief, {requested:plan.stated.map(s=>s.field)});
@@ -108,9 +108,9 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
         $("#conversation-status").textContent = "Saving the exact plan you reviewed…"; sync();
         try {
             if (!confirmed) {
-                const response = await projectRequest(`/api/project-plans/${plan.plan_id}/confirm`, {fetcher, identity, method: "POST"});
+                const response = await projectRequest(`/api/project-plans/${plan.plan_id}/confirm`, {fetcher, identity, method: "POST", parse: parseProjectEnvelope});
                 if (current !== version) return;
-                const project = parseProjectEnvelope(response.payload, response.identity);
+                const project = response.parsed;
                 const revision = project.revisions.at(-1);
                 if (revision.brief_fingerprint !== plan.brief_fingerprint || !sameBrief(revision.brief, plan.brief)) throw new Error("The saved revision differs from the reviewed plan. Reopen it before generating.");
                 confirmed = project;

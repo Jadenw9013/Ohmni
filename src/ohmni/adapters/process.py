@@ -18,6 +18,8 @@ from contextlib import contextmanager
 from threading import RLock
 from time import monotonic
 
+from . import telemetry
+
 #: This wrapper's own name for a bounded run that ran out of time. Callers work
 #: in terms of run_tool, not of the module it happens to be built on, so they
 #: catch this rather than importing subprocess to name one exception type.
@@ -130,24 +132,36 @@ def run_tool(
     """
     if isinstance(timeout, bool) or not isinstance(timeout, (int, float)) or not math.isfinite(timeout) or timeout < 0:
         raise ValueError("Native tool timeout must be finite and nonnegative")
-    options = {"creationflags": _CREATE_NO_WINDOW} if _WINDOWS else {}
-    with tempfile.TemporaryFile() as output, tempfile.TemporaryFile() as errors:
-        with _noninteractive_errors():
-            child = subprocess.Popen(
-                command, stdout=output, stderr=errors,
-                shell=False, env=environment, **options,
-            )
-        try:
-            child.wait(timeout=timeout)
-        except subprocess.TimeoutExpired as error:
-            _terminate(child)
-            error.stdout, error.stderr = _captured_text(output), _captured_text(errors)
-            raise
-        except BaseException:
-            _terminate(child)
-            raise
-        return subprocess.CompletedProcess(command, child.returncode,
-                                           _captured_text(output), _captured_text(errors))
+    # The span covers the whole bounded call, cleanup included. It records the
+    # owned tool class, outcome and numeric exit code: never argv, cwd, the
+    # child environment or captured output (SENTRY_IMPLEMENTATION_PLAN.md 5).
+    with telemetry.tool_call(telemetry.classify_tool(command)) as span:
+        options = {"creationflags": _CREATE_NO_WINDOW} if _WINDOWS else {}
+        with tempfile.TemporaryFile() as output, tempfile.TemporaryFile() as errors:
+            try:
+                with _noninteractive_errors():
+                    child = subprocess.Popen(
+                        command, stdout=output, stderr=errors,
+                        shell=False, env=environment, **options,
+                    )
+            except BaseException:
+                span.result("spawn_failed")
+                raise
+            try:
+                child.wait(timeout=timeout)
+            except subprocess.TimeoutExpired as error:
+                _terminate(child)
+                error.stdout, error.stderr = _captured_text(output), _captured_text(errors)
+                span.result("timeout")
+                raise
+            except BaseException:
+                _terminate(child)
+                span.result("error")
+                raise
+            code = child.returncode
+            span.result("ok" if code == 0 else "nonzero_exit", code if type(code) is int else None)
+            return subprocess.CompletedProcess(command, code,
+                                               _captured_text(output), _captured_text(errors))
 
 
 def describe_exit(return_code: int) -> str:

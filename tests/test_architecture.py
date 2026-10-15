@@ -488,3 +488,31 @@ class TestObservationIsolationBoundary:
             side_effect=resource_limits.ResourceLimitUnavailable("mechanism failed"),
         ), pytest.raises(resource_limits.ResourceLimitUnavailable):
             resource_limits._apply_platform_limit(256 * 1024 * 1024)
+
+
+class TestTelemetryBoundaries:
+    """SENTRY_IMPLEMENTATION_PLAN.md 4.1-4.2: one SDK import, none in deterministic code."""
+
+    REPO = SRC.parents[1]
+    DETERMINISTIC = ("domain", "verifier", "routing", "manufacturing", "bom", "synthesis",
+                     "physical", "generation", "catalog")
+
+    def test_only_the_telemetry_adapter_imports_the_sentry_sdk(self):
+        importers = []
+        for directory in (SRC, self.REPO / "scripts", self.REPO / "tools"):
+            for path in _python_files(directory):
+                if "sentry_sdk" in _imported_top_level_modules(path):
+                    importers.append(path.relative_to(self.REPO).as_posix())
+        assert importers == ["src/ohmni/adapters/telemetry.py"]
+
+    def test_deterministic_code_never_imports_the_telemetry_adapter(self):
+        for directory in self.DETERMINISTIC:
+            for path in _python_files(SRC / directory):
+                tree = ast.parse(path.read_text(encoding="utf-8"))
+                for node in ast.walk(tree):
+                    names = []
+                    if isinstance(node, ast.Import):
+                        names = [alias.name for alias in node.names]
+                    elif isinstance(node, ast.ImportFrom):
+                        names = [node.module or "", *(alias.name for alias in node.names)]
+                    assert not any("telemetry" in name.split(".") for name in names), path

@@ -6,6 +6,7 @@ The historical demo remains separately available for regression and explanation.
 
 from pathlib import Path
 
+from ..adapters import telemetry
 from ..catalog import default_catalog
 from ..domain import EngineeringEvent, EngineeringNotebook, EventKind
 from ..eda.kicad import KiCadCliAdapter, KiCadSchematicCompiler
@@ -22,7 +23,7 @@ from ..physical.placement import generate_placement
 from ..synthesis import ArchetypeId, SpiPeripheralSlot, SynthesisBrief, synthesize
 from ..synthesis.peripherals import SUPPORTED_I2C_PARTS
 from ..verifier import verify
-from .demo import DemoPipeline, DemoReport, require_eda_check
+from .demo import DemoPipeline, DemoReport, eda_check_outcomes, require_eda_check
 from .product import Brief, build_brief
 
 
@@ -169,22 +170,32 @@ class ProjectPipeline(DemoPipeline):
         self.catalog = catalog or default_catalog()
 
     def run(self, destination: Path, brief: SynthesisBrief) -> DemoReport:
-        result, requirements = _prepare_project(brief, self.catalog)
+        with telemetry.stage("synthesis"):
+            result, requirements = _prepare_project(brief, self.catalog)
         circuit = result.circuit
         catalog = self.catalog
         destination = destination.resolve()
         destination.mkdir(parents=True, exist_ok=True)
         self._progress("requirements", "Using your confirmed project choices", "PASS", 5,
                        "The saved brief determines this circuit and its optional parts.")
-        semantic = verify(circuit, catalog, requirements.requirements)
+        with telemetry.stage("semantic_verification") as span:
+            semantic = verify(circuit, catalog, requirements.requirements)
+            outcome = "reject" if semantic.export_blocked else ("unknown" if semantic.coverage < 1 else "pass")
+            span.outcome("ok", outcome)
+            telemetry.record_verifier_attempt("confirmed_project", outcome)
         if semantic.export_blocked or semantic.coverage < 1:
+            if semantic.export_blocked:
+                telemetry.engineering_rejection()
             raise ValueError("The derived circuit did not pass complete semantic verification")
         self._progress("check", "Checked your parts and connections", "PASS", 15,
                        "Deterministic checks ran on this revision; no repair was needed.")
-        artifact = KiCadSchematicCompiler(catalog).compile(circuit, destination / "golden.kicad_sch")
-        erc = KiCadCliAdapter().run_erc(artifact)
-        (destination / "erc-report.json").write_text(erc.model_dump_json(indent=2),encoding="utf-8")
-        require_eda_check(erc,"ERC")
+        with telemetry.stage("schematic"):
+            artifact = KiCadSchematicCompiler(catalog).compile(circuit, destination / "golden.kicad_sch")
+        with telemetry.stage("erc") as span:
+            erc = KiCadCliAdapter().run_erc(artifact)
+            (destination / "erc-report.json").write_text(erc.model_dump_json(indent=2),encoding="utf-8")
+            span.outcome(*eda_check_outcomes(erc))
+            require_eda_check(erc,"ERC")
         events = [
             EngineeringEvent(event_id=f"{brief.fingerprint[:12]}-brief",
                              kind=EventKind.USER_REQUEST_RECEIVED,
@@ -210,7 +221,8 @@ class ProjectPipeline(DemoPipeline):
                        f"KiCad reported {len(erc.findings)} findings, retained in the report.")
         if result.placement_request is None:
             raise ValueError("The derived circuit has no fingerprinted placement intent")
-        placement = generate_placement(circuit, result.placement_request, catalog)
+        with telemetry.stage("placement"):
+            placement = generate_placement(circuit, result.placement_request, catalog)
         (destination / "placement-request.json").write_text(
             result.placement_request.model_dump_json(indent=2), encoding="utf-8",
         )

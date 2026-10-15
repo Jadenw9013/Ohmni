@@ -819,3 +819,48 @@ def test_a_store_without_persistence_still_serves_from_memory(tmp_path):
     job_id=store.start(DEMO_REQUEST)
     assert store.project_store is None
     assert _await_terminal(store,job_id)["status"]=="complete"
+
+
+def _copy_web_root(tmp_path,skip=()):
+    web_root=tmp_path/"web";web_root.mkdir()
+    for name in STATIC_ASSETS:
+        if name in skip:continue
+        (web_root/name).parent.mkdir(parents=True,exist_ok=True)
+        (web_root/name).write_bytes((demo_server_module.WEB_ROOT/name).read_bytes())
+    return web_root
+
+
+def test_server_starts_and_serves_404_without_the_optional_telemetry_bundle(tmp_path):
+    bundle="vendor/sentry-telemetry.js"
+    assert bundle in demo_server_module.OPTIONAL_STATIC_ASSETS
+    web_root=_copy_web_root(tmp_path,skip={bundle})
+    assert not (web_root/bundle).exists()
+    server=DemoHTTPServer(("127.0.0.1",0),DemoHandler,web_root=web_root,store=JobStore(tmp_path/"store"))
+    thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+    base=f"http://127.0.0.1:{server.server_port}"
+    try:
+        assert "/"+bundle not in server.static_assets
+        for page in ("/","/app.js","/telemetry.js","/telemetry-config.js"):
+            with urlopen(base+page) as response:assert response.status==200
+        with pytest.raises(HTTPError) as missing:urlopen(base+"/"+bundle)
+        assert missing.value.code==404
+    finally:
+        server.shutdown();server.server_close();thread.join(timeout=2)
+
+
+def test_only_the_optional_bundle_may_be_absent(tmp_path):
+    web_root=_copy_web_root(tmp_path,skip={"telemetry.js"})
+    with pytest.raises(DemoInitializationError):
+        DemoHTTPServer(("127.0.0.1",0),DemoHandler,web_root=web_root,store=JobStore(tmp_path/"store"))
+
+
+@pytest.mark.parametrize("shape",["dangling_link","directory"])
+def test_a_non_file_at_the_optional_bundle_path_still_fails(tmp_path,shape):
+    bundle="vendor/sentry-telemetry.js"
+    web_root=_copy_web_root(tmp_path,skip={bundle})
+    if shape=="directory":(web_root/bundle).mkdir()
+    else:
+        try:(web_root/bundle).symlink_to(web_root/"vendor"/"absent.js")
+        except OSError:pytest.skip("symlinks unavailable")
+    with pytest.raises(DemoInitializationError):
+        DemoHTTPServer(("127.0.0.1",0),DemoHandler,web_root=web_root,store=JobStore(tmp_path/"store"))

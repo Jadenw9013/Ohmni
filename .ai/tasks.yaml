@@ -347,6 +347,16 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/HACK-DEMO-INTEGRATION-1.yaml",
       "review_policy": "Focused independent integration review; no changes to previous task acceptance."
+    },
+    {
+      "id": "HACK-SENTRY-1",
+      "title": "Offline Sentry core (disabled by default)",
+      "type": "bounded_observability_core",
+      "status": "VERIFIED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/HACK-SENTRY-1.yaml",
+      "plan_document": "SENTRY_IMPLEMENTATION_PLAN.md",
+      "review_policy": "Independent privacy/correctness review with no open BLOCKER/HIGH; COMPLETE requires human acceptance. Live activation is a separate owner decision."
     }
   ],
   "tasks": [
@@ -3409,7 +3419,9 @@
       "goal": "Create source-traceable, design-eligible assets for every new electrical component.",
       "priority": 99,
       "status": "APPROVED",
-      "dependencies": ["BM-T01"],
+      "dependencies": [
+        "BM-T01"
+      ],
       "blockers": [],
       "acceptance_criteria": [
         "Exact manufacturer evidence is archived and fingerprinted for the PIR sensor, buck-boost converter, protection and LED-drive MOSFETs, connector, inductor and required passives.",
@@ -3417,9 +3429,25 @@
         "A pre-existing 3D model or package match cannot independently grant electrical admission.",
         "Negative and mutation tests fail closed for missing, stale or contradictory evidence."
       ],
-      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
-      "review": {"required": false, "independent": false, "status": "PENDING", "record": null},
-      "verification": {"record": null, "required": ["workflow", "fast", "component_admission"]}
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PENDING",
+        "record": null
+      },
+      "verification": {
+        "record": null,
+        "required": [
+          "workflow",
+          "fast",
+          "component_admission"
+        ]
+      }
     },
     {
       "id": "BM-T03",
@@ -3429,7 +3457,9 @@
       "goal": "Generate the approved circuit from a typed family contract without weakening existing USB archetypes.",
       "priority": 98,
       "status": "APPROVED",
-      "dependencies": ["BM-T02"],
+      "dependencies": [
+        "BM-T02"
+      ],
       "blockers": [],
       "acceptance_criteria": [
         "A discriminated three-cell alkaline power contract and A4 battery-motion archetype are represented in typed domain and provider schemas.",
@@ -3437,9 +3467,26 @@
         "The generated topology contains keyed battery input, reverse-polarity protection, TPS63021 power, PIR input, ESP32 observation and a hardware LED-driver path.",
         "Rechargeable chemistry, onboard charging and unsupported voltages are rejected explicitly."
       ],
-      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
-      "review": {"required": false, "independent": false, "status": "PENDING", "record": null},
-      "verification": {"record": null, "required": ["workflow", "fast", "integration", "fingerprint_regression"]}
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PENDING",
+        "record": null
+      },
+      "verification": {
+        "record": null,
+        "required": [
+          "workflow",
+          "fast",
+          "integration",
+          "fingerprint_regression"
+        ]
+      }
     },
     {
       "id": "BM-T04",
@@ -3449,7 +3496,9 @@
       "goal": "Turn the new power, sensor and warning-light limits into deterministic checks.",
       "priority": 97,
       "status": "APPROVED",
-      "dependencies": ["BM-T03"],
+      "dependencies": [
+        "BM-T03"
+      ],
       "blockers": [],
       "acceptance_criteria": [
         "Deterministic checks cover battery envelope, polarity protection, converter network and current margin, PIR logic compatibility, LED current and ESP32 pin safety.",
@@ -3457,9 +3506,26 @@
         "Mutations of polarity, regulator parts, thresholds, values and pin assignments are rejected with actionable findings.",
         "No model or network path can author verification outcomes."
       ],
-      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
-      "review": {"required": false, "independent": false, "status": "PENDING", "record": null},
-      "verification": {"record": null, "required": ["workflow", "fast", "integration", "mutation_tests"]}
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PENDING",
+        "record": null
+      },
+      "verification": {
+        "record": null,
+        "required": [
+          "workflow",
+          "fast",
+          "integration",
+          "mutation_tests"
+        ]
+      }
     },
     {
       "id": "BM-T05",
@@ -3469,7 +3535,9 @@
       "goal": "Produce deterministic schematic, placement, routing and manufacturing candidates for the admitted circuit.",
       "priority": 96,
       "status": "APPROVED",
-      "dependencies": ["BM-T04"],
+      "dependencies": [
+        "BM-T04"
+      ],
       "blockers": [],
       "acceptance_criteria": [
         "Placement encodes the converter switching loop, PIR viewing edge and optical keepout, ESP32 antenna keepout, visible LED and accessible battery connector.",
@@ -3477,9 +3545,27 @@
         "Physical and manufacturing outputs retain unresolved enclosure, lens, assembly and bench limitations.",
         "Existing USB-family schematic and board fixtures remain unchanged."
       ],
-      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
-      "review": {"required": false, "independent": false, "status": "PENDING", "record": null},
-      "verification": {"record": null, "required": ["workflow", "fast", "integration", "slow", "native_erc_drc"]}
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PENDING",
+        "record": null
+      },
+      "verification": {
+        "record": null,
+        "required": [
+          "workflow",
+          "fast",
+          "integration",
+          "slow",
+          "native_erc_drc"
+        ]
+      }
     },
     {
       "id": "BM-T06",
@@ -3489,7 +3575,9 @@
       "goal": "Let a first-time user request, review, generate and understand the supported battery-motion board.",
       "priority": 95,
       "status": "APPROVED",
-      "dependencies": ["BM-T05"],
+      "dependencies": [
+        "BM-T05"
+      ],
       "blockers": [],
       "acceptance_criteria": [
         "The canonical battery-motion prompt resolves to A4 and presents the three-AA alkaline, no-charging assumption before generation.",
@@ -3497,9 +3585,27 @@
         "Unsupported lithium charging, nine-volt, mains and high-current alarm requests receive specific safe refusals or clarification.",
         "Conversation failure has a verified fixture fallback and never fabricates a successful engineering result."
       ],
-      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
-      "review": {"required": false, "independent": false, "status": "PENDING", "record": null},
-      "verification": {"record": null, "required": ["workflow", "fast", "frontend", "integration", "browser_review"]}
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PENDING",
+        "record": null
+      },
+      "verification": {
+        "record": null,
+        "required": [
+          "workflow",
+          "fast",
+          "frontend",
+          "integration",
+          "browser_review"
+        ]
+      }
     },
     {
       "id": "BM-T07",
@@ -3509,7 +3615,9 @@
       "goal": "Prove the complete prompt-to-download path and state every remaining release limitation.",
       "priority": 94,
       "status": "APPROVED",
-      "dependencies": ["BM-T06"],
+      "dependencies": [
+        "BM-T06"
+      ],
       "blockers": [],
       "acceptance_criteria": [
         "The canonical prompt traverses reviewed brief, CircuitIR, verification, KiCad, placement, routing, manufacturing, 3D preview, restart recovery and download.",
@@ -3517,9 +3625,29 @@
         "Independent engineering and UX review leaves no open BLOCKER or HIGH findings.",
         "Physical reverse-polarity, brownout, PIR and transient measurements remain explicitly unverified until a real board is bench-tested."
       ],
-      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
-      "review": {"required": true, "independent": true, "status": "PENDING", "record": null},
-      "verification": {"record": null, "required": ["workflow", "fast", "integration", "slow", "full", "browser_review", "independent_review"]}
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": true,
+        "status": "PENDING",
+        "record": null
+      },
+      "verification": {
+        "record": null,
+        "required": [
+          "workflow",
+          "fast",
+          "integration",
+          "slow",
+          "full",
+          "browser_review",
+          "independent_review"
+        ]
+      }
     },
     {
       "id": "HACK-DEMO-01",
@@ -3538,9 +3666,26 @@
         "Phase 4: one isolated damaged copy produces a real KiCad DRC finding with its own snapshot hash; restore returns the original artifacts.",
         "Phase 5: every billed provider route has durable atomic daily admission, bounded concurrency and burst control, tested with fake providers, returning 429 with Retry-After."
       ],
-      "implementation": {"started_at_commit": "db985333dff91cdab20fd50fca42e693347cf5e0", "completed_at_commit": "75ddcf7d5984dc9390c37b1c2f72fe5c4014331e", "approval_evidence": ".ai/approvals/HACK-DEMO-1.yaml"},
-      "review": {"required": true, "independent": true, "status": "PASSED", "record": ".ai/reviews.yaml#HACK-DEMO-01-INDEPENDENT-REVIEW"},
-      "verification": {"record": ".ai/verification/HACK-DEMO-01.yaml", "required": ["workflow", "fast", "node", "hackathon_harness"]}
+      "implementation": {
+        "started_at_commit": "db985333dff91cdab20fd50fca42e693347cf5e0",
+        "completed_at_commit": "75ddcf7d5984dc9390c37b1c2f72fe5c4014331e",
+        "approval_evidence": ".ai/approvals/HACK-DEMO-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": true,
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#HACK-DEMO-01-INDEPENDENT-REVIEW"
+      },
+      "verification": {
+        "record": ".ai/verification/HACK-DEMO-01.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "node",
+          "hackathon_harness"
+        ]
+      }
     },
     {
       "id": "HACK-DEMO-02",
@@ -3579,6 +3724,52 @@
           "fast",
           "node",
           "saved_demo_browser"
+        ]
+      }
+    },
+    {
+      "id": "HACK-SENTRY-01",
+      "title": "Offline Sentry error capture, connected traces and metrics",
+      "scope": "HACK-SENTRY-1",
+      "milestone": null,
+      "goal": "Implement SENTRY-T01..T04 offline: safe owned issues, connected request/worker traces, bounded metrics, browser facade and recording-transport proof, with telemetry disabled by default.",
+      "priority": 100,
+      "status": "VERIFIED",
+      "dependencies": [],
+      "input_commit": "00016f5f",
+      "blockers": [],
+      "acceptance_criteria": [
+        "Disabled by default with no SDK import, network, or user-facing behavior change.",
+        "Owned issues only, never raw exceptions; canaries absent from every serialized envelope.",
+        "SDK failures never skip, repeat, suppress or replace application work.",
+        "Validated trace continuation from browser through HTTP to worker; concurrency isolated.",
+        "Bounded metrics; failed persistence never counted as completion; native and engineering outcomes distinct.",
+        "Browser facade loads a reproducible local bundle only when enabled; missing bundle leaves the app usable.",
+        "Real-browser smoke across disabled/enabled/missing-bundle under local and static hosting with external traffic denied.",
+        "Fault harness covers rejection, provider failure, tool timeout, publication failure and recovery.",
+        "Ledger, workflow, fast, Node and telemetry gates pass; unavailable KiCad/corpus gates recorded NOT_RUN/BLOCKED; independent review has no open BLOCKER/HIGH."
+      ],
+      "implementation": {
+        "started_at_commit": "00016f5f",
+        "completed_at_commit": "2d5e50c3bc59aa2029e7ed4cf250ccf06715a269",
+        "approval_evidence": ".ai/approvals/HACK-SENTRY-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": true,
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#HACK-SENTRY-01-CODEX-REVIEW",
+        "rereview": ".ai/reviews.yaml#HACK-SENTRY-01-FINAL-REREVIEW"
+      },
+      "verification": {
+        "record": ".ai/verification/HACK-SENTRY-01.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "node",
+          "telemetry",
+          "fault_harness",
+          "browser_smoke"
         ]
       }
     }

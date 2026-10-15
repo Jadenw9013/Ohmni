@@ -47,10 +47,12 @@ WORKDIR /app
 
 # Dependencies come from pyproject.toml alone, so the declared set is the
 # installed set -- anthropic included. The provider imports it lazily and
-# nothing calls a model until ANTHROPIC_API_KEY is set.
+# nothing calls a model until ANTHROPIC_API_KEY is set. The pinned telemetry
+# SDK is likewise inert: nothing imports it unless OHMNI_TELEMETRY_ENABLED and
+# a real SENTRY_DSN are configured (docs/hackathon/SENTRY_CORE_RESULTS.md).
 COPY pyproject.toml ./
 COPY src/ ./src/
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir ".[telemetry]"
 
 COPY apps/ ./apps/
 COPY scripts/ ./scripts/

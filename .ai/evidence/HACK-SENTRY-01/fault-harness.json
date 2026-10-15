@@ -1,0 +1,398 @@
+{
+  "status": "PASS",
+  "sdk": {
+    "python": "2.72.0"
+  },
+  "transport": "in-memory recording transport, synthetic .invalid DSN, outbound sockets refused",
+  "checks": {
+    "no_network_attempt": true,
+    "canary_absent_everywhere": true,
+    "only_allowed_item_types": true,
+    "rejection_is_not_an_issue": true,
+    "provider_outage_one_issue_unchanged_response": true,
+    "tool_timeout_is_distinct": true,
+    "failed_publication_never_completes": true,
+    "recovery_completes_once_without_issue": true
+  },
+  "scenarios": [
+    {
+      "issues": [],
+      "transactions": [
+        {
+          "name": "worker scripted_fixture",
+          "op": "ohmni.worker",
+          "status": "ok",
+          "outcome": {
+            "ohmni.execution_outcome": "ok",
+            "ohmni.engineering_outcome": "reject"
+          },
+          "spans": [
+            {
+              "op": "ohmni.stage",
+              "name": "routing",
+              "ohmni.execution_outcome": "ok",
+              "ohmni.engineering_outcome": "reject"
+            }
+          ]
+        },
+        {
+          "name": "POST /api/demo",
+          "op": "http.server",
+          "status": "ok",
+          "outcome": {},
+          "spans": []
+        }
+      ],
+      "metrics": [
+        {
+          "name": "ohmni.jobs.accepted",
+          "value": 1.0,
+          "attributes": {
+            "flow": "scripted_fixture"
+          }
+        },
+        {
+          "name": "ohmni.stage.duration",
+          "value": 0.007246999985000002,
+          "attributes": {
+            "flow": "scripted_fixture",
+            "stage": "routing",
+            "outcome": "ok"
+          }
+        },
+        {
+          "name": "ohmni.jobs.terminal",
+          "value": 1.0,
+          "attributes": {
+            "flow": "scripted_fixture",
+            "terminal": "failed",
+            "reason": "routing_incomplete"
+          }
+        }
+      ],
+      "name": "expected_rejection",
+      "public": {
+        "status": "failed",
+        "error_code": "routing_incomplete"
+      },
+      "canary_absent": true,
+      "item_types": [
+        "trace_metric",
+        "transaction"
+      ]
+    },
+    {
+      "issues": [
+        {
+          "value": "provider.provider_connection",
+          "level": "error",
+          "fingerprint": [
+            "OhmniBoundaryFailure",
+            "provider",
+            "provider_connection"
+          ]
+        }
+      ],
+      "transactions": [
+        {
+          "name": "POST /api/project-plans",
+          "op": "http.server",
+          "status": "failed_precondition",
+          "outcome": {},
+          "spans": [
+            {
+              "op": "ohmni.stage",
+              "name": "plan_proposal",
+              "ohmni.execution_outcome": "error"
+            },
+            {
+              "op": "gen_ai.chat",
+              "name": "chat claude-sonnet-5",
+              "ohmni.execution_outcome": "error",
+              "ohmni.provider.outcome": "provider_connection"
+            }
+          ]
+        }
+      ],
+      "metrics": [
+        {
+          "name": "ohmni.provider.calls",
+          "value": 1.0,
+          "attributes": {
+            "flow": "planning",
+            "outcome": "provider_connection"
+          }
+        },
+        {
+          "name": "ohmni.stage.duration",
+          "value": 5.684948999942208,
+          "attributes": {
+            "flow": "planning",
+            "stage": "plan_proposal",
+            "outcome": "error"
+          }
+        }
+      ],
+      "name": "provider_failure",
+      "public": {
+        "status": 400,
+        "error": "invalid_plan"
+      },
+      "canary_absent": true,
+      "item_types": [
+        "event",
+        "trace_metric",
+        "transaction"
+      ]
+    },
+    {
+      "issues": [
+        {
+          "value": "worker.eda_tool_failed",
+          "level": "error",
+          "fingerprint": [
+            "OhmniBoundaryFailure",
+            "worker",
+            "eda_tool_failed"
+          ]
+        }
+      ],
+      "transactions": [
+        {
+          "name": "POST /api/demo",
+          "op": "http.server",
+          "status": "ok",
+          "outcome": {},
+          "spans": []
+        },
+        {
+          "name": "worker scripted_fixture",
+          "op": "ohmni.worker",
+          "status": "internal_error",
+          "outcome": {
+            "ohmni.execution_outcome": "error",
+            "ohmni.engineering_outcome": "unknown"
+          },
+          "spans": [
+            {
+              "op": "ohmni.stage",
+              "name": "erc",
+              "ohmni.execution_outcome": "error"
+            },
+            {
+              "op": "ohmni.tool",
+              "name": "kicad",
+              "ohmni.execution_outcome": "timeout"
+            }
+          ]
+        }
+      ],
+      "metrics": [
+        {
+          "name": "ohmni.jobs.accepted",
+          "value": 1.0,
+          "attributes": {
+            "flow": "scripted_fixture"
+          }
+        },
+        {
+          "name": "ohmni.stage.duration",
+          "value": 302.6038030000109,
+          "attributes": {
+            "flow": "scripted_fixture",
+            "stage": "erc",
+            "outcome": "error"
+          }
+        },
+        {
+          "name": "ohmni.jobs.terminal",
+          "value": 1.0,
+          "attributes": {
+            "flow": "scripted_fixture",
+            "terminal": "failed",
+            "reason": "eda_tool_failed"
+          }
+        }
+      ],
+      "name": "tool_timeout",
+      "public": {
+        "status": "failed",
+        "error_code": "eda_tool_failed"
+      },
+      "canary_absent": true,
+      "item_types": [
+        "event",
+        "trace_metric",
+        "transaction"
+      ]
+    },
+    {
+      "issues": [
+        {
+          "value": "persistence.job_persist_failed",
+          "level": "error",
+          "fingerprint": [
+            "OhmniBoundaryFailure",
+            "persistence",
+            "job_persist_failed"
+          ]
+        }
+      ],
+      "transactions": [
+        {
+          "name": "POST /api/demo",
+          "op": "http.server",
+          "status": "ok",
+          "outcome": {},
+          "spans": []
+        },
+        {
+          "name": "worker scripted_fixture",
+          "op": "ohmni.worker",
+          "status": "internal_error",
+          "outcome": {
+            "ohmni.execution_outcome": "error"
+          },
+          "spans": [
+            {
+              "op": "ohmni.stage",
+              "name": "report_validation",
+              "ohmni.execution_outcome": "ok"
+            },
+            {
+              "op": "ohmni.stage",
+              "name": "publication",
+              "ohmni.execution_outcome": "error"
+            }
+          ]
+        }
+      ],
+      "metrics": [
+        {
+          "name": "ohmni.jobs.accepted",
+          "value": 1.0,
+          "attributes": {
+            "flow": "scripted_fixture"
+          }
+        },
+        {
+          "name": "ohmni.stage.duration",
+          "value": 2.6571509999939735,
+          "attributes": {
+            "flow": "scripted_fixture",
+            "stage": "report_validation",
+            "outcome": "ok"
+          }
+        },
+        {
+          "name": "ohmni.stage.duration",
+          "value": 3.1486329999097507,
+          "attributes": {
+            "flow": "scripted_fixture",
+            "stage": "publication",
+            "outcome": "error"
+          }
+        },
+        {
+          "name": "ohmni.jobs.terminal",
+          "value": 1.0,
+          "attributes": {
+            "flow": "scripted_fixture",
+            "terminal": "failed",
+            "reason": "job_state_invalid"
+          }
+        }
+      ],
+      "name": "publication_failure",
+      "public": {
+        "status": "failed",
+        "error_code": "job_state_invalid"
+      },
+      "canary_absent": true,
+      "item_types": [
+        "event",
+        "trace_metric",
+        "transaction"
+      ]
+    },
+    {
+      "issues": [],
+      "transactions": [
+        {
+          "name": "POST /api/demo",
+          "op": "http.server",
+          "status": "ok",
+          "outcome": {},
+          "spans": []
+        },
+        {
+          "name": "worker scripted_fixture",
+          "op": "ohmni.worker",
+          "status": "ok",
+          "outcome": {
+            "ohmni.execution_outcome": "ok",
+            "ohmni.engineering_outcome": "pass"
+          },
+          "spans": [
+            {
+              "op": "ohmni.stage",
+              "name": "report_validation",
+              "ohmni.execution_outcome": "ok"
+            },
+            {
+              "op": "ohmni.stage",
+              "name": "publication",
+              "ohmni.execution_outcome": "ok"
+            }
+          ]
+        }
+      ],
+      "metrics": [
+        {
+          "name": "ohmni.jobs.accepted",
+          "value": 1.0,
+          "attributes": {
+            "flow": "scripted_fixture"
+          }
+        },
+        {
+          "name": "ohmni.stage.duration",
+          "value": 1.583850000088205,
+          "attributes": {
+            "flow": "scripted_fixture",
+            "stage": "report_validation",
+            "outcome": "ok"
+          }
+        },
+        {
+          "name": "ohmni.stage.duration",
+          "value": 2.235662999964916,
+          "attributes": {
+            "flow": "scripted_fixture",
+            "stage": "publication",
+            "outcome": "ok"
+          }
+        },
+        {
+          "name": "ohmni.jobs.terminal",
+          "value": 1.0,
+          "attributes": {
+            "flow": "scripted_fixture",
+            "terminal": "complete",
+            "reason": "none"
+          }
+        }
+      ],
+      "name": "recovery",
+      "public": {
+        "status": "complete",
+        "error_code": null
+      },
+      "canary_absent": true,
+      "item_types": [
+        "trace_metric",
+        "transaction"
+      ]
+    }
+  ]
+}

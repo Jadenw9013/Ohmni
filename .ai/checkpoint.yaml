@@ -1,100 +1,134 @@
 {
   "schema_version": 1,
   "active_task": null,
-  "last_known_commit": "86ad043e541004368d4a51aec24f9d0c0b4fb870",
+  "last_known_commit": "2d5e50c3bc59aa2029e7ed4cf250ccf06715a269",
+  "approval_record": ".ai/approvals/HACK-SENTRY-1.yaml",
+  "modified_files": [],
+  "completed_substeps": [
+    "HACK-SENTRY-01: Codex review IR01-IR09 fixed and independently re-reviewed; VERIFIED offline at 2d5e50c3; awaiting human acceptance. BM-T02 remains the next READY task."
+  ],
+  "remaining_work": [
+    "Human acceptance of HACK-SENTRY-01 and PR review.",
+    "Live activation only after a separate owner decision (docs/hackathon/SENTRY_CORE_RESULTS.md section 4)."
+  ],
+  "last_failure": null,
+  "resume_action": "No active task. Run ai_state.py next.",
+  "last_command": "python scripts/verify.py fast",
   "previous_checkpoint": {
     "schema_version": 1,
     "active_task": null,
-    "last_known_commit": "75ddcf7d5984dc9390c37b1c2f72fe5c4014331e",
+    "last_known_commit": "a484f8381d947180d59717a889f040066321d9a7",
+    "approval_record": ".ai/approvals/HACK-SENTRY-1.yaml",
+    "modified_files": [],
+    "completed_substeps": [
+      "HACK-SENTRY-01 implemented and VERIFIED offline; awaiting human acceptance. BM-T02 remains the next READY task."
+    ],
+    "remaining_work": [
+      "Human acceptance of HACK-SENTRY-01 and PR review.",
+      "Live activation only after a separate owner decision (docs/hackathon/SENTRY_CORE_RESULTS.md section 4)."
+    ],
+    "last_failure": null,
+    "resume_action": "No active task. Run ai_state.py next.",
+    "last_command": "python scripts/verify.py fast",
     "previous_checkpoint": {
       "schema_version": 1,
       "active_task": null,
-      "last_known_commit": "8252a27ddb5f0df4df0d873a9506b265a2c6a736",
-      "approval_record": ".ai/approvals/BATTERY-MOTION-1.yaml",
+      "last_known_commit": "86ad043e541004368d4a51aec24f9d0c0b4fb870",
       "previous_checkpoint": {
         "schema_version": 1,
         "active_task": null,
-        "paused_task": "LP-CIRCUIT",
-        "last_known_commit": "7310be49a0d8dacf8e8fe2bef11e867bbcabd651",
-        "approval_record": ".ai/approvals/LANDING-PCB-CIRCUIT.yaml",
+        "last_known_commit": "75ddcf7d5984dc9390c37b1c2f72fe5c4014331e",
+        "previous_checkpoint": {
+          "schema_version": 1,
+          "active_task": null,
+          "last_known_commit": "8252a27ddb5f0df4df0d873a9506b265a2c6a736",
+          "approval_record": ".ai/approvals/BATTERY-MOTION-1.yaml",
+          "previous_checkpoint": {
+            "schema_version": 1,
+            "active_task": null,
+            "paused_task": "LP-CIRCUIT",
+            "last_known_commit": "7310be49a0d8dacf8e8fe2bef11e867bbcabd651",
+            "approval_record": ".ai/approvals/LANDING-PCB-CIRCUIT.yaml",
+            "modified_files": [],
+            "completed_substeps": [
+              "Recorded real circuit redesign approval and audited attachment/source discrepancies.",
+              "Built isolated 32-part buck circuit, catalog/footprint overlays, full netlist, placement and routing with new identities.",
+              "KiCad ERC has zero electrical errors and 35 library-configuration warnings; DRC has zero violations or unconnected items.",
+              "Rendered candidate and exact-scene posters; independent engineering and UI/UX draft reviews complete.",
+              "78 focused Python tests, 1032 frontend tests and fast suite (2033 passed, 82 skipped, 49 deselected) passed."
+            ],
+            "remaining_work": [
+              "Resolve whether the external 5 V I2C expansion header is requested, or omit it.",
+              "If selected, generate and route the 38-part variant and repeat native/browser checks; only the 32-part variant is currently rendered.",
+              "Owner reviews appearance. Assembly method, module fit and system electrical limits remain open before manufacturing release."
+            ],
+            "pending_requirement": "Choose external 5 V I2C expansion header, or omit translator and retain 3.3 V I2C.",
+            "last_command": "Merged current origin/main; fast verification passed (2036 passed, 82 skipped, 49 deselected), workflow passed (12); publication approval and provenance recorded.",
+            "last_failure": null,
+            "resume_action": "On owner endpoint answer, resume LP-CIRCUIT. If extension selected, generate and route the 38-part variant, repeat native/browser checks and rerender. Keep original reference, production defaults and parked behavior records unchanged.",
+            "publication_request": {
+              "instruction": "cool push to main",
+              "approval_record": ".ai/approvals/LANDING-PCB-PUBLISH.yaml",
+              "candidate_commit": "7310be49a0d8dacf8e8fe2bef11e867bbcabd651"
+            }
+          },
+          "modified_files": [],
+          "completed_substeps": [
+            "Researched the source-backed battery, regulator, PIR, processor and hardware LED-driver architecture.",
+            "Received human approval for the bounded battery-motion plan.",
+            "Created the durable product contract and ordered BM-T01 through BM-T07.",
+            "Workflow tests passed 12; fast verification passed 2439 with 86 skipped and 62 deselected."
+          ],
+          "remaining_work": [
+            "Human PR review and merge.",
+            "After merge, start BM-T02 component evidence and admission from the latest origin/main."
+          ],
+          "last_failure": null,
+          "resume_action": "Review and merge the BM-T01 contract PR; then begin BM-T02 on a fresh branch from origin/main.",
+          "last_command": "Workflow 12 passed; fast 2439 passed, 86 skipped, 62 deselected."
+        },
         "modified_files": [],
         "completed_substeps": [
-          "Recorded real circuit redesign approval and audited attachment/source discrepancies.",
-          "Built isolated 32-part buck circuit, catalog/footprint overlays, full netlist, placement and routing with new identities.",
-          "KiCad ERC has zero electrical errors and 35 library-configuration warnings; DRC has zero violations or unconnected items.",
-          "Rendered candidate and exact-scene posters; independent engineering and UI/UX draft reviews complete.",
-          "78 focused Python tests, 1032 frontend tests and fast suite (2033 passed, 82 skipped, 49 deselected) passed."
+          "Recorded the human approval and activated HACK-DEMO-01.",
+          "Phase 1: fail-closed harness, 3/3 real KiCad 10.0.5 passes with 18/18 checks and identical routed PCB bytes.",
+          "Phase 2: CI frontend and kicad-gate jobs passed on GitHub.",
+          "Phase 3: offline saved demonstration; network-disabled browser check 11/11.",
+          "Phase 4: real DRC fault on an isolated copy with restore; original unchanged.",
+          "Phase 5: durable daily, in-flight and burst admission on every billed route.",
+          "Independent review: no BLOCKER/HIGH; seven findings fixed and the capture regenerated from a clean run.",
+          "fast 2445 passed, 91 skipped, 63 deselected; workflow 12; Node 1096 passed."
         ],
         "remaining_work": [
-          "Resolve whether the external 5 V I2C expansion header is requested, or omit it.",
-          "If selected, generate and route the 38-part variant and repeat native/browser checks; only the 32-part variant is currently rendered.",
-          "Owner reviews appearance. Assembly method, module fit and system electrical limits remain open before manufacturing release."
+          "Human review and merge of PR #73.",
+          "Live conversational prompt rehearsal with a permitted provider.",
+          "Production deployment decision and OHMNI_AI_* configuration.",
+          "Human acceptance before HACK-DEMO-01 becomes COMPLETE.",
+          "Then resume BATTERY-MOTION-1 at BM-T02."
         ],
-        "pending_requirement": "Choose external 5 V I2C expansion header, or omit translator and retain 3.3 V I2C.",
-        "last_command": "Merged current origin/main; fast verification passed (2036 passed, 82 skipped, 49 deselected), workflow passed (12); publication approval and provenance recorded.",
+        "last_command": "verify.py fast: 2445 passed, 91 skipped, 63 deselected; workflow 12 passed.",
         "last_failure": null,
-        "resume_action": "On owner endpoint answer, resume LP-CIRCUIT. If extension selected, generate and route the 38-part variant, repeat native/browser checks and rerender. Keep original reference, production defaults and parked behavior records unchanged.",
-        "publication_request": {
-          "instruction": "cool push to main",
-          "approval_record": ".ai/approvals/LANDING-PCB-PUBLISH.yaml",
-          "candidate_commit": "7310be49a0d8dacf8e8fe2bef11e867bbcabd651"
-        }
+        "resume_action": "Await human review of PR #73; then resume BM-T02 on a fresh branch from origin/main.",
+        "approval_record": ".ai/approvals/HACK-DEMO-1.yaml"
       },
+      "approval_record": ".ai/approvals/HACK-DEMO-INTEGRATION-1.yaml",
       "modified_files": [],
       "completed_substeps": [
-        "Researched the source-backed battery, regulator, PIR, processor and hardware LED-driver architecture.",
-        "Received human approval for the bounded battery-motion plan.",
-        "Created the durable product contract and ordered BM-T01 through BM-T07.",
-        "Workflow tests passed 12; fast verification passed 2439 with 86 skipped and 62 deselected."
+        "Fetched merged PR #73 at 54c66795; started codex/hackathon-demo-integration from that main commit.",
+        "Published a byte-preserved four-file capture mirror with hash/parity checks and fixed normal-server allowlist.",
+        "Wired new-tab landing/workspace entry, return navigation, accessible recovery and contained mobile checks table.",
+        "Fixed Windows receipt replay by preserving recorded provenance-path spelling without changing core hashes or evidence.",
+        "Independent integration review found no open BLOCKER/HIGH/MEDIUM; draft-loss finding fixed.",
+        "Workflow 12 passed; focused Python 55 passed/1 deselected; Node 1105 passed; browser offline18/site22/static22 checks passed.",
+        "Final full fast suite passed: 2487 passed, 86 skipped, 63 deselected. All required local gates passed and evidence is commit-bound."
       ],
       "remaining_work": [
-        "Human PR review and merge.",
-        "After merge, start BM-T02 component evidence and admission from the latest origin/main."
+        "Human review and merge of the integration PR.",
+        "Rehearse the deployed demo URL after deployment; no production result is claimed here.",
+        "Existing live-provider rehearsal and HACK-DEMO-01 human acceptance remain separate."
       ],
       "last_failure": null,
-      "resume_action": "Review and merge the BM-T01 contract PR; then begin BM-T02 on a fresh branch from origin/main.",
-      "last_command": "Workflow 12 passed; fast 2439 passed, 86 skipped, 62 deselected."
-    },
-    "modified_files": [],
-    "completed_substeps": [
-      "Recorded the human approval and activated HACK-DEMO-01.",
-      "Phase 1: fail-closed harness, 3/3 real KiCad 10.0.5 passes with 18/18 checks and identical routed PCB bytes.",
-      "Phase 2: CI frontend and kicad-gate jobs passed on GitHub.",
-      "Phase 3: offline saved demonstration; network-disabled browser check 11/11.",
-      "Phase 4: real DRC fault on an isolated copy with restore; original unchanged.",
-      "Phase 5: durable daily, in-flight and burst admission on every billed route.",
-      "Independent review: no BLOCKER/HIGH; seven findings fixed and the capture regenerated from a clean run.",
-      "fast 2445 passed, 91 skipped, 63 deselected; workflow 12; Node 1096 passed."
-    ],
-    "remaining_work": [
-      "Human review and merge of PR #73.",
-      "Live conversational prompt rehearsal with a permitted provider.",
-      "Production deployment decision and OHMNI_AI_* configuration.",
-      "Human acceptance before HACK-DEMO-01 becomes COMPLETE.",
-      "Then resume BATTERY-MOTION-1 at BM-T02."
-    ],
-    "last_command": "verify.py fast: 2445 passed, 91 skipped, 63 deselected; workflow 12 passed.",
-    "last_failure": null,
-    "resume_action": "Await human review of PR #73; then resume BM-T02 on a fresh branch from origin/main.",
-    "approval_record": ".ai/approvals/HACK-DEMO-1.yaml"
-  },
-  "approval_record": ".ai/approvals/HACK-DEMO-INTEGRATION-1.yaml",
-  "modified_files": [],
-  "completed_substeps": [
-    "Fetched merged PR #73 at 54c66795; started codex/hackathon-demo-integration from that main commit.",
-    "Published a byte-preserved four-file capture mirror with hash/parity checks and fixed normal-server allowlist.",
-    "Wired new-tab landing/workspace entry, return navigation, accessible recovery and contained mobile checks table.",
-    "Fixed Windows receipt replay by preserving recorded provenance-path spelling without changing core hashes or evidence.",
-    "Independent integration review found no open BLOCKER/HIGH/MEDIUM; draft-loss finding fixed.",
-    "Workflow 12 passed; focused Python 55 passed/1 deselected; Node 1105 passed; browser offline18/site22/static22 checks passed.",
-    "Final full fast suite passed: 2487 passed, 86 skipped, 63 deselected. All required local gates passed and evidence is commit-bound."
-  ],
-  "remaining_work": [
-    "Human review and merge of the integration PR.",
-    "Rehearse the deployed demo URL after deployment; no production result is claimed here.",
-    "Existing live-provider rehearsal and HACK-DEMO-01 human acceptance remain separate."
-  ],
-  "last_failure": null,
-  "resume_action": "Review the integration PR. Do not merge main or deploy without the owner instruction. BATTERY-MOTION-1 remains the separate approved backlog; BM-T02 is next.",
-  "last_command": "Final fast 2487 passed; Node 1105 passed; browser 62/62; workflow 12 passed; mirror and changed-file lint passed."
+      "resume_action": "Review the integration PR. Do not merge main or deploy without the owner instruction. BATTERY-MOTION-1 remains the separate approved backlog; BM-T02 is next.",
+      "last_command": "Final fast 2487 passed; Node 1105 passed; browser 62/62; workflow 12 passed; mirror and changed-file lint passed."
+    }
+  }
 }

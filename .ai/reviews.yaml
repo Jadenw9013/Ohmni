@@ -643,7 +643,7 @@
       "independent": true,
       "status": "PASSED_WITH_OWNER_GATE",
       "commit": "42cd343e",
-      "notes": "Fresh current-tree review found no open BLOCKER/HIGH technical or source-integrity finding. Focused visual/server/frontend regressions passed. Later landing work reuses the renderer without changing the task\u2019s declared actual/sample separation. Human visual acceptance remains PENDING, so VIS-T01 stays VERIFIED."
+      "notes": "Fresh current-tree review found no open BLOCKER/HIGH technical or source-integrity finding. Focused visual/server/frontend regressions passed. Later landing work reuses the renderer without changing the task’s declared actual/sample separation. Human visual acceptance remains PENDING, so VIS-T01 stays VERIFIED."
     },
     {
       "id": "VIS-T02-INDEPENDENT-REREVIEW-2026-10-09",
@@ -876,6 +876,62 @@
       "notes": "Final independent review found no open BLOCKER/HIGH/MEDIUM findings. Reviewed fixed publication allowlist and canonical hashes, new-tab draft preservation, accessible contained mobile table, recovery, offline/site/static browser harness, and typed provenance-path replay. Reviewer independently ran 6 Python replay/tamper tests and 15 Node publication/home tests, inspected all 62 passing browser checks and ZIP contents. No fresh engineering run or deployment is certified.",
       "finding_ids": [
         "HACK-DEMO-02-R01"
+      ]
+    },
+    {
+      "id": "HACK-SENTRY-01-INDEPENDENT-REVIEW",
+      "scope": "HACK-SENTRY-1",
+      "task": "HACK-SENTRY-01",
+      "reviewer": "independent Claude subagent (read-only privacy/correctness review, then a separate re-review of the fixes)",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "a484f8381d947180d59717a889f040066321d9a7",
+      "notes": "First review at 580bf54a found no BLOCKER/HIGH, 2 MEDIUM and 4 LOW. Fixes in b0194514 were re-reviewed independently: all three FIXED, with one new LOW (stale-artifact classification) fixed in a484f838. The reviewer confirmed canary absence, envelope gating, trace validation, lock discipline and disabled-mode inertness by experiment; its own Chromium smoke run timed out under CPU contention and is not counted. No live ingestion is reviewed or claimed.",
+      "finding_ids": [
+        "HACK-SENTRY-01-R01",
+        "HACK-SENTRY-01-R02",
+        "HACK-SENTRY-01-R03",
+        "HACK-SENTRY-01-R04",
+        "HACK-SENTRY-01-R05",
+        "HACK-SENTRY-01-R06",
+        "HACK-SENTRY-01-R07"
+      ]
+    },
+    {
+      "id": "HACK-SENTRY-01-CODEX-REVIEW",
+      "scope": "HACK-SENTRY-1",
+      "task": "HACK-SENTRY-01",
+      "reviewer": "Codex independent review (PR #78, docs/hackathon/SENTRY_INDEPENDENT_REVIEW.md)",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "2d5e50c3bc59aa2029e7ed4cf250ccf06715a269",
+      "notes": "Reviewed through 1e143537: CHANGES REQUIRED with 1 HIGH (IR02) and 7 MEDIUM. All fixed in 0a0b5f3e..2d5e50c3, one coherent commit each. The earlier HACK-SENTRY-01-INDEPENDENT-REVIEW 'no BLOCKER/HIGH' conclusion is superseded: it rated the same bundle issue LOW (R04).",
+      "finding_ids": [
+        "HACK-SENTRY-01-IR01",
+        "HACK-SENTRY-01-IR02",
+        "HACK-SENTRY-01-IR03",
+        "HACK-SENTRY-01-IR04",
+        "HACK-SENTRY-01-IR05",
+        "HACK-SENTRY-01-IR06",
+        "HACK-SENTRY-01-IR07",
+        "HACK-SENTRY-01-IR08",
+        "HACK-SENTRY-01-IR09"
+      ]
+    },
+    {
+      "id": "HACK-SENTRY-01-FINAL-REREVIEW",
+      "scope": "HACK-SENTRY-1",
+      "task": "HACK-SENTRY-01",
+      "reviewer": "independent Claude subagent (read-only, old-code worktree comparison)",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "2d5e50c3bc59aa2029e7ed4cf250ccf06715a269",
+      "notes": "Re-review of f54b6f3f found IR03 PARTIAL (project schema parse after success) and IR09 PARTIAL; fixed in 2d5e50c3. Re-review of 2d5e50c3: all IR findings RESOLVED (IR09 unverified on Windows), no BLOCKER/HIGH/MEDIUM open, two LOW accepted (IR10, IR11). Every new regression test was confirmed to fail on the prior code.",
+      "finding_ids": [
+        "HACK-SENTRY-01-IR03",
+        "HACK-SENTRY-01-IR09",
+        "HACK-SENTRY-01-IR10",
+        "HACK-SENTRY-01-IR11"
       ]
     }
   ],
@@ -2074,6 +2130,283 @@
       "resolution_commit": "86ad043e541004368d4a51aec24f9d0c0b4fb870",
       "resolution": "Both landing links and the direct workspace entry open explicitly labeled new tabs with rel=noopener. Original draft remains in its tab.",
       "verification": "Independent re-review passed. Node assertions and site/static browser navigation exercise both routes and verify draft preservation."
+    },
+    {
+      "id": "HACK-SENTRY-01-R01",
+      "scope": "HACK-SENTRY-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Persistence failures outside the worker's final flush were never reported",
+      "description": "Failures noted under the store lock in progress callbacks, early worker returns and GET polls were dropped with the thread.",
+      "affected_files": [
+        "scripts/demo_server.py"
+      ],
+      "found_at_commit": "580bf54a89911ccccccbf50cbc10e0790c3b22f3",
+      "resolution_commit": "b0194514ea4b59e6a37ddcf9a1c104875a399e35",
+      "resolution": "_fail and _run flush in finally; get() flushes after _get().",
+      "verification": "tests/test_telemetry_integration.py::test_progress_persistence_failure_is_reported_once_after_the_lock; independent re-review FIXED."
+    },
+    {
+      "id": "HACK-SENTRY-01-R02",
+      "scope": "HACK-SENTRY-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "A stage-level reject hid a later infrastructure failure",
+      "description": "Any stage outcome 'reject' set an operation-wide flag, so a later OSError was reported as an engineering rejection without an issue.",
+      "affected_files": [
+        "src/ohmni/adapters/telemetry.py",
+        "src/ohmni/application/demo.py",
+        "src/ohmni/application/projects.py"
+      ],
+      "found_at_commit": "580bf54a89911ccccccbf50cbc10e0790c3b22f3",
+      "resolution_commit": "b0194514ea4b59e6a37ddcf9a1c104875a399e35",
+      "resolution": "Stage outcomes no longer set the flag; engineering_rejection() is called immediately before each check's own raise.",
+      "verification": "tests/test_telemetry_integration.py::test_only_a_marked_check_failure_is_an_engineering_rejection; independent re-review FIXED."
+    },
+    {
+      "id": "HACK-SENTRY-01-R03",
+      "scope": "HACK-SENTRY-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Provider read vendor usage/model attributes with telemetry disabled",
+      "description": "A raising getter could fail a successful billed call in both modes.",
+      "affected_files": [
+        "src/ohmni/adapters/anthropic_provider.py"
+      ],
+      "found_at_commit": "580bf54a89911ccccccbf50cbc10e0790c3b22f3",
+      "resolution_commit": "b0194514ea4b59e6a37ddcf9a1c104875a399e35",
+      "resolution": "Reads are gated on telemetry.enabled() and wrapped in try/except.",
+      "verification": "tests/test_telemetry.py::test_telemetry_only_vendor_reads_never_fail_a_successful_call; independent re-review FIXED."
+    },
+    {
+      "id": "HACK-SENTRY-01-R04",
+      "scope": "HACK-SENTRY-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Local server fails closed without the telemetry bundle",
+      "description": "The immutable snapshot requires vendor/sentry-telemetry.js like every other asset.",
+      "affected_files": [
+        "scripts/demo_server.py"
+      ],
+      "found_at_commit": "580bf54a89911ccccccbf50cbc10e0790c3b22f3",
+      "resolution": "Superseded by HACK-SENTRY-01-IR02 (rated HIGH by the Codex review): the bundle is now an optional snapshot asset; the server starts without it and serves 404.",
+      "verification": "tests/test_demo_application.py::test_server_starts_and_serves_404_without_the_optional_telemetry_bundle",
+      "resolution_commit": "0a0b5f3e"
+    },
+    {
+      "id": "HACK-SENTRY-01-R05",
+      "scope": "HACK-SENTRY-1",
+      "severity": "LOW",
+      "status": "ACCEPTED_RISK",
+      "title": "CORS always lists sentry-trace and baggage",
+      "description": "Allowed request headers differ from main even with telemetry disabled.",
+      "affected_files": [
+        "scripts/demo_server.py"
+      ],
+      "found_at_commit": "580bf54a89911ccccccbf50cbc10e0790c3b22f3",
+      "resolution": "Specified by the plan; baggage is accepted and ignored. Documented.",
+      "verification": "tests/test_telemetry_integration.py::test_cors_allows_trace_headers_only_for_already_allowed_origins"
+    },
+    {
+      "id": "HACK-SENTRY-01-R06",
+      "scope": "HACK-SENTRY-1",
+      "severity": "LOW",
+      "status": "ACCEPTED_RISK",
+      "title": "Python SDK pinned by version, not hash; startup parsing catches BaseException",
+      "description": "Transitive urllib3/certifi follow the repository's unpinned convention.",
+      "affected_files": [
+        "pyproject.toml",
+        "src/ohmni/adapters/telemetry.py"
+      ],
+      "found_at_commit": "580bf54a89911ccccccbf50cbc10e0790c3b22f3",
+      "resolution": "Documented as a supply-chain limitation; configuration never prevents startup by design.",
+      "verification": "docs/hackathon/SENTRY_CORE_RESULTS.md section 6"
+    },
+    {
+      "id": "HACK-SENTRY-01-R07",
+      "scope": "HACK-SENTRY-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Stale KiCad artifact was marked an engineering rejection",
+      "description": "Found in re-review: require_eda_check marked any non-pass status, including stale_artifact; the post-DRC cleanliness raise was a new classification.",
+      "affected_files": [
+        "src/ohmni/application/demo.py"
+      ],
+      "found_at_commit": "b0194514ea4b59e6a37ddcf9a1c104875a399e35",
+      "resolution_commit": "a484f8381d947180d59717a889f040066321d9a7",
+      "resolution": "Mark only status 'fail'; post-DRC cleanliness stays a pipeline failure.",
+      "verification": "tests/test_telemetry_integration.py::test_only_a_completed_failing_eda_check_marks_a_rejection"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR01",
+      "scope": "HACK-SENTRY-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Telemetry-only vendor getter reads",
+      "description": "With telemetry on, the provider invoked message.usage, cache and model getters; a BaseException-derived signal escaped except Exception.",
+      "affected_files": [
+        "src/ohmni/adapters/anthropic_provider.py"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "_plain_attribute reads plain instance data through the interpreter's own dict descriptor and invokes no vendor code.",
+      "verification": "tests/test_telemetry.py::test_telemetry_never_invokes_vendor_getters_even_for_base_exceptions, test_plain_attribute_*",
+      "resolution_commit": "5b1e95c2"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR02",
+      "scope": "HACK-SENTRY-1",
+      "severity": "HIGH",
+      "status": "FIXED",
+      "title": "Missing optional bundle blocked server startup",
+      "description": "A missing vendor/sentry-telemetry.js made _load_web_snapshot raise DemoInitializationError even with telemetry disabled.",
+      "affected_files": [
+        "scripts/demo_server.py"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "OPTIONAL_STATIC_ASSETS: a wholly absent bundle is skipped and served as 404; dangling links, directories and every other asset still fail.",
+      "verification": "tests/test_demo_application.py (3 tests); apps/web/tests/telemetry.test.mjs real absent import; smoke local missing_bundle deletes the file",
+      "resolution_commit": "0a0b5f3e"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR03",
+      "scope": "HACK-SENTRY-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Contract mismatch recorded as request success",
+      "description": "trace.end(status) ran before identity/schema validation in the brief, demo-start and project paths.",
+      "affected_files": [
+        "apps/web/app.js",
+        "apps/web/project-contract.js",
+        "apps/web/conversation.js",
+        "apps/web/project-assistant.js"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "Success is recorded only after parseBrief/parseStart/checkIdentity and the caller's schema parser (projectRequest parse option); contract_mismatch is recorded once otherwise; demo 200-instead-of-202 is a mismatch. First fix c62d06a3 was partial (re-review), completed in 2d5e50c3.",
+      "verification": "apps/web/tests/view-model.test.mjs and telemetry.test.mjs contract tests (fail on prior code)",
+      "resolution_commit": "2d5e50c3"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR04",
+      "scope": "HACK-SENTRY-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Independent browser actions shared one trace",
+      "description": "startInactiveSpan reused the page's propagation context.",
+      "affected_files": [
+        "scripts/telemetry-browser/entry.mjs",
+        "apps/web/vendor/sentry-telemetry.js"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "Each request opens inside startNewTrace; bundle rebuilt reproducibly.",
+      "verification": "telemetry.test.mjs real-bundle test; smoke independent_actions_have_distinct_traces (fails on prior bundle)",
+      "resolution_commit": "856fb6e2"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR05",
+      "scope": "HACK-SENTRY-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Provider read vendor usage with telemetry off",
+      "description": "Same as HACK-SENTRY-01-R03.",
+      "affected_files": [
+        "src/ohmni/adapters/anthropic_provider.py"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "Fixed before the Codex review.",
+      "verification": "See HACK-SENTRY-01-R03",
+      "resolution_commit": "b0194514"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR06",
+      "scope": "HACK-SENTRY-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "ERC/DRC stage stayed ok when the check did not complete",
+      "description": "span.outcome('ok', ...) ran before require_eda_check raised EdaToolFailedError.",
+      "affected_files": [
+        "src/ohmni/application/demo.py",
+        "src/ohmni/application/projects.py"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "eda_check_outcomes derives execution and engineering outcomes from the report.",
+      "verification": "tests/test_telemetry_integration.py::test_eda_stage_outcome_follows_the_report and end-to-end ERC span assertions",
+      "resolution_commit": "569770dd"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR07",
+      "scope": "HACK-SENTRY-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Failed SDK span cleanup reparented the next sibling",
+      "description": "A BaseException in Span.__exit__ or a partial __enter__ left the child current.",
+      "affected_files": [
+        "src/ohmni/adapters/telemetry.py"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "The adapter records the previous current span and restores it whenever the child is still current.",
+      "verification": "tests/test_telemetry.py::test_a_failed_sdk_span_cleanup_never_reparents_the_next_sibling[enter|exit]",
+      "resolution_commit": "21c6aa26"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR08",
+      "scope": "HACK-SENTRY-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Arbitrary claude-prefixed text accepted as a model name",
+      "description": "The model regex accepted values such as claude-private-design-canary.",
+      "affected_files": [
+        "src/ohmni/adapters/telemetry.py"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "Canonical grammar only; unknown request model coarsened to claude-unknown, unknown response model omitted.",
+      "verification": "tests/test_telemetry.py::test_only_canonical_model_identifiers_reach_an_envelope",
+      "resolution_commit": "2370ec4d"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR09",
+      "scope": "HACK-SENTRY-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Test portability and installed-KiCad discovery",
+      "description": "PYTHONPATH joined with ':'; native-tool fixtures could discover an installed KiCad through fallback folders.",
+      "affected_files": [
+        "tests/test_telemetry.py",
+        "tests/test_telemetry_integration.py"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "os.pathsep and module-origin assertions; KiCad discovery stubbed and asserted. The shebang nonzero scenario is skipped on Windows with a stated reason (see IR10).",
+      "verification": "Linux runs; Windows NOT_RUN",
+      "resolution_commit": "f54b6f3f"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR10",
+      "scope": "HACK-SENTRY-1",
+      "severity": "LOW",
+      "status": "ACCEPTED_RISK",
+      "title": "Windows nonzero native-tool scenario is skipped",
+      "description": "A shebang script cannot stand in for kicad-cli.exe; Windows behavior is unverified.",
+      "affected_files": [
+        "tests/test_telemetry_integration.py"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "Documented limitation; the missing-tool scenario still runs on Windows.",
+      "verification": "Final re-review"
+    },
+    {
+      "id": "HACK-SENTRY-01-IR11",
+      "scope": "HACK-SENTRY-1",
+      "severity": "LOW",
+      "status": "ACCEPTED_RISK",
+      "title": "No test drives a real caller's parse wiring",
+      "description": "Removing parse from one of the five traced call sites would not fail a telemetry test (it would still fail functionally only if the caller used response.parsed).",
+      "affected_files": [
+        "apps/web/conversation.js",
+        "apps/web/project-assistant.js",
+        "apps/web/app.js"
+      ],
+      "found_at_commit": "1e143537",
+      "resolution": "Accepted for this PR; every caller now reads response.parsed, so removing parse breaks the feature.",
+      "verification": "Final re-review"
     }
   ]
 }

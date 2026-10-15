@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "HACK-SENTRY-1-APPROVAL",
+  "scope": "HACK-SENTRY-1",
+  "approved_by": "human",
+  "approved_at": "2026-10-14T18:00:57Z",
+  "channel": "Claude project thread \"Offline Sentry core build\" (owner Jaden)",
+  "instruction": "Work on Jadenw9013/Ohmni. Fetch origin/main and origin/codex/cloud-next-handoff. Read docs/hackathon/CLAUDE_SENTRY_CORE_PROMPT.md from origin/codex/cloud-next-handoff, then execute its full 'Copy this prompt into Claude Cloud' assignment. I authorize the bounded offline Sentry implementation described there: safe error capture, connected traces, metrics, and recording-transport verification. Start your implementation branch from latest origin/main and deliver one tested PR. Do not enable live telemetry, make paid calls, deploy, merge to main, change user-facing behavior, or modify protected behavior paths. Codex will independently handle release rehearsal. Respect the document's file ownership boundaries and keep shared ledger updates under your ownership.",
+  "interpretation": "One bounded scope and task implementing SENTRY_IMPLEMENTATION_PLAN.md SENTRY-T01 through SENTRY-T04 offline, disabled by default. It selects Sentry next without cancelling or completing BATTERY-MOTION-1 (BM-T02 stays READY). The handoff branch had already merged as PR #76, so the prompt was read from origin/main. No live activation, account, deployment or broader milestone is approved.",
+  "authorized_tasks": [
+    "HACK-SENTRY-01"
+  ],
+  "binding_constraints": [
+    "Branch from latest origin/main; one PR; do not merge main or deploy.",
+    "No live telemetry, real DSN, network sends, paid calls, Replay, Seer, source-map upload, broad logs or purchases.",
+    "No user-facing behavior change with telemetry disabled; no change to deterministic electrical, routing, manufacturing or BOM semantics.",
+    "Do not modify src/ohmni/behavior/, tools/behavior_audit/, docs/behavior/, out/component-behavior/ or scripts/generate_behavior_*.",
+    "Leave Codex-reserved release-rehearsal files untouched: scripts/browser_check_offline_demo.py, scripts/rehearse_hackathon_release.py, tests/test_hackathon_release_rehearsal.py, docs/hackathon/REHEARSAL_ACCEPTANCE.md.",
+    "Missing KiCad, corpus or ngspice-42 results are recorded NOT_RUN or BLOCKED, never PASS.",
+    "Preserve HACK-DEMO-01/02 historical acceptance and BATTERY-MOTION-1 approval."
+  ]
+}

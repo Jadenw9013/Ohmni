@@ -59,9 +59,9 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
         if (!message.trim()||message.length>2000) return error(new Error("Enter a question or change in up to 2000 characters."));
         const current=++version, selected=structuredClone(context);busy=true;$("#assistant-error").hidden=true;$("#assistant-status").textContent="Reading your saved revision…";sync();
         try {
-            const response=await projectRequest(`/api/projects/${selected.projectId}/revisions/${selected.revision.revision_id}/assistant`,{fetcher,timeoutMs:90000,method:"POST",data:{message,parent_id:turn?.turn_id||null}});
+            const response=await projectRequest(`/api/projects/${selected.projectId}/revisions/${selected.revision.revision_id}/assistant`,{fetcher,timeoutMs:90000,method:"POST",data:{message,parent_id:turn?.turn_id||null},parse:(payload,current)=>parseTurn(payload,current,selected)});
             if (version!==current)return;
-            turn=parseTurn(response.payload,response.identity,selected);identity=response.identity;
+            turn=response.parsed;identity=response.identity;
             $("#assistant-response").innerHTML=turnHtml(turn);$("#assistant-message").value="";
             $("#assistant-status").textContent=turn.ready ? "Review every change before saving. Nothing has changed yet." : "Your saved revision is unchanged.";
         } catch(err){if(version===current){error(err);$("#assistant-status").textContent="Your saved revision is unchanged. Your request is still in the text field.";}}
@@ -71,9 +71,9 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
         if(busy||!turn?.ready||!context||context.dirty)return;
         const current=++version, selected=structuredClone(context), proposed=turn;busy=true;$("#assistant-error").hidden=true;sync();onApplying(true);
         try {
-            const response=await projectRequest(`/api/projects/${selected.projectId}/revisions/${selected.revision.revision_id}/assistant/${proposed.turn_id}/apply`,{fetcher,identity,method:"POST"});
+            const response=await projectRequest(`/api/projects/${selected.projectId}/revisions/${selected.revision.revision_id}/assistant/${proposed.turn_id}/apply`,{fetcher,identity,method:"POST",parse:parseProjectEnvelope});
             if(version!==current)return;
-            const project=parseProjectEnvelope(response.payload,response.identity), revision=project.revisions.at(-1);
+            const project=response.parsed, revision=project.revisions.at(-1);
             if(project.project_id!==selected.projectId || revision.number!==selected.revision.number+1 || !sameBrief(revision.brief,proposed.brief) || revision.job_id!==null)throw new Error("The saved revision does not match this proposal. Reopen the project before generating.");
             turn=null;onApplying(false);await onApplied(project,revision);
         }catch(err){if(version===current)error(err);}
