@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "HACK-BROWSER-1-APPROVAL",
+  "scope": "HACK-BROWSER-1",
+  "approved_by": "human",
+  "approved_at": "2026-10-15T04:31:19Z",
+  "channel": "Claude project thread in \"OHMNI component-behavior overnight run\" (owner Jaden)",
+  "instruction_summary": "I approve a bounded “hackathon browser acceptance” task. Implement it in one reviewable PR. Work autonomously, including tests and independent review where available. Never push or merge main, deploy, activate telemetry, or incur paid service/model charges.",
+  "instruction_items": [
+    "A. Correct review attribution in the ledger (HACK-SENTRY-01-CODEX-REVIEW ended at 1e143537 with CHANGES REQUIRED; the passing re-review is HACK-SENTRY-01-FINAL-REREVIEW).",
+    "B. Resolve the saved-demo mobile acceptance failure with a bounded observable readiness condition; keep the no-overflow assertion; add a negative regression.",
+    "C. Record success only after the real caller accepts the response (project-contract.js and its callers).",
+    "D. Make real-browser acceptance a CI gate (saved demo offline/site/static and the six telemetry scenarios)."
+  ],
+  "interpretation": "One bounded scope and task. It does not cancel BATTERY-MOTION-1 (BM-T02 stays READY), does not upgrade HACK-DEMO-01/02 or HACK-SENTRY-01 acceptance, and authorizes scripts/browser_check_offline_demo.py edits for this task only.",
+  "authorized_tasks": [
+    "HACK-BROWSER-01"
+  ],
+  "binding_constraints": [
+    "Branch from latest origin/main; one PR; never push or merge main, deploy, activate telemetry or incur paid service/model charges.",
+    "Do not modify src/ohmni/behavior/, tools/behavior_audit/, docs/behavior/, out/component-behavior/ or scripts/generate_behavior_*.",
+    "Preserve canonical saved demo artifacts and public mirrored bytes, electrical/routing/manufacturing/release semantics, the PR #80 request-budget fix, disabled-by-default telemetry and historical rehearsal evidence.",
+    "Leave scripts/rehearse_hackathon_release.py and tests/test_hackathon_release_rehearsal.py unchanged unless a directly reproduced defect requires it; keep docs/hackathon/REHEARSAL_ACCEPTANCE.md as history.",
+    "Do not weaken browser assertions: no removed assertion, larger tolerance, hidden controls, long sleeps or whole-test retries.",
+    "Never send test traffic to a real Sentry account or AI provider; never send project content, prompts, response bodies or raw exceptions to telemetry.",
+    "Mark VERIFIED only when required checks pass."
+  ]
+}
