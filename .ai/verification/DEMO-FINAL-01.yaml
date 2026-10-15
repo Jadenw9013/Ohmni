@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "id": "DEMO-FINAL-01",
+  "task": "DEMO-FINAL-01",
+  "scope": "DEMO-FINAL-1",
+  "commit": "3e6dbb067e253dfcd69bfa49f671c2e1c01d8d09",
+  "status": "PASSED",
+  "environment": {
+    "os": "Windows 11",
+    "python": "3.13.3",
+    "node": "22.16.0",
+    "kicad": "10.0.5",
+    "ngspice": "42"
+  },
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2704,
+      "skipped": 90,
+      "deselected": 64,
+      "runtime_seconds": 391.71
+    },
+    {
+      "command": "node --test --test-reporter=tap <enumerated apps/web/tests/*.test.mjs>",
+      "result": "PASS",
+      "tests": 1128,
+      "failed": 0
+    },
+    {
+      "command": "python scripts/rehearse_core_demo.py --output build/final-readiness/core-after-84",
+      "result": "PASS",
+      "checks": 26,
+      "families": 3,
+      "provider_calls": 0,
+      "external_requests": 0,
+      "page_errors": 0,
+      "note": "Clean evaluated commit; actual KiCad, 3D, ZIP hashes/lineage, back/mobile/reopen, outage recovery and server restart."
+    },
+    {
+      "command": "python -m pytest tests/test_live_plan_rehearsal.py -m integration",
+      "result": "PASS",
+      "tests": 1,
+      "note": "Synthetic provider; real browser, confirmation, KiCad and download. No paid call."
+    },
+    {
+      "command": "python scripts/verify_hackathon_demo.py --attempts 1 --output-root build/final-readiness/engineering-after-84",
+      "result": "PASS",
+      "checks": 18,
+      "runtime_seconds": 2.9,
+      "note": "Only untracked CORE_DEMO_RESULTS.md prose differed from evaluated commit."
+    },
+    {
+      "command": "python -m ohmni verify-all",
+      "result": "PASS",
+      "fixtures": 14
+    },
+    {
+      "command": "python scripts/ai_state.py validate; python scripts/verify.py workflow; git diff --check",
+      "result": "PASS",
+      "workflow_tests": 12,
+      "note": "Rerun after final ledger and documentation update."
+    }
+  ],
+  "earlier_checks": [
+    {
+      "command": "python scripts/rehearse_hackathon_release.py --include-app --backend-site https://ohmni-demo.fly.dev --health-url https://ohmni-yvnd.vercel.app/api/health",
+      "result": "PASS",
+      "checks": 42,
+      "commit": "0941ac7e",
+      "note": "Read-only selected public static/app/backend assets and health; not provider execution or full deployment parity."
+    },
+    {
+      "command": "python scripts/verify.py simulation with ngspice42 process PATH",
+      "result": "PASS_WITH_SKIPS",
+      "tests": 1,
+      "skipped": 2,
+      "deselected": 2852,
+      "note": "Before PR84 integration. Optional MCP dependencies and explicit TI model paths absent; not whole-board simulation."
+    }
+  ],
+  "self_review": {
+    "status": "PASSED",
+    "independent": false,
+    "checks": [
+      "Preserved PR84 cross-platform setup, task and verification records",
+      "No Sentry/Paper or protected behavior path changes",
+      "Provider call guard tested for success and failure; both SDK and application retries disabled",
+      "No fabricated provider/native success; skipped checks separate",
+      "Root checkout and main untouched; no production writes"
+    ]
+  },
+  "initial_failures": [
+    "Early rehearsal checker used a same-hash navigation instead of New project; corrected the action and reran.",
+    "Early checker selected the saved-demo canvas instead of the workspace canvas; corrected selector and reran. No assertion weakened."
+  ],
+  "limitations": [
+    "Paid live AI requires separate owner approval and has NOT_RUN status.",
+    "No deployment, production project creation, live telemetry or Paper work.",
+    "No whole-board SPICE, firmware, assembly or hardware bench qualification.",
+    "Windows local qualification only; merged macOS evidence remains TEAM-T02. PR CI pending.",
+    "Presenter display/zoom/network still require a stage rehearsal.",
+    "Final documentation/ledger commit only; workflow and validation rerun after it."
+  ]
+}
