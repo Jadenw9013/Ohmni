@@ -202,6 +202,7 @@ function clearError() {
 }
 
 function showError(kind, retryAction = null, retryLabel = "Try again") {
+    $("#design")?.setAttribute("data-build-state", "paused");
     const box = $("#run-error");
     box.hidden = false;
     box.textContent = MESSAGES[kind] || MESSAGES.backend_unavailable;
@@ -558,6 +559,8 @@ const PENDING_STAGES = [
 ];
 
 function renderPendingStages(custom = false) {
+    $("#design")?.setAttribute("data-build-state", "waiting");
+    $("#progress-track")?.setAttribute("aria-valuenow", "0");
     const detail = $("#progress-detail");
     if (detail) detail.textContent = "";
     const labels = custom ? ["Loading your saved revision", "Building its parts and connections", "Checking the electrical design", "Recording the check results", "Drawing the schematic", "Arranging parts on the board", "Drawing the copper", "Checking it can be made"] : PENDING_STAGES;
@@ -571,8 +574,10 @@ function renderPendingStages(custom = false) {
 
 /** Live progress. Only ever rendered while a job is genuinely in flight. */
 function renderProgress(events) {
+    $("#design")?.setAttribute("data-build-state", "running");
     const last = events.at(-1);
     const percent = last ? last.percent : 0;
+    $("#progress-track")?.setAttribute("aria-valuenow", String(percent));
     $("#progress-bar").style.width = `${percent}%`;
     $("#progress-percent").textContent = `${percent}%`;
     $("#progress-now").textContent = last ? last.label : "";
@@ -595,6 +600,8 @@ function renderProgress(events) {
  * nothing here that can imply a finished board is still executing.
  */
 function renderSettledStages(stages) {
+    $("#design")?.setAttribute("data-build-state", "complete");
+    $("#progress-track")?.setAttribute("aria-valuenow", "100");
     $("#progress-bar").style.width = "100%";
     $("#progress-percent").textContent = "100%";
     $("#progress-now").textContent = "Finished";
@@ -1396,6 +1403,12 @@ function attach() {
     }));
     $("#free-text-request")?.addEventListener("input", () => showFreeTextProblem(null));
     void revealFreeText();
+    $("#build-motion")?.addEventListener("click", event => {
+        const paused = event.currentTarget.getAttribute("aria-pressed") !== "true";
+        event.currentTarget.setAttribute("aria-pressed", String(paused));
+        event.currentTarget.textContent = paused ? "Resume animation" : "Pause animation";
+        $("#design")?.setAttribute("data-motion-paused", String(paused));
+    });
     $("#confirm-brief")?.addEventListener("click", () => void startRun());
     $("#back-to-describe")?.addEventListener("click", () => show("describe"));
 
