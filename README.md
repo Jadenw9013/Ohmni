@@ -82,3 +82,27 @@ The optional [MCP server](docs/MCP_SERVER.md) requires `pip install -e ".[dev,mc
 It exposes the catalog and deterministic semantic verifier over local stdio;
 it does not run AI, KiCad or SPICE. Coding assistants should first read
 [AGENTS.md](AGENTS.md), not infer permission from a roadmap or an MCP connection.
+
+## Repository housekeeping
+
+- `src/ohmni/` and `apps/web/` contain the runtime; `scripts/` contains authoring,
+  verification and rehearsal entrypoints. A script without imports is not
+  necessarily unused: many are launched directly.
+- `docs/`, `.ai/`, root implementation proposals and `ohmni_reference_visual_plan/`
+  retain design history or evidence. Use the Start here links above for current
+  onboarding; historical proposals do not authorize new work.
+- The landing prototype/redesign directories remain test inputs and visual
+  fingerprint dependencies. They are not interchangeable with the current
+  controller landing page. Do not delete them just because they look old.
+- The saved demo under `apps/web/hackathon-demo/` is a published copy of
+  `examples/hackathon-demo/`, maintained by `scripts/sync_hackathon_demo.mjs`.
+  Keep both: one serves the browser; the other preserves the source bundle.
+- `.venv/`, `node_modules/`, `build/`, local `.worktrees/` and OS metadata are local
+  development files, not files to transfer to a teammate. Some files under `out/`
+  are deliberately tracked evidence despite the ignore rule; do not bulk-delete
+  that directory or run `git clean -fdx` to tidy a working machine.
+
+The unused 1.92 MB `apps/web/landing-board.png` concept image was retired after
+its UI replacement. Historical checkpoint mentions remain historical; retrieve
+it from Git history if needed. Its obsolete server startup requirement was
+removed with it. No saved project, research source or behavior receipt was removed.

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "id": "REPO-CLEANUP-01",
+  "task": "REPO-CLEANUP-01",
+  "scope": "REPO-CLEANUP-1",
+  "commit": "b473f1790b0e700dbd012b51f6e2611b3290002e",
+  "status": "PASSED",
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "passed": 2707,
+      "skipped": 89,
+      "deselected": 65,
+      "seconds": 456.18
+    },
+    {
+      "command": "node --test --test-reporter=tap apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "passed": 1130
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    },
+    {
+      "command": "ruff check src/ohmni scripts --select F401,F841",
+      "result": "PASS"
+    },
+    {
+      "command": "ruff check scripts/demo_server.py",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "environment": "Windows Python 3.13; existing build-progress virtualenv reused with PYTHONPATH pointing to this cleanup worktree/src. Import path verified. API key blank and telemetry disabled.",
+  "audit": {
+    "removed": [
+      "apps/web/landing-board.png"
+    ],
+    "evidence": "No HTML/CSS/JS consumers; only obsolete demo_server registration and historical documentation mentions. Current landing uses controller scene and WebP posters.",
+    "retained": [
+      "Historical landing prototypes: visual-version fingerprints and tests still depend on them.",
+      "Saved-demo published/source copies: synchronization script and offline/server flows require both.",
+      "Standalone capture scripts: lack of imports does not establish dead code.",
+      "Protected behavior data, receipts, private data and local worktrees unchanged."
+    ]
+  },
+  "limits": [
+    "This is a conservative cleanup, not a claim that every unused symbol has been found.",
+    "No production deployment, paid provider call or fresh native integration run.",
+    "Existing Python server/asset and frontend suites exercised; missing-source skips are not verification of sources."
+  ]
+}

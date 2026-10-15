@@ -393,6 +393,15 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/BUILD-CHAT-UX-1.yaml",
       "review_policy": "Self-review recorded; independent review unavailable, so at most VERIFIED."
+    },
+    {
+      "id": "REPO-CLEANUP-1",
+      "type": "repository_infrastructure",
+      "title": "Remove confirmed unused assets and clarify repository ownership",
+      "status": "VERIFIED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/REPO-CLEANUP-1.yaml",
+      "review_policy": "self review allowed for behavior-preserving maintenance"
     }
   ],
   "tasks": [
@@ -3993,6 +4002,38 @@
           "node",
           "browser"
         ]
+      }
+    },
+    {
+      "id": "REPO-CLEANUP-01",
+      "scope": "REPO-CLEANUP-1",
+      "title": "Audited repository cleanup",
+      "priority": 100,
+      "status": "VERIFIED",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Remove only demonstrably unused assets and their stale registration.",
+        "Document retained historical/tooling files and protect cross-platform local clutter.",
+        "Validate ledger, run existing Python/frontend suites, and open a PR without touching main or protected behavior paths."
+      ],
+      "implementation": {
+        "started_at_commit": "e5ea71f6",
+        "approval_evidence": ".ai/approvals/REPO-CLEANUP-1.yaml",
+        "completed_at_commit": "b473f1790b0e700dbd012b51f6e2611b3290002e"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "node",
+          "workflow"
+        ],
+        "record": ".ai/verification/REPO-CLEANUP-01.yaml"
       }
     }
   ]
