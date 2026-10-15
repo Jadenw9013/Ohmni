@@ -712,6 +712,16 @@ def test_local_env_loads_only_supported_nonempty_values_without_overriding_shell
     assert "UNRELATED_SETTING" not in os.environ
 
 
+def test_local_env_saved_by_a_windows_editor_still_loads(tmp_path, monkeypatch):
+    # A UTF-8 byte-order mark and CRLF line endings must not hide the first key.
+    path=tmp_path/".env"
+    path.write_bytes("ANTHROPIC_API_KEY=file-key\r\nOHMNI_ANTHROPIC_MODEL=file-model\r\n".encode("utf-8-sig"))
+    monkeypatch.delenv("ANTHROPIC_API_KEY",raising=False)
+    monkeypatch.delenv("OHMNI_ANTHROPIC_MODEL",raising=False)
+    demo_server_module._load_local_env(path)
+    assert os.environ["ANTHROPIC_API_KEY"]=="file-key"
+    assert os.environ["OHMNI_ANTHROPIC_MODEL"]=="file-model"
+
 def test_the_brief_endpoint_accepts_free_text_on_the_same_terms_as_a_run(tmp_path):
     """Same gate as /api/demo: a provider, or the fixture contract unchanged."""
     from ohmni.adapters.fakes import RecordingLlmProvider

@@ -48,7 +48,7 @@ def _load_local_env(path):
     """
     try:
         if not path.is_file():return
-        for line in path.read_text(encoding="utf-8").splitlines():
+        for line in path.read_text(encoding="utf-8-sig").splitlines():  # Notepad may add a BOM
             entry=line.strip()
             if not entry or entry.startswith("#") or "=" not in entry:continue
             name,value=entry.split("=",1);name=name.strip()

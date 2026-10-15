@@ -3871,6 +3871,42 @@
           "node"
         ]
       }
+    },
+    {
+      "id": "TEAM-T02",
+      "scope": "TEAM-ONBOARDING-1",
+      "title": "Qualify teammate setup on macOS alongside Windows",
+      "goal": "A fresh macOS clone with a developer .env follows the setup guide and passes the offline suites without Windows-only assumptions.",
+      "priority": 100,
+      "status": "VERIFIED",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Fresh macOS clone follows docs/TEAM_SETUP.md with Homebrew Python 3.13.",
+        "A .env saved by a Windows editor (BOM/CRLF) loads; misnamed env files are documented and gitignored.",
+        "Offline tests are isolated from a developer's real AI key.",
+        "Platform-impossible checks are skipped with a stated reason and the fail-closed behavior is tested instead.",
+        "Ledger, workflow, fast and frontend suites pass on macOS with a .env present."
+      ],
+      "implementation": {
+        "started_at_commit": "0941ac7ec0c65e9209a2f1ca0b71f083998ce3e1",
+        "approval_evidence": ".ai/approvals/TEAM-ONBOARDING-1-CROSS-PLATFORM.yaml",
+        "completed_at_commit": "b2f55c6b20d8c517501380a0d92ca37c3affe8ad"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "verification": {
+        "record": ".ai/verification/TEAM-T02.yaml",
+        "required": [
+          "fresh_clone",
+          "workflow",
+          "fast",
+          "node"
+        ]
+      }
     }
   ]
 }

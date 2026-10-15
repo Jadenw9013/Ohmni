@@ -22,6 +22,7 @@ from __future__ import annotations
 import ctypes
 import math
 import os
+import sys
 
 _WINDOWS = os.name == "nt"
 
@@ -132,6 +133,14 @@ def _apply_posix_limit(limit_bytes: int) -> str:
     try:
         resource.setrlimit(resource.RLIMIT_AS, (limit_bytes, hard))
     except (ValueError, OSError) as exc:
+        if sys.platform == "darwin":
+            # Every macOS process already reserves hundreds of GiB of virtual
+            # address space, and the kernel rejects any RLIMIT_AS below that.
+            # There is no other per-process cap to fall back to, so refuse.
+            raise ResourceLimitUnavailable(
+                "macOS cannot cap a process's address space below the virtual "
+                f"memory it already reserves; setrlimit(RLIMIT_AS) failed: {exc}"
+            ) from exc
         raise ResourceLimitUnavailable(f"setrlimit(RLIMIT_AS) failed: {exc}") from exc
     return "posix-rlimit:address-space"
 

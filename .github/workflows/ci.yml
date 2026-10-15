@@ -53,7 +53,7 @@ jobs:
           mapfile -t files < <(find apps/web/tests -maxdepth 1 -name '*.test.mjs' | sort)
           test "${#files[@]}" -gt 0
           echo "running ${#files[@]} test files"
-          node --test "${files[@]}" 2>&1 | tee build-node-tests.log
+          node --test --test-reporter=tap "${files[@]}" 2>&1 | tee build-node-tests.log
           grep -Eq '^# fail 0$' build-node-tests.log
           grep -Eq '^# pass [1-9][0-9]*$' build-node-tests.log
       # The committed browser telemetry bundle must rebuild byte-for-byte from
