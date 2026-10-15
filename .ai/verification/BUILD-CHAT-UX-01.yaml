@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "id": "BUILD-CHAT-UX-01",
+  "task": "BUILD-CHAT-UX-01",
+  "scope": "BUILD-CHAT-UX-1",
+  "commit": "442df87d10f2f30cf5ad41e6783168b82fb5b8d1",
+  "status": "PASSED",
+  "changes": [
+    "SVG circuit activity with pause, reduced motion and server-owned percentage; stops on failure/completion.",
+    "Shared class-based composer styling fixes prefixed results textarea; conversation history, readable parts inventory and visible confirmation.",
+    "Generated BOM/check summaries supplied as revision-owned facts; provider tool enum limits fact IDs and schema validates response shape. Existing fail-closed and apply checks remain."
+  ],
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "commit": "093c085a5c0c941336d331fab0355568af73be71",
+      "tests": 2706,
+      "skipped": 90,
+      "deselected": 65,
+      "seconds": 415.7,
+      "note": "Full suite before final presentation-only refinements; backend unchanged since this commit."
+    },
+    {
+      "command": "node --test --test-reporter=tap <all frontend test files>",
+      "result": "PASS",
+      "tests": 1130,
+      "note": "Also rerun through test_demo_ui after confirmation layout change."
+    },
+    {
+      "command": "pytest tests/test_demo_ui.py tests/test_project_assistant.py tests/test_project_assistant_api.py tests/test_ai_workflow.py",
+      "result": "PASS",
+      "tests": 41,
+      "note": "After confirmation layout change; final 20px scroll inset separately covered by Node/browser below."
+    },
+    {
+      "command": "node --test apps/web/tests/project-assistant.test.mjs",
+      "result": "PASS",
+      "tests": 9,
+      "commit": "442df87d10f2f30cf5ad41e6783168b82fb5b8d1"
+    },
+    {
+      "command": "pytest tests/test_build_chat_browser.py -m integration",
+      "result": "PASS",
+      "tests": 1,
+      "commit": "442df87d10f2f30cf5ad41e6783168b82fb5b8d1",
+      "checks": [
+        "40% comes from controlled job event",
+        "animation manual pause/resume",
+        "reduced-motion disables animation",
+        "error stops motion and preserves back action",
+        "390px build layout has no horizontal overflow",
+        "actual local KiCad board generation",
+        "prefixed result composer uses full width",
+        "fixture provider answers parts from generated BOM",
+        "80mm proposal does not alter saved 100mm revision",
+        "confirmation remains outside scrolling messages",
+        "no page errors"
+      ],
+      "provider": "fixture-no-network"
+    },
+    {
+      "command": "python scripts/rehearse_core_demo.py --output build/core-regression",
+      "result": "PASS",
+      "commit": "093c085a5c0c941336d331fab0355568af73be71",
+      "checks": 26,
+      "families": 3,
+      "provider_calls": 0
+    },
+    {
+      "command": "ruff check src/ohmni/application/iteration.py tests/test_build_chat_browser.py tests/test_project_assistant.py",
+      "result": "PASS"
+    }
+  ],
+  "self_review": {
+    "status": "PASSED",
+    "independent": false,
+    "note": "Desktop/mobile screenshots inspected and refinements retested. Independent review unavailable; task remains VERIFIED."
+  },
+  "initial_failures": [
+    "First focused pytest invocation lacked the parent output directory; created it and reran all tests.",
+    "First browser check tried to select the collapsed mobile sidebar without opening it; restored desktop viewport for reopening, then retested mobile chat.",
+    "Visual review fixed mobile percentage wrapping, buried confirmation button and latest-message scroll inset."
+  ],
+  "limitations": [
+    "No paid Anthropic calls: two bounded local tests requested, awaiting owner approval.",
+    "The screenshot establishes invalid_proposal but not its exact private model output. Missing BOM context and unconstrained fact IDs are demonstrated gaps; live failure resolution is not claimed.",
+    "No production deployment; backend changes require a separately authorized Fly rollout after merge.",
+    "No Sentry/Paper or protected behavior edits.",
+    "Windows Chromium and KiCad10.0.5 local checks; CI and independent review pending."
+  ]
+}
