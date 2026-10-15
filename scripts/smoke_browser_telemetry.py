@@ -94,6 +94,27 @@ def parse_envelope(body: bytes) -> list[tuple[str, dict]]:
     return items
 
 
+BRIEF_READY_JS = """() => document.querySelector('#brief')?.childElementCount > 0
+    && !document.querySelector('#start-supported').disabled
+    && !document.querySelector('#confirm-brief').disabled"""
+BRIEF_READY_SECONDS = 30.0
+
+
+class ScenarioError(RuntimeError):
+    """A scenario step that did not reach its expected state (a fixed code, no page text)."""
+
+
+def wait_until(page, expression: str, seconds: float) -> bool:
+    """Bounded readiness poll driven from the test process, one evaluation at a time."""
+    deadline = time.monotonic() + seconds
+    while True:
+        if page.evaluate(expression):
+            return True
+        if time.monotonic() >= deadline:
+            return False
+        page.wait_for_timeout(100)
+
+
 def run_scenario(browser, hosting: str, mode: str, work: Path) -> dict:
     from demo_server import DemoHandler, DemoHTTPServer, JobStore
 
@@ -124,6 +145,13 @@ def run_scenario(browser, hosting: str, mode: str, work: Path) -> dict:
 
 def drive_page(browser, hosting, mode, page_origin, api_origin) -> dict:
     context = browser.new_context()
+    try:
+        return _drive(context, hosting, mode, page_origin, api_origin)
+    finally:
+        context.close()
+
+
+def _drive(context, hosting, mode, page_origin, api_origin) -> dict:
     context.add_cookies([{"name": "ohmni_canary", "value": CANARY, "url": page_origin}])
     if hosting == "static":
         context.add_init_script(f"window.OHMNI_API_BASE = {json.dumps(api_origin)};")
@@ -164,8 +192,12 @@ def drive_page(browser, hosting, mode, page_origin, api_origin) -> dict:
     with page.expect_response(lambda r: urlsplit(r.url).path == "/api/brief") as brief:
         page.evaluate("document.querySelector('#start-supported').click()")
     outcome["brief_status"] = brief.value.status
-    # Interval polling: requestAnimationFrame polling stalls in background headless pages.
-    page.wait_for_function("!document.querySelector('#confirm-brief').disabled", polling=100, timeout=15000)
+    # The brief is rendered and its controls are usable. Polled from here, not
+    # with an in-page timer: the visible landing scene animates continuously, and
+    # on a loaded software-GL runner in-page polling timers were starved for the
+    # whole 15 s while a direct evaluation still answered (button already enabled).
+    if not wait_until(page, BRIEF_READY_JS, BRIEF_READY_SECONDS):
+        raise ScenarioError("brief_not_ready")
     with page.expect_response(lambda r: urlsplit(r.url).path == "/api/demo") as demo:
         page.evaluate("document.querySelector('#confirm-brief').click()")
     outcome["demo_status"] = demo.value.status
@@ -190,7 +222,6 @@ def drive_page(browser, hosting, mode, page_origin, api_origin) -> dict:
     while len(ingest) < expected_ingest and time.monotonic() < deadline:
         page.wait_for_timeout(100)
     page.wait_for_timeout(300)
-    context.close()
     outcome.update({
         "seconds": round(time.monotonic() - started, 2), "ingest": ingest, "blocked": blocked,
         "api_requests": api_requests, "page_errors": page_errors, "console_error_count": len(console_errors),
@@ -294,12 +325,21 @@ def main(argv: list[str] | None = None) -> int:
             for mode in MODES:
                 transport.envelopes.clear()
                 assert telemetry.initialize(server_config, transport=transport)
+                raw, failure = None, None
                 try:
                     raw = run_scenario(browser, hosting, mode, Path(temp))
+                except Exception as error:  # noqa: BLE001 - recorded as a failed scenario, never a pass
+                    failure = error.args[0] if isinstance(error, ScenarioError) else type(error).__name__
                 finally:
                     telemetry.flush(2.0)
                     server_items = [item for body in list(transport.envelopes) for item in parse_envelope(body)]
                     telemetry.shutdown(1.0)
+                if failure is not None:
+                    # Keep the remaining scenarios and a summary; the run still fails.
+                    results.append({"hosting": hosting, "mode": mode, "telemetry_state": None,
+                                    "checks": {"scenario_completed": False}, "error": failure,
+                                    "envelope_items": [], "api_requests": [], "passed": False})
+                    continue
                 server_transactions = [payload for kind, payload in server_items if kind == "transaction"]
                 results.append(evaluate(raw, server_transactions))
         browser.close()
@@ -316,7 +356,7 @@ def main(argv: list[str] | None = None) -> int:
     for result in results:
         mark = "PASS" if result["passed"] else "FAIL"
         failed = [name for name, ok in result["checks"].items() if not ok]
-        print(f"{mark} {result['hosting']:6} {result['mode']:14} state={result['telemetry_state']:11} "
+        print(f"{mark} {result['hosting']:6} {result['mode']:14} state={result['telemetry_state']!s:11} "
               f"items={len(result['envelope_items'])} {('failed: ' + ', '.join(failed)) if failed else ''}")
     print(f"{summary['status']}: {summary['browser']}; summary at {args.output / 'summary.json'}")
     return 0 if passed else 1

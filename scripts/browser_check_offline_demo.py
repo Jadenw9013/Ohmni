@@ -62,14 +62,28 @@ PAGE_WIDTH_JS = """() => ({ viewport: document.documentElement.clientWidth,
     content: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) })"""
 
 
+def wait_until(page, expression: str, seconds: float) -> bool:
+    """Bounded readiness poll driven from this process, one evaluation at a time.
+
+    In-page polling timers can be starved while the board animates on a loaded
+    software-GL runner; a direct evaluation still answers.
+    """
+    deadline = time.monotonic() + seconds
+    while True:
+        if page.evaluate(expression):
+            return True
+        if time.monotonic() >= deadline:
+            return False
+        page.wait_for_timeout(20)
+
+
 def check_layout(page, label: str, step) -> bool:
     """Wait (bounded) for board layers to follow the board, then assert no overflow."""
     immediate = page.evaluate(PAGE_WIDTH_JS)
     started = time.monotonic()
     try:
-        page.wait_for_function(LAYOUT_READY_JS, timeout=LAYOUT_READY_TIMEOUT_MS, polling="raf")
-        ready = True
-    except Exception:  # noqa: BLE001 -- a timeout or page failure is a failed step
+        ready = wait_until(page, LAYOUT_READY_JS, LAYOUT_READY_TIMEOUT_MS / 1000)
+    except Exception:  # noqa: BLE001 -- a page failure is a failed step
         ready = False
     waited = round((time.monotonic() - started) * 1000)
     step(f"{label}: board layers match the board size", ready,
@@ -104,8 +118,7 @@ def _keyboard_round(page, label: str, step) -> None:
         page.keyboard.press("Enter")
         _wait_original(page)
         page.locator("#show-good").wait_for(state="visible")
-        page.wait_for_function("document.activeElement && document.activeElement.id === 'show-good'",
-                               timeout=5000)
+        wait_until(page, "() => document.activeElement && document.activeElement.id === 'show-good'", 5)
     focused = page.evaluate("document.activeElement && document.activeElement.id")
     step(f"{label}: Tab reaches Restore original and Enter restores with focus kept", reached
          and page.evaluate("document.body.dataset.showing") == "good" and focused == "show-good",
