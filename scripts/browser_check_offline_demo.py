@@ -62,14 +62,34 @@ PAGE_WIDTH_JS = """() => ({ viewport: document.documentElement.clientWidth,
     content: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) })"""
 
 
+def wait_until(page, expression: str, seconds: float) -> bool:
+    """Accept readiness only before the deadline, using process-side polling.
+
+    In-page polling timers can be starved while the board animates on a loaded
+    software-GL runner; a direct evaluation still answers.
+    One evaluation cannot itself be interrupted here. A late answer fails;
+    run_browser_acceptance.py supplies the outer 600-second process deadline if
+    the browser stops answering altogether.
+    """
+    deadline = time.monotonic() + seconds
+    while time.monotonic() < deadline:
+        ready = page.evaluate(expression)
+        now = time.monotonic()
+        if now >= deadline:
+            return False
+        if ready:
+            return True
+        page.wait_for_timeout(min(20, (deadline - now) * 1000))
+    return False
+
+
 def check_layout(page, label: str, step) -> bool:
     """Wait (bounded) for board layers to follow the board, then assert no overflow."""
     immediate = page.evaluate(PAGE_WIDTH_JS)
     started = time.monotonic()
     try:
-        page.wait_for_function(LAYOUT_READY_JS, timeout=LAYOUT_READY_TIMEOUT_MS, polling="raf")
-        ready = True
-    except Exception:  # noqa: BLE001 -- a timeout or page failure is a failed step
+        ready = wait_until(page, LAYOUT_READY_JS, LAYOUT_READY_TIMEOUT_MS / 1000)
+    except Exception:  # noqa: BLE001 -- a page failure is a failed step
         ready = False
     waited = round((time.monotonic() - started) * 1000)
     step(f"{label}: board layers match the board size", ready,
@@ -100,14 +120,14 @@ def _keyboard_round(page, label: str, step) -> None:
     step(f"{label}: Tab reaches Show fault and Space shows the fault", reached
          and page.evaluate("document.body.dataset.showing") == "fault")
     reached = reached and _tab_to(page, "restore")
+    focus_ready = False
     if reached:
         page.keyboard.press("Enter")
         _wait_original(page)
         page.locator("#show-good").wait_for(state="visible")
-        page.wait_for_function("document.activeElement && document.activeElement.id === 'show-good'",
-                               timeout=5000)
+        focus_ready = wait_until(page, "() => document.activeElement && document.activeElement.id === 'show-good'", 5)
     focused = page.evaluate("document.activeElement && document.activeElement.id")
-    step(f"{label}: Tab reaches Restore original and Enter restores with focus kept", reached
+    step(f"{label}: Tab reaches Restore original and Enter restores with focus kept", reached and focus_ready
          and page.evaluate("document.body.dataset.showing") == "good" and focused == "show-good",
          f"focus={focused}")
 

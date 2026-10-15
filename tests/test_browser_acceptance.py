@@ -194,14 +194,12 @@ def test_telemetry_smoke_waits_for_rendered_brief_after_initial_enabled_button(p
 
 
 def test_telemetry_smoke_disabled_confirmation_still_fails_within_bound(page, monkeypatch):
-    from playwright.sync_api import TimeoutError as BrowserTimeout
-
     page.set_content("""<button id="start-supported">Start</button>
         <section id="agree"><div id="brief"><p>Loaded brief</p></div>
         <button id="confirm-brief" disabled>Confirm</button></section>""")
     monkeypatch.setattr(telemetry_smoke, "BRIEF_READY_TIMEOUT_MS", 300)
     started = time.monotonic()
-    with pytest.raises(BrowserTimeout):
+    with pytest.raises(telemetry_smoke.ScenarioError, match="^brief_not_ready$"):
         telemetry_smoke.wait_for_brief_ready(page)
     assert time.monotonic() - started < 5
 
@@ -216,3 +214,58 @@ def test_telemetry_smoke_response_wait_requires_expected_post_and_origin():
     ):
         response = SimpleNamespace(url=url, request=SimpleNamespace(method=method))
         assert telemetry_smoke.is_post_response(response, origin, "/api/brief") is expected
+
+
+@pytest.mark.parametrize("module", [checker, telemetry_smoke], ids=["saved-demo", "telemetry"])
+def test_readiness_rejects_a_true_answer_returned_after_deadline(module, monkeypatch):
+    clock = [0.0]
+    monkeypatch.setattr(module, "time", SimpleNamespace(monotonic=lambda: clock[0]))
+
+    def late_ready(_expression):
+        clock[0] = 1.01
+        return True
+
+    page = SimpleNamespace(evaluate=late_ready)
+    assert module.wait_until(page, "ready", 1.0) is False
+
+
+@pytest.mark.parametrize("module", [checker, telemetry_smoke], ids=["saved-demo", "telemetry"])
+def test_readiness_does_not_evaluate_again_after_wait_reaches_deadline(module, monkeypatch):
+    clock, calls = [0.0], []
+    monkeypatch.setattr(module, "time", SimpleNamespace(monotonic=lambda: clock[0]))
+
+    def pending(_expression):
+        calls.append("evaluate")
+        clock[0] = 0.99
+        return False
+
+    def finish_deadline(milliseconds):
+        assert 0 < milliseconds <= 10.01
+        clock[0] = 1.0
+
+    page = SimpleNamespace(evaluate=pending, wait_for_timeout=finish_deadline)
+    assert module.wait_until(page, "ready", 1.0) is False
+    assert calls == ["evaluate"]
+
+
+def test_keyboard_restore_cannot_pass_when_focus_arrives_after_deadline(monkeypatch):
+    showing = iter(["fault", "good"])
+    status = SimpleNamespace(filter=lambda **_kwargs: SimpleNamespace(wait_for=lambda **_kw: None),
+                             wait_for=lambda **_kwargs: None)
+
+    def evaluate(expression):
+        if expression == "document.body.dataset.showing":
+            return next(showing)
+        if expression == "document.activeElement && document.activeElement.id":
+            return "show-good"
+        return None
+
+    page = SimpleNamespace(evaluate=evaluate, locator=lambda _selector: status,
+                           keyboard=SimpleNamespace(press=lambda _key: None))
+    monkeypatch.setattr(checker, "_tab_to", lambda *_args: True)
+    monkeypatch.setattr(checker, "_wait_original", lambda _page: None)
+    monkeypatch.setattr(checker, "wait_until", lambda *_args: False)
+    recorded, step = _steps()
+    checker._keyboard_round(page, "probe", step)
+    assert recorded[0][1] is True
+    assert recorded[-1][1] is False
