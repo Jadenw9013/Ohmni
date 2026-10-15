@@ -903,9 +903,9 @@
       "task": "HACK-SENTRY-01",
       "reviewer": "Codex independent review (PR #78, docs/hackathon/SENTRY_INDEPENDENT_REVIEW.md)",
       "independent": true,
-      "status": "PASSED",
-      "commit": "2d5e50c3bc59aa2029e7ed4cf250ccf06715a269",
-      "notes": "Reviewed through 1e143537: CHANGES REQUIRED with 1 HIGH (IR02) and 7 MEDIUM. All fixed in 0a0b5f3e..2d5e50c3, one coherent commit each. The earlier HACK-SENTRY-01-INDEPENDENT-REVIEW 'no BLOCKER/HIGH' conclusion is superseded: it rated the same bundle issue LOW (R04).",
+      "status": "FINDINGS_OPEN",
+      "commit": "1e143537437f23a34826d74b1e9d95dfa003518a",
+      "notes": "Historical outcome CHANGES REQUIRED at 1e143537 (reviewed f0adf204 through 1e143537): 1 HIGH (IR02) and 7 MEDIUM open; IR05 already fixed at b0194514. Codex did not re-review the fixes. The findings were later fixed in 0a0b5f3e..2d5e50c3 and the passing re-review is the separate HACK-SENTRY-01-FINAL-REREVIEW by an independent Claude subagent. The earlier HACK-SENTRY-01-INDEPENDENT-REVIEW 'no BLOCKER/HIGH' conclusion is superseded: it rated the same bundle issue LOW (R04).",
       "finding_ids": [
         "HACK-SENTRY-01-IR01",
         "HACK-SENTRY-01-IR02",
@@ -916,7 +916,16 @@
         "HACK-SENTRY-01-IR07",
         "HACK-SENTRY-01-IR08",
         "HACK-SENTRY-01-IR09"
-      ]
+      ],
+      "initial_commit": "f0adf2043893f581e9e83ee242763a2554b2febd",
+      "superseded_by": ".ai/reviews.yaml#HACK-SENTRY-01-FINAL-REREVIEW",
+      "attribution_correction": {
+        "corrected_by_task": "HACK-BROWSER-01",
+        "date": "2026-10-15",
+        "previous_recorded_status": "PASSED",
+        "previous_recorded_commit": "2d5e50c3bc59aa2029e7ed4cf250ccf06715a269",
+        "reason": "The PASSED outcome at 2d5e50c3 belongs to HACK-SENTRY-01-FINAL-REREVIEW, not to Codex's review, which ended at 1e143537 with CHANGES REQUIRED (docs/hackathon/SENTRY_INDEPENDENT_REVIEW.md). Findings stay FIXED; nothing was reopened."
+      }
     },
     {
       "id": "HACK-SENTRY-01-FINAL-REREVIEW",

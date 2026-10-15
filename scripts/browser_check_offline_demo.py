@@ -7,8 +7,14 @@ uses the real local app server with an isolated workspace and no model provider;
 host binds an ephemeral 127.0.0.1 port, and browser requests elsewhere are blocked.
 
 Checks recorded boards, download hashes, restore and delayed response behavior,
-missing-file recovery, mobile layout, and (for site/static) new-tab navigation
-without losing an unsaved workspace draft. Nothing requests a generated board.
+missing-file recovery, keyboard operation, desktop-to-mobile resizing and cold
+mobile loads, and (for site/static) new-tab navigation without losing an unsaved
+workspace draft. Nothing requests a generated board.
+
+Layout is measured only after a bounded, observable readiness condition: every
+board layer the view sizes in pixels (label overlay, fallback canvas) matches
+the board canvas's current box. That condition is itself a step, and the
+no-overflow assertion still runs (unchanged tolerance) whether or not it held.
 
 Requires the optional `playwright` Python package and a Chromium build
 (PLAYWRIGHT_BROWSERS_PATH or --chromium). Exit 0 only if every step passed.
@@ -33,6 +39,85 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 from scripts.serve_offline_demo import CAPTURE, make_server
+
+# Narrow phone widths first; desktop is checked on the resize path and at load.
+MOBILE_WIDTHS = (390, 375, 320)
+DESKTOP = {"width": 1440, "height": 1000}
+LAYOUT_READY_TIMEOUT_MS = 3000
+KEYBOARD_TAB_LIMIT = 40
+
+# Every absolutely positioned board layer is sized by BoardView in CSS pixels
+# from the board canvas box. Ready means each visible layer matches that box.
+LAYOUT_READY_JS = """() => {
+    const board = document.querySelector('#board');
+    if (!board || !board.parentElement) return false;
+    const box = board.getBoundingClientRect();
+    if (box.width <= 0 || box.height <= 0) return false;
+    const layers = [...board.parentElement.querySelectorAll('canvas')]
+        .filter((layer) => layer !== board && getComputedStyle(layer).display !== 'none');
+    return layers.every((layer) => Math.abs(parseFloat(layer.style.width) - box.width) <= 0.5
+        && Math.abs(parseFloat(layer.style.height) - box.height) <= 0.5);
+}"""
+PAGE_WIDTH_JS = """() => ({ viewport: document.documentElement.clientWidth,
+    content: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) })"""
+
+
+def check_layout(page, label: str, step) -> bool:
+    """Wait (bounded) for board layers to follow the board, then assert no overflow."""
+    immediate = page.evaluate(PAGE_WIDTH_JS)
+    started = time.monotonic()
+    try:
+        page.wait_for_function(LAYOUT_READY_JS, timeout=LAYOUT_READY_TIMEOUT_MS, polling="raf")
+        ready = True
+    except Exception:  # noqa: BLE001 -- a timeout or page failure is a failed step
+        ready = False
+    waited = round((time.monotonic() - started) * 1000)
+    step(f"{label}: board layers match the board size", ready,
+         f"waited_ms={waited} limit_ms={LAYOUT_READY_TIMEOUT_MS}")
+    dimensions = page.evaluate(PAGE_WIDTH_JS)
+    fits = dimensions["content"] <= dimensions["viewport"] + 1
+    step(f"{label}: no page overflow", fits,
+         f"viewport={dimensions['viewport']} content={dimensions['content']} immediate_content={immediate['content']}")
+    return ready and fits
+
+
+def _tab_to(page, element_id: str) -> bool:
+    for _ in range(KEYBOARD_TAB_LIMIT):
+        page.keyboard.press("Tab")
+        if page.evaluate("document.activeElement && document.activeElement.id") == element_id:
+            return True
+    return False
+
+
+def _keyboard_round(page, label: str, step) -> None:
+    """Reach Show fault and Restore original by Tab; activate with Space and Enter."""
+    page.evaluate("document.activeElement && document.activeElement.blur()")
+    status = page.locator("#status")
+    reached = _tab_to(page, "show-fault")
+    if reached:
+        page.keyboard.press("Space")
+        status.filter(has_text="Showing the damaged copy").wait_for(timeout=15000)
+    step(f"{label}: Tab reaches Show fault and Space shows the fault", reached
+         and page.evaluate("document.body.dataset.showing") == "fault")
+    reached = reached and _tab_to(page, "restore")
+    if reached:
+        page.keyboard.press("Enter")
+        _wait_original(page)
+        page.locator("#show-good").wait_for(state="visible")
+        page.wait_for_function("document.activeElement && document.activeElement.id === 'show-good'",
+                               timeout=5000)
+    focused = page.evaluate("document.activeElement && document.activeElement.id")
+    step(f"{label}: Tab reaches Restore original and Enter restores with focus kept", reached
+         and page.evaluate("document.body.dataset.showing") == "good" and focused == "show-good",
+         f"focus={focused}")
+
+
+def _download_matches(page, demo, path: Path) -> tuple[bool, str]:
+    with page.expect_download() as info:
+        page.locator("#download").click()
+    info.value.save_as(path)
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    return digest == demo["download"]["sha256"], digest[:16]
 
 
 class QuietStaticHandler(SimpleHTTPRequestHandler):
@@ -107,6 +192,7 @@ def _site_entry(context, origin: str, step):
 
 
 def _exercise(context, origin: str, args, demo, controls, held, step):
+    demo_url = origin + ("/" if args.host_mode == "offline" else "/hackathon-demo.html")
     if args.host_mode == "offline":
         page = context.new_page()
         page.goto(origin + "/", wait_until="networkidle")
@@ -125,12 +211,9 @@ def _exercise(context, origin: str, args, demo, controls, held, step):
          and "Nothing on this page is generated" in page.locator("#notice").inner_text())
     page.screenshot(path=str(args.evidence / "1-original.png"), full_page=True)
 
-    with page.expect_download() as info:
-        page.locator("#download").click()
-    saved = args.evidence / "downloaded-package.zip"
-    info.value.save_as(saved)
-    digest = hashlib.sha256(saved.read_bytes()).hexdigest()
-    step("local package downloads with recorded hash", digest == demo["download"]["sha256"], digest[:16])
+    check_layout(page, "desktop cold load", step)
+    ok, digest = _download_matches(page, demo, args.evidence / "downloaded-package.zip")
+    step("local package downloads with recorded hash", ok, digest)
 
     for round_number in (1, 2):
         page.locator("#show-fault").click()
@@ -190,16 +273,69 @@ def _exercise(context, origin: str, args, demo, controls, held, step):
     step("reload recovers once saved metadata is available", page.locator("#download").is_visible()
          and page.locator("#retry-demo").is_hidden() and not page.locator("#show-fault").is_disabled())
 
-    page.set_viewport_size({"width": 390, "height": 844})
-    for name in ("original", "fault"):
-        if name == "fault":
-            page.locator("#show-fault").click()
-            status.filter(has_text="Showing the damaged copy").wait_for()
-        dimensions = page.evaluate("""() => ({ viewport: document.documentElement.clientWidth,
-            content: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) })""")
-        step(f"mobile {name} view has no page overflow", dimensions["content"] <= dimensions["viewport"] + 1,
+    _keyboard_round(page, "desktop keyboard", step)
+
+    # Desktop -> mobile on the live page, through original, fault and restore.
+    for width in MOBILE_WIDTHS:
+        page.set_viewport_size({"width": width, "height": 844})
+        check_layout(page, f"resize to {width}px original", step)
+    page.screenshot(path=str(args.evidence / "5-mobile-original.png"), full_page=True)
+    page.locator("#show-fault").click()
+    status.filter(has_text="Showing the damaged copy").wait_for()
+    check_layout(page, f"{MOBILE_WIDTHS[-1]}px fault", step)
+    page.screenshot(path=str(args.evidence / "5-mobile-fault.png"), full_page=True)
+    page.locator("#restore").click()
+    _wait_original(page)
+    check_layout(page, f"{MOBILE_WIDTHS[-1]}px restored", step)
+    page.locator("#show-fault").click()
+    status.filter(has_text="Showing the damaged copy").wait_for()
+    page.set_viewport_size(DESKTOP)
+    check_layout(page, "resize back to desktop with fault shown", step)
+    page.set_viewport_size({"width": MOBILE_WIDTHS[0], "height": 844})
+    check_layout(page, f"resize to {MOBILE_WIDTHS[0]}px with fault shown", step)
+    page.locator("#restore").click()
+    _wait_original(page)
+    page.close()
+
+    for width in MOBILE_WIDTHS:
+        _cold_mobile(context, demo_url, width, args, demo, controls, step)
+
+
+def _cold_mobile(context, url: str, width: int, args, demo, controls, step) -> None:
+    """A fresh page opened at phone width: layout, keyboard, download, recovery."""
+    page = context.new_page()
+    page.set_viewport_size({"width": width, "height": 844})
+    page.goto(url, wait_until="networkidle")
+    _wait_original(page)
+    label = f"cold {width}px"
+    check_layout(page, f"{label} original", step)
+    _keyboard_round(page, f"{label} keyboard", step)
+    check_layout(page, f"{label} after keyboard restore", step)
+    ok, digest = _download_matches(page, demo, args.evidence / f"downloaded-package-{width}.zip")
+    step(f"{label}: package downloads with recorded hash", ok, digest)
+    if width == MOBILE_WIDTHS[-1]:
+        page.screenshot(path=str(args.evidence / f"6-cold-{width}.png"), full_page=True)
+        controls["missing_demo"] = True
+        page.reload(wait_until="networkidle")
+        page.locator("#status").filter(has_text="The saved files could not load").wait_for()
+        retry = page.locator("#retry-demo")
+        box = retry.bounding_box()
+        viewport = page.evaluate("document.documentElement.clientWidth")
+        step(f"{label}: recovery control is visible and within the screen",
+             retry.is_visible() and box is not None and box["x"] >= 0 and box["x"] + box["width"] <= viewport + 1,
+             f"box={box} viewport={viewport}")
+        dimensions = page.evaluate(PAGE_WIDTH_JS)
+        step(f"{label}: unavailable state has no page overflow",
+             dimensions["content"] <= dimensions["viewport"] + 1,
              f"viewport={dimensions['viewport']} content={dimensions['content']}")
-        page.screenshot(path=str(args.evidence / f"5-mobile-{name}.png"), full_page=True)
+        page.screenshot(path=str(args.evidence / f"6-cold-{width}-unavailable.png"), full_page=True)
+        controls["missing_demo"] = False
+        retry.click()
+        _wait_original(page)
+        step(f"{label}: recovery reload shows the original again", page.locator("#download").is_visible()
+             and retry.is_hidden())
+        check_layout(page, f"{label} after recovery", step)
+    page.close()
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -208,7 +344,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--host-mode", choices=("offline", "site", "static"), default="offline")
     parser.add_argument("--evidence", type=Path, default=ROOT / "build" / "offline-demo-browser")
     args = parser.parse_args(argv)
-    from playwright.sync_api import sync_playwright
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        sync_playwright = None
 
     demo = json.loads((CAPTURE / "demo.json").read_text(encoding="utf-8"))
     args.evidence.mkdir(parents=True, exist_ok=True)
@@ -228,13 +367,17 @@ def main(argv: list[str] | None = None) -> int:
         controls = {"hold_fault": False, "missing_demo": False}
         held, injected = [], set()
         try:
+            if sync_playwright is None:
+                raise RuntimeError("the playwright package is not installed")
             with sync_playwright() as playwright:
-                browser = playwright.chromium.launch(executable_path=args.chromium) if args.chromium \
-                    else playwright.chromium.launch()
+                # Every host but loopback also fails name resolution, beneath the request router.
+                launch = {"args": ["--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE 127.0.0.1"]}
+                browser = playwright.chromium.launch(executable_path=args.chromium, **launch) if args.chromium \
+                    else playwright.chromium.launch(**launch)
                 browser_version = browser.version
                 try:
                     context = browser.new_context(accept_downloads=True, service_workers="block",
-                                                  viewport={"width": 1440, "height": 1000})
+                                                  viewport=DESKTOP)
                     context.set_default_timeout(15000)
                     context.set_default_navigation_timeout(20000)
 
@@ -265,7 +408,16 @@ def main(argv: list[str] | None = None) -> int:
                     context.on("response", lambda response: response.status >= 400 and failed(
                         response.request, f"{response.status} {response.url}", response.status))
                     context.on("page", lambda page: page.on("pageerror", lambda error: errors.append(str(error))))
-                    _exercise(context, origin, args, demo, controls, held, step)
+                    try:
+                        _exercise(context, origin, args, demo, controls, held, step)
+                    except Exception:
+                        # Keep what each open page showed when the check stopped.
+                        for index, open_page in enumerate(context.pages):
+                            try:
+                                open_page.screenshot(path=str(args.evidence / f"failure-{index}.png"), full_page=True)
+                            except Exception:  # noqa: BLE001, S110 -- evidence only; the failure is still recorded
+                                pass
+                        raise
                 finally:
                     browser.close()
         except Exception as error:  # noqa: BLE001 -- any harness error records FAIL, never success

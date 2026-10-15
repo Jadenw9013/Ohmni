@@ -41,6 +41,13 @@ export function planHtml(plan, {includeSummary = true} = {}) {
       <details><summary>Your conversation (${plan.messages.length})</summary>${plan.messages.map(m=>`<p class="conversation-message">${e(m)}</p>`).join("")}</details>`;
 
 }
+/** The confirmed project, only if its saved revision is exactly the reviewed plan. */
+export function confirmedProject(project, reviewed) {
+    const revision = project.revisions.at(-1);
+    if (revision.brief_fingerprint !== reviewed.brief_fingerprint || !sameBrief(revision.brief, reviewed.brief)) throw new Error("The saved revision differs from the reviewed plan. Reopen it before generating.");
+    return project;
+}
+
 export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, onSaved, onGuided } = {}) {
     let plan = null, identity = null, busy = false, failed = false, version = 0, confirmed = null, initial = "";
     root.innerHTML = `<div id="conversation-status" role="status" aria-live="polite"></div><div id="conversation-error" role="alert" hidden></div>
@@ -108,12 +115,13 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
         $("#conversation-status").textContent = "Saving the exact plan you reviewed…"; sync();
         try {
             if (!confirmed) {
-                const response = await projectRequest(`/api/project-plans/${plan.plan_id}/confirm`, {fetcher, identity, method: "POST", parse: parseProjectEnvelope});
+                // The saved revision must match the reviewed plan before the
+                // request counts as a success, so the check runs inside it.
+                const reviewed = plan;
+                const response = await projectRequest(`/api/project-plans/${reviewed.plan_id}/confirm`, {fetcher, identity, method: "POST",
+                    parse: (payload, current) => confirmedProject(parseProjectEnvelope(payload, current), reviewed)});
                 if (current !== version) return;
-                const project = response.parsed;
-                const revision = project.revisions.at(-1);
-                if (revision.brief_fingerprint !== plan.brief_fingerprint || !sameBrief(revision.brief, plan.brief)) throw new Error("The saved revision differs from the reviewed plan. Reopen it before generating.");
-                confirmed = project;
+                confirmed = response.parsed;
             }
             $("#conversation-status").textContent = "Revision 1 saved. Starting its engineering checks…";
             await onSaved(confirmed, identity, fetcher);
