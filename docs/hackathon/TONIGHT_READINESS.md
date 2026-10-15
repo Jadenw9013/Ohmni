@@ -13,9 +13,12 @@ it does not activate a product milestone or modify the shared task ledger.
 ## Current disposition
 
 The desktop saved demonstration works on the public site and on the local static
-server. **The public backend is stale:** its image lacks the request-budget and
-telemetry modules present on main. Live AI success and live Sentry ingestion
-remain unverified. Health is green despite this deployment mismatch.
+server. The initial deployment mismatch was corrected by the owner-approved
+rollout of main `d0b227f0`: all 16 runtime checks and all 42 selected public
+alignment checks passed. Live AI success and live Sentry ingestion remain
+unverified; telemetry is still disabled.
+
+Initial rehearsal observations, before the rollout:
 
 | Area | Observed result | What remains |
 | --- | --- | --- |
@@ -26,7 +29,7 @@ remain unverified. Health is green despite this deployment mismatch.
 | Local fallback | `serve_offline_demo.py --port 8826` served the original, fault and restored board in the browser. Site navigation was correctly absent. | This manual pass did not disconnect the computer's network or qualify download latency. |
 | Expanded public alignment | At `2026-10-15T04:40:42Z`, all 20 saved-demo and 15 selected Vercel application assets matched. All six Fly static probes failed: three older files and three telemetry files returning 404. Overall result: FAIL. | Deploy an explicitly approved matching backend candidate, then repeat. |
 | Fly runtime | After owner sign-in, read-only checks found one started machine, passing health, the `/data` mount and its attached 1 GB `ohmni_data` volume. KiCad 10.0.5 and ngspice-42 executed successfully. | Another unattached 1 GB volume was observed and left untouched. No storage/billing changes were made. |
-| Fly release/source | Release v12 was created `2026-10-10T04:35:48Z`; no commit appeared in its release metadata. `telemetry.py` and `request_budget.py` are absent from the image. | Backend rollout is required to claim these merged protections/instrumentation are deployed. No rollout was performed in this rehearsal. |
+| Fly release/source | Release v12 was created `2026-10-10T04:35:48Z`; no commit appeared in its release metadata. `telemetry.py` and `request_budget.py` were absent from the image. | Resolved by the approved rollout below; the initial failure evidence is retained. |
 | Direct health | The direct Fly health check also passed at `2026-10-15T04:41:56Z`. | This corroborates configuration only, not source alignment or working credentials. |
 | Offline Sentry harness | Original Windows run: 7/8 checks passed, timeout check failed because a Unix shebang fixture could not spawn. Portable fixture run: 8/8 passed, including canary absence and zero outbound attempts. | This uses an in-memory recorder, not live ingestion. See the portability change below. |
 | Live Sentry | NOT RUN; no DSN/account/ingestion was activated. | Owner setup and approval, then actual issue/trace/metric verification. |
@@ -49,6 +52,40 @@ Comparison used `git show COMMIT:path` bytes, not Windows working-file bytes.
 CI for candidate `d0b227f0` passed `fast`, `corpus`, `frontend` and `kicad-gate`:
 [repository-gates run](https://github.com/Jadenw9013/Ohmni/actions/runs/38681277971).
 That CI result does not repair the observed deployment mismatch.
+
+## Approved rollout outcome
+
+The owner-approved build and existing-machine update completed successfully.
+The running image is
+`registry.fly.io/ohmni-demo@sha256:278b9dbde3bdddecf63a42bfe8f7b3a60059cd6398ca18970acf49fdcaaa534f`.
+The build used canonical `d0b227f0` source, verified the ngspice archive checksum,
+and passed the Dockerfile's runtime behavior smoke before publication.
+
+At `2026-10-15T05:02:29Z`, the independent runtime verifier reported **16/16 PASS**:
+the original machine, region, resources and mounted volume were preserved; no
+extra application machine or volume appeared; the expected image was running
+with passing health; all three source hashes matched the candidate; KiCad
+10.0.5 and ngspice-42 executed; and the telemetry enable flag remained disabled.
+The unrelated unattached volume was left untouched. No secrets were changed.
+
+The post-rollout public preflight reported **PASS** for all 20 saved-demo assets,
+15 selected application assets, six backend static assets and the proxied health
+contract. This check ran from readiness commit `225ab71e`; its selected app
+assets are unchanged from deployed candidate `d0b227f0`. Runtime source identity
+was verified separately, not inferred from that static alignment.
+
+Local evidence:
+
+- `build/tonight-readiness/fly-post-rollout-final.json`: sanitized runtime checks.
+- `build/tonight-readiness/post-rollout-public.json`: successful 42-request check.
+- `build/tonight-readiness/expanded-public.json`: preserved pre-rollout failure.
+
+Refresh an already-open workspace after the restart so it obtains the new
+server identity. A fresh public workspace loaded successfully after the update
+and displayed the three existing saved projects, each with its saved revision.
+No project was edited. This deployment does not itself demonstrate a paid provider
+response, budget admission or persistence across a later restart, fresh board
+generation, or live Sentry ingestion.
 
 ## Repeatable release checks
 
