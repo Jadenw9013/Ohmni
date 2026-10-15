@@ -154,7 +154,9 @@ def test_the_board_view_is_reachable_and_labelled_for_assistive_technology():
 @pytest.mark.skipif(shutil.which("node") is None, reason="Node.js unavailable")
 def test_frontend_module_behavior():
     result = subprocess.run(
-        ["node", "--test", *map(str, sorted((WEB_ROOT / "tests").glob("*.test.mjs")))],
+        # Pin TAP: newer Node releases default to the "spec" reporter, whose summary
+        # lines do not match the "# fail 0" this test reads.
+        ["node", "--test", "--test-reporter=tap", *map(str, sorted((WEB_ROOT / "tests").glob("*.test.mjs")))],
         cwd=Path(__file__).parents[1], capture_output=True, text=True, check=False, shell=False,
     )
     assert result.returncode == 0, result.stdout + result.stderr
