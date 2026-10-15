@@ -83,7 +83,7 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
             transcript.push(`<div class="assistant-user-message"><span>You</span><p>${e(message.trim())}</p></div><div class="assistant-reply"><span class="assistant-speaker">Ohmni</span>${turnHtml(turn)}</div>`);
             $("#assistant-response").innerHTML=transcript.join("");$("#assistant-welcome").hidden=true;$("#assistant-message").value="";
             const thread=root.querySelector(".assistant-thread");
-            thread.scrollTop=root.querySelector(".assistant-user-message:nth-last-child(2)")?.offsetTop ?? 0;
+            thread.scrollTop=Math.max(0, (root.querySelector(".assistant-user-message:nth-last-child(2)")?.offsetTop ?? 0) - 20);
             $("#assistant-status").textContent=turn.ready ? "Review every change before saving. Nothing has changed yet." : "Your saved revision is unchanged.";
         } catch(err){if(version===current){error(err);$("#assistant-status").textContent="Your saved revision is unchanged. Your request is still in the text field.";}}
         finally{if(version===current){busy=false;sync();}}
