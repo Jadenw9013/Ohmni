@@ -10,14 +10,15 @@ Do not copy another person's `.venv`, `.env`, `out/` or database.
 |---|---|
 | Saved board demo | Git, Python 3.12+; no package install |
 | Python/backend development | Python 3.13 recommended, isolated venv, `[dev]` extra |
-| Frontend development/tests | Above for local API; Node 22 for tests; no root npm build |
+| Frontend development/tests | Above for local API; Node 22 (CI) or newer for tests; no root npm build |
 | Browser acceptance | `[dev,browser]`, matching Playwright Chromium |
 | New board generation | KiCad CLI and its libraries; current CI image is KiCad 10.0.5 |
 | Supported SPICE simulation | ngspice 42 console executable on PATH |
 | Semantic MCP server | `[dev,mcp]`; no API key |
 
-Python declares >=3.12; CI currently exercises 3.13 on Linux. Windows setup is
-checked locally; macOS instructions are provided but are not a macOS qualification.
+Python declares >=3.12; CI currently exercises 3.13 on Linux. Setup is checked
+locally on Windows 11 and on macOS 26 (Apple silicon, Homebrew Python 3.13); see
+[platform differences](#platform-differences) for what behaves differently on macOS.
 Dependencies in `pyproject.toml` include ranges, so Python installs are not a fully
 locked environment. Telemetry/MCP/Playwright SDKs are pinned; the browser bundle
 has its own npm lockfile. Record versions when reporting a setup failure.
@@ -47,8 +48,9 @@ py -3.13 -m venv .venv
 
 ### macOS or Linux
 
-Install Python 3.13 and Git through your OS/package manager. Some Linux
-installations also need the matching Python `venv` package.
+Install Python 3.13 and Git through your OS/package manager. On macOS with
+Homebrew: `brew install python@3.13 node` (Git comes with the Xcode command line
+tools). Some Linux installations also need the matching Python `venv` package.
 
 ```sh
 python3.13 -m venv .venv
@@ -67,7 +69,18 @@ or activate it). A successful startup is not proof that AI or native tools work.
 
 No secret is required for the saved demo or offline tests. For authorized live
 AI planning only, copy `.env.example` to `.env` and set your own
-`ANTHROPIC_API_KEY`. Never paste it into a prompt, screenshot, issue or PR.
+`ANTHROPIC_API_KEY`. The name must be exactly `.env` in the repository root:
+
+- macOS: Finder hides and resists dot-files, so create it from the terminal with
+  `cp .env.example .env` and edit it with `open -e .env` or your editor
+  (Cmd+Shift+. shows hidden files in Finder). A file saved as `env` is neither
+  loaded nor gitignored.
+- Windows: Notepad may save `.env.txt`; choose "All files" as the type, or run
+  `Copy-Item .env.example .env` and `notepad .env`. File Explorer hides
+  extensions by default, so check the real name with `Get-ChildItem -Force`.
+
+A UTF-8 byte-order mark and CRLF line endings are accepted. The test suite clears
+`ANTHROPIC_API_KEY` for every test, so a local `.env` never reaches a live provider. Never paste it into a prompt, screenshot, issue or PR.
 Obtain team credentials privately from the owner; don't reuse deployment secrets.
 
 Only `scripts/demo_server.py` reads the root `.env`. Shell variables take
@@ -164,6 +177,26 @@ Additional gates, depending on the change:
 CI configuration is authoritative: `.github/workflows/ci.yml`. No type checker or
 formatter is configured. Don't claim a full verification from only lint or startup.
 
+## Platform differences
+
+| Area | Windows | macOS | Linux |
+|---|---|---|---|
+| Venv Python | `.venv\Scripts\python.exe` | `.venv/bin/python` | `.venv/bin/python` |
+| Isolated datasheet worker memory cap | Job object | **Unavailable**: worker refuses to parse | `RLIMIT_AS` |
+| KiCad parity gate | WSL + Docker | Docker | Docker or native |
+
+macOS reserves hundreds of GiB of virtual address space in every process and
+rejects any smaller `RLIMIT_AS`, and it offers no other per-process memory cap.
+The isolated datasheet observation worker (used by
+`scripts/component_cad_proof.py`) therefore fails closed on macOS with "refused to
+parse unbounded". In `fast`, the tests that need a successfully bounded parse are
+skipped on macOS and `TestMacOSFailsClosed` checks the refusal instead. Run
+datasheet-isolation work on Windows, Linux, or in the Docker image. The demo
+server, saved demo and the rest of the suite are unaffected.
+
+Node's default test reporter changed in newer releases, so the frontend test
+wrapper and CI pin `--test-reporter=tap`; any Node 22 or newer works.
+
 ## Working together
 
 1. Agree on a bounded task and file ownership. Read `AGENTS.md` and the current
@@ -196,3 +229,6 @@ For coding assistants, use [the handoff prompt](AI_TEAMMATE_HANDOFF.md).
 | TLS error during Git fetch/push on Windows | Retry `git -c http.sslBackend=openssl fetch origin`; never disable certificate verification. |
 | Private behavior sources absent | Ask the owner for the private bundle; don't publish copyrighted datasheets. |
 | Worktree tests use another checkout | Create a separate venv per worktree and reinstall editable dependencies there. |
+| AI unavailable although `.env` exists | Check the exact name (`ls -a` / `Get-ChildItem -Force`): `env` or `.env.txt` is not loaded. |
+| macOS datasheet tests skipped / worker "refused to parse unbounded" | Expected; see [platform differences](#platform-differences). |
+| Homebrew `node` fails with `Library not loaded` after installing another Node | `brew upgrade node` relinks it against the updated shared library. |

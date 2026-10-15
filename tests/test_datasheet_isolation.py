@@ -43,6 +43,16 @@ from ohmni.datasheet.pdf import (
     PdfIngestStatus,
 )
 
+#: macOS rejects any RLIMIT_AS below the virtual memory a process has already
+#: reserved (hundreds of GiB), so no real cap exists there and the worker refuses
+#: every parse. Tests that need a successfully bounded parse cannot run on macOS;
+#: ``TestMacOSFailsClosed`` pins the refusal instead.
+_needs_memory_cap = pytest.mark.skipif(
+    sys.platform == "darwin",
+    reason="macOS has no enforceable per-process address-space cap; the worker refuses",
+)
+
+
 
 def _simple_pdf(path: Path, *, width: float = 612, height: float = 792) -> Path:
     import pymupdf
@@ -69,6 +79,7 @@ def _huge_page_pdf(path: Path) -> Path:
 class TestAddressSpaceLimit:
     """The cap is only a cap if an over-limit allocation actually fails."""
 
+    @_needs_memory_cap
     def test_the_cap_bounds_an_allocation_in_a_real_child(self, tmp_path: Path):
         program = textwrap.dedent(
             """
@@ -158,6 +169,7 @@ class TestAddressSpaceLimit:
 
 
 class TestIsolatedWorkerEquivalence:
+    @_needs_memory_cap
     def test_the_worker_observes_what_the_in_process_extractor_observes(self, tmp_path: Path):
         path = _simple_pdf(tmp_path / "simple.pdf")
         direct_bundle, direct_images = BoundedObservationExtractor().observe(
@@ -170,6 +182,7 @@ class TestIsolatedWorkerEquivalence:
         assert worker_images.keys() == direct_images.keys()
         assert worker_images[1] == direct_images[1]
 
+    @_needs_memory_cap
     def test_the_worker_reports_the_bound_the_kernel_actually_holds(self, tmp_path: Path):
         """The worker names a mechanism and a cap, and the parent checks it.
 
@@ -189,6 +202,7 @@ class TestIsolatedWorkerEquivalence:
         }
         assert extractor.last_run.address_space_bytes == bounds.address_space_bytes
 
+    @_needs_memory_cap
     def test_a_cap_looser_than_requested_is_refused(self, tmp_path: Path):
         """If the mechanism quietly applied more than we asked for, that is a failure."""
         path = _simple_pdf(tmp_path / "simple.pdf")
@@ -237,6 +251,7 @@ class TestIsolatedWorkerRefusals:
         ), pytest.raises(ObservationWorkerError):
             IsolatedObservationExtractor().observe(path, [1])
 
+    @_needs_memory_cap
     def test_a_bundle_for_a_different_document_is_rejected(self, tmp_path: Path):
         """The parent hashes the bytes itself; the child cannot substitute a source."""
         path = _simple_pdf(tmp_path / "simple.pdf")
@@ -253,11 +268,13 @@ class TestIsolatedWorkerRefusals:
         ), pytest.raises(ObservationWorkerError, match="document"):
             extractor.observe(path, [1])
 
+    @_needs_memory_cap
     def test_an_oversized_page_is_refused_by_the_worker(self, tmp_path: Path):
         path = _huge_page_pdf(tmp_path / "huge.pdf")
         with pytest.raises(ObservationLimitError):
             IsolatedObservationExtractor().observe(path, [1], render=True)
 
+    @_needs_memory_cap
     def test_an_invalid_pdf_keeps_its_ingest_status_across_the_boundary(self, tmp_path: Path):
         path = tmp_path / "broken.pdf"
         path.write_bytes(b"this is not a pdf")
@@ -316,6 +333,7 @@ class TestParentSideChecks:
             "it must decide from the directory entry, before reading"
         )
 
+    @_needs_memory_cap
     def test_a_tampered_page_image_is_rejected(self, tmp_path: Path):
         """The bundle records each render's digest, so the pixels are checkable."""
         path = _simple_pdf(tmp_path / "simple.pdf")
@@ -331,6 +349,7 @@ class TestParentSideChecks:
                 pytest.raises(ObservationWorkerError, match="hashes"):
             extractor.observe(path, [1], render=True)
 
+    @_needs_memory_cap
     def test_a_bundle_missing_a_requested_page_is_rejected(self, tmp_path: Path):
         path = _simple_pdf(tmp_path / "simple.pdf")
         extractor = IsolatedObservationExtractor()
@@ -372,6 +391,7 @@ class TestParentSideChecks:
             f"the child could not import the worker: {result.stderr[-2000:]!r}"
         )
 
+    @_needs_memory_cap
     def test_requested_renders_that_do_not_arrive_are_rejected(self):
         """An empty render set is not a successful observation.
 
@@ -395,6 +415,7 @@ class TestParentSideChecks:
         ):
             extractor.observe(path, [1], render=True)
 
+    @_needs_memory_cap
     def test_a_bundle_missing_the_worker_metadata_is_an_observation_error(self):
         """Not a bare KeyError: callers must not have to catch two families."""
         import tempfile as _tempfile
@@ -416,3 +437,38 @@ class TestParentSideChecks:
             pytest.raises(ObservationWorkerError, match="unusable bundle"),
         ):
             extractor.observe(path, [1])
+
+
+@pytest.mark.skipif(sys.platform != "darwin", reason="pins macOS behavior only")
+class TestMacOSFailsClosed:
+    """Where no cap can be applied, nothing is parsed -- the skips above are not a pass."""
+
+    def test_a_real_child_cannot_apply_the_cap(self):
+        program = textwrap.dedent(
+            """
+            import sys
+            sys.path.insert(0, %r)
+            from ohmni.adapters.resource_limits import (
+                ResourceLimitUnavailable, apply_address_space_limit,
+            )
+            try:
+                apply_address_space_limit(256 * 1024 * 1024)
+            except ResourceLimitUnavailable:
+                sys.exit(42)
+            sys.exit(0)
+            """
+        ) % str(Path(__file__).resolve().parents[1] / "src")
+        result = subprocess.run(
+            [sys.executable, "-c", program],
+            capture_output=True, text=True, timeout=120, check=False,
+        )
+        assert result.returncode == 42, (
+            "a cap was reported as applied on macOS; if the kernel now enforces "
+            "RLIMIT_AS, remove the macOS skips above so the real tests run. "
+            f"exit {result.returncode} stderr={result.stderr[-2000:]!r}"
+        )
+
+    def test_the_worker_refuses_to_parse_unbounded(self, tmp_path: Path):
+        path = _simple_pdf(tmp_path / "simple.pdf")
+        with pytest.raises(ObservationWorkerError, match="refused to parse unbounded.*macOS"):
+            IsolatedObservationExtractor().observe(path, [1])
