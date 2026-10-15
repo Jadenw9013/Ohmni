@@ -287,11 +287,16 @@ export function mountProjectWorkbench(root, {
         busy = true; sync(); $("#project-error").hidden = true;
         try {
             const path = project ? `/api/projects/${project.project_id}/revisions` : "/api/projects";
-            const { payload, identity } = await projectRequest(path, { fetcher, method: "POST", data: { brief: draft } });
-            const next = parseProjectEnvelope(payload, identity);
-            if (project && next.project_id !== project.project_id) throw new Error("Project identity mismatch");
+            // The saved brief must match the editor's draft before the request
+            // counts as a success, so the check runs inside the request.
+            const { parsed: next } = await projectRequest(path, { fetcher, method: "POST", data: { brief: draft },
+                parse: (payload, identity) => {
+                    const parsed = parseProjectEnvelope(payload, identity);
+                    if (project && parsed.project_id !== project.project_id) throw new Error("Project identity mismatch");
+                    if (!sameBrief(draft, parsed.revisions.at(-1).brief)) throw new Error("Saved brief differs from request");
+                    return parsed;
+                } });
             const saved = next.revisions.at(-1);
-            if (!sameBrief(draft, saved.brief)) throw new Error("Saved brief differs from request");
             project = next; revision = saved; draft = structuredClone(saved.brief);
             renderHistory(); onOpen(draft.project_name); void refreshShelf(); return true;
         } catch (error) { showError(error); }
