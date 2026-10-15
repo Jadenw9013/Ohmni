@@ -223,7 +223,7 @@ def _drive(context, hosting, mode, page_origin, api_origin) -> dict:
     brief.value.finished()
     # Poll from Python: the continuously animated landing scene can starve
     # in-page polling on a loaded software-GL runner. Completion still requires
-    # the visible brief and all its controls, within the original 15-second bound.
+    # the visible brief and all its controls, within the configured polling budget.
     wait_for_brief_ready(page)
     with page.expect_response(lambda r: is_post_response(r, api_origin, "/api/demo")) as demo:
         page.evaluate("document.querySelector('#confirm-brief').click()")
