@@ -124,20 +124,26 @@ def test_repository_product_scope_matches_human_approval():
     # Visual and release approval preserve the real board and parked M10 benchmark.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5", "COMPONENT-3D-COMPLETION", "COMPONENT-BEHAVIOR-STAGE1", "COMPONENT-BEHAVIOR-COMPLETION", "LANDING-PCB-P1", "LANDING-PCB-CIRCUIT", "LANDING-PCB-CONTROLLER", "CONVERSATIONAL-UX-1", "BATTERY-MOTION-1", "HACK-DEMO-1", "HACK-DEMO-INTEGRATION-1", "HACK-SENTRY-1", "HACK-BROWSER-1"}:
+        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5", "COMPONENT-3D-COMPLETION", "COMPONENT-BEHAVIOR-STAGE1", "COMPONENT-BEHAVIOR-COMPLETION", "LANDING-PCB-P1", "LANDING-PCB-CIRCUIT", "LANDING-PCB-CONTROLLER", "CONVERSATIONAL-UX-1", "BATTERY-MOTION-1", "HACK-DEMO-1", "HACK-DEMO-INTEGRATION-1", "HACK-SENTRY-1", "HACK-BROWSER-1", "TEAM-ONBOARDING-1"}:
             assert scope["status"] in {"APPROVED", "IN_PROGRESS", "REVIEW", "VERIFIED", "COMPLETE"}
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
     # The bounded hackathon scope is the session focus only while its one task is
     # active; BATTERY-MOTION-1 remains approved and is restored afterwards.
-    assert state["approved_product_scope"] in {"BATTERY-MOTION-1", "HACK-DEMO-1", "HACK-DEMO-INTEGRATION-1", "HACK-BROWSER-1"}
+    assert state["approved_product_scope"] in {"BATTERY-MOTION-1", "HACK-DEMO-1", "HACK-DEMO-INTEGRATION-1", "HACK-BROWSER-1", "TEAM-ONBOARDING-1"}
     if state["approved_product_scope"]=="HACK-DEMO-1":
         assert state["active_task"]=="HACK-DEMO-01"
     if state["approved_product_scope"]=="HACK-DEMO-INTEGRATION-1":
         assert state["active_task"]=="HACK-DEMO-02"
     if state["approved_product_scope"]=="HACK-BROWSER-1":
         assert state["active_task"]=="HACK-BROWSER-01"
+    if state["approved_product_scope"]=="TEAM-ONBOARDING-1":
+        assert state["active_task"]=="TEAM-T01"
+    onboarding=json.loads((root/".ai/approvals/TEAM-ONBOARDING-1.yaml").read_text(encoding="utf-8"))
+    assert onboarding["approved_by"]=="human"
+    assert "proper context for their AI" in onboarding["instruction"]
+    assert onboarding["scope"]=="TEAM-ONBOARDING-1"
     browser=json.loads((root/".ai"/"approvals"/"HACK-BROWSER-1.yaml").read_text(encoding="utf-8"))
     assert browser["approved_by"]=="human"
     assert "hackathon browser acceptance" in browser["instruction_summary"]

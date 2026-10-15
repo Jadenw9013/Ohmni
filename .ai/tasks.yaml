@@ -366,6 +366,15 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/HACK-BROWSER-1.yaml",
       "review_policy": "Independent review of the final diff focused on false-success telemetry, weakened browser assertions, privacy, stale responses and lost edits; no open BLOCKER/HIGH. COMPLETE requires human acceptance."
+    },
+    {
+      "id": "TEAM-ONBOARDING-1",
+      "title": "Teammate fresh-clone onboarding",
+      "type": "repository_infrastructure",
+      "status": "VERIFIED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/TEAM-ONBOARDING-1.yaml",
+      "review_policy": "Self-review for documentation infrastructure; no independent review claimed."
     }
   ],
   "tasks": [
@@ -3825,6 +3834,41 @@
           "bundle_check",
           "saved_demo_browser",
           "browser_smoke"
+        ]
+      }
+    },
+    {
+      "id": "TEAM-T01",
+      "scope": "TEAM-ONBOARDING-1",
+      "title": "Document and verify teammate setup and AI context",
+      "goal": "Make fresh-clone setup and scoped teammate contributions understandable without private local context.",
+      "priority": 100,
+      "status": "VERIFIED",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Separate saved-demo, development and native-tool setup with Windows and POSIX commands.",
+        "Document real env loading, secrets, dependencies, source corpus and capability limits.",
+        "Provide canonical AI context and branch/PR handoff instructions.",
+        "Exercise setup from an isolated fresh clone; record platform limits and run ledger, workflow, fast and frontend suites."
+      ],
+      "implementation": {
+        "started_at_commit": "136688c2b86a5e32bca9093fcff69a5e8179c1d7",
+        "approval_evidence": ".ai/approvals/TEAM-ONBOARDING-1.yaml",
+        "completed_at_commit": "cb62c276521ef6be28a83dee3a0b1f5dd0a74dc5"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "verification": {
+        "record": ".ai/verification/TEAM-T01.yaml",
+        "required": [
+          "fresh_clone",
+          "workflow",
+          "fast",
+          "node"
         ]
       }
     }

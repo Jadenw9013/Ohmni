@@ -2,7 +2,8 @@
 
 This is Ohmni's repository-development control plane. It coordinates fresh
 coding-agent sessions; it is not an Ohmni product runtime or a multi-agent
-service. Product requirements remain in `PRD.md`/`MVP_SCOPE.md`, architecture in
+service. The PROPOSED v1 product contract is in `docs/product/` (superseding the legacy
+`PRD.md`/`MVP_SCOPE.md`); it does not authorize implementation. Architecture is in
 `ARCHITECTURE.md` and `docs/DECISIONS.md`, detailed implementation direction in
 `IMPLEMENTATION_PLAN.md`, and product verification in `VERIFICATION.md`.
 

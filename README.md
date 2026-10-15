@@ -1,99 +1,84 @@
-# Ohmni: AI-Driven Electronics Engineering Mentor
+# Ohmni
 
 **Build circuits. Understand why.**
 
-Ohmni is an evidence-first AI electronics mentor that turns a typed product idea into a verified, manufacturable circuit board. Instead of just generating code or text, Ohmni generates **physical hardware files** (KiCad schematics, routed PCBs, Gerbers) and verifies every single electrical decision using deterministic physics and math.
+Ohmni is an AI electronics engineering mentor. It turns supported product ideas
+into inspectable circuit plans, KiCad schematics, routed boards and manufacturing
+artifacts. **LLMs propose; evidence grounds; deterministic systems verify.**
+Each result says which checks actually ran and what remains unknown. A software
+check is not a hardware bench test or a guarantee that a board is ready to build.
 
-> **The Architectural Rule:** *LLMs propose. Deterministic systems verify.* 
-> Ohmni solves AI hardware hallucinations by forcing the LLM (Claude 3.5 Sonnet) to operate inside a strict sandbox. If the LLM proposes wiring a 3.3V sensor to a 5V rail, the deterministic verifier catches it, fails the build, and forces the LLM to correct its schematic via a bounded retry loop.
+## Start here
 
-## 🚀 Key Features
+| Your goal | Start with |
+|---|---|
+| See the product without accounts or native tools | Saved demo below |
+| Develop with teammates | [Setup guide](docs/TEAM_SETUP.md) |
+| Give a coding AI useful context | [AI teammate handoff](docs/AI_TEAMMATE_HANDOFF.md) and [AGENTS.md](AGENTS.md) |
+| Understand the engineering boundaries | [Architecture](ARCHITECTURE.md), [verification](VERIFICATION.md), [decisions](docs/DECISIONS.md) |
+| Find current approved work | `.ai/state.yaml`, then `python scripts/ai_state.py next` |
 
-*   **Dynamic AI Generation (Claude 3.5 Sonnet):** Type a prompt like *"Build me an ESP32 sensor board with two I2C temp sensors"* and the AI will autonomously design the circuit.
-*   **Physics Sandbox (SPICE):** Ohmni automatically extracts a SPICE netlist from the generated schematic and runs a transient physics analysis (`ngspice`). The frontend features a built-in oscilloscope UI so users can watch their virtual power rails stabilize in real-time.
-*   **Automated KiCad EDA:** Ohmni acts as a headless CAD engineer, driving `kicad-cli` via subprocesses to compile schematics, place components, route copper, and run independent Electrical Rules Checks (ERC) and Design Rules Checks (DRC).
-*   **Interactive 3D Lab:** A custom WebGL frontend allows users to inspect the generated board in 3D, view X-rays of the copper layers, and click components to see the exact datasheet evidence justifying the AI's design choices.
-*   **Cost-Aware & Stateful:** Tracks LLM token usage/costs internally, auto-recovers from JSON schema failures, and uses a local SQLite database for persistent user projects.
+## Five-minute saved demo
 
-## 🛠 Tech Stack
+Install Git and Python 3.12 or newer (3.13 is used by CI), then:
 
-The landing-page sensor-and-controller board is generated from editable inputs.
-See [the PCB explorer guide](docs/PCB_EXPLORER.md) for its exact scope, learning
-interactions, recorded checks, limitations, and reproduction commands.
-
-*   **Backend Engine:** Python 3.12+, Pydantic, SQLite3, `ngspice`
-*   **EDA / Hardware:** KiCad 10 (CLI headless automation)
-*   **AI Provider:** Anthropic API (`claude-sonnet-5`)
-*   **Frontend:** Vanilla JS, HTML/CSS (Zero heavy framework dependencies, inline SVG plotting)
-*   **Deployment:** Docker, Fly.io (Backend + Persistent Volumes), Vercel (Frontend CDN)
-
-## 💻 Running it Locally
-
-You need **Python 3.12+** and **KiCad 10** installed on your machine to run the full verification and fabrication pipeline.
-
-1. **Clone and Install:**
-```bash
+```text
 git clone https://github.com/Jadenw9013/Ohmni.git
 cd Ohmni
-python -m venv .venv
-
-# Windows
-.\.venv\Scripts\Activate.ps1
-pip install -e ".[dev]"
-
-# macOS/Linux
-source .venv/bin/activate
-pip install -e ".[dev]"
+python scripts/serve_offline_demo.py
 ```
 
-2. **Set your API Key:**
-Create a `.env` file in the root directory and add your Anthropic API key to unlock the AI generator:
+On Windows, use `py -3.13` if `python` is unavailable; on macOS/Linux use
+`python3.13`. Open **http://127.0.0.1:8765/**. Stop with Ctrl+C.
+No pip install, API key, KiCad, ngspice, Node or cloud account is needed for this
+path. All required saved-demo assets are committed.
+
+This replays a saved board, a deliberately damaged copy and its recorded DRC
+finding, and the restored original. It does **not** generate a new board or run
+live simulation. [Hosting and rehearsal details](docs/hackathon/DEMO_SITE_INTEGRATION.md).
+
+## Local development
+
+Use the [copyable OS-specific commands](docs/TEAM_SETUP.md#development-setup).
+The short version, after creating and activating a virtual environment, is:
+
 ```text
-ANTHROPIC_API_KEY=sk-ant-yourkeyhere
-```
-*(If no key is provided, the server gracefully falls back to a deterministic offline demo).*
-
-3. **Start the Server:**
-```bash
+python -m pip install -e ".[dev]"
+python scripts/ai_state.py validate
 python scripts/demo_server.py
 ```
-Open **[http://127.0.0.1:8765](http://127.0.0.1:8765)** in your browser to start designing! 
 
-For the saved original/fault/restore demonstration, choose **Explore demo**.
-See [saved demo hosting and rehearsal](docs/hackathon/DEMO_SITE_INTEGRATION.md)
-for the standalone offline option and publication checks.
+Open **http://127.0.0.1:8765/#workspace**. Guided setup and saved-demo exploration
+work without a provider key; free-text AI planning requires a separately supplied
+Anthropic key and can incur charges. New board generation needs KiCad. Installing
+the Python package does not install native EDA tools.
 
-To verify your system has all the required EDA tools installed, you can run:
-`python -m ohmni doctor`
+## What is supported today
 
-## 🤖 Using with AI Agents (MCP Server)
-Ohmni includes a native Model Context Protocol (MCP) server. This allows AI agents (like Claude Desktop or Claude Code) to directly connect to Ohmni's safe, deterministic physics engine. This forces the AI to check its work against real physics, preventing hallucinations!
+- Three bounded USB-powered ESP32 families: I2C sensors, buttons/lights, and SPI
+  peripherals. Free text is translated into supported choices, not arbitrary
+  electronics. Battery-powered designs and arbitrary component admission are not
+  implied by the chat UI.
+- Deterministic electrical rules, placement/routing checks and independent KiCad
+  ERC/DRC. Fabrication downloads remain tied to the recorded checks and lineage.
+- SPICE for supported component bindings and analyses. Missing models block a
+  simulation; **not every generated board can be simulated as a whole**.
+- A vanilla JavaScript workspace and 3D board explorer; local SQLite persistence.
+- Fabrication assumptions and example BOM prices can be synthetic. There is no
+  pick-and-place/CPL export or automatic firmware generation. Saved results are
+  not physical measurements.
 
-For detailed architecture, see [docs/MCP_SERVER.md](docs/MCP_SERVER.md).
+See the [PCB explorer guide](docs/PCB_EXPLORER.md) for the landing board's scope.
+The [product documents](docs/product/README.md) describe proposed work; they are
+not evidence that those features are implemented or approved.
 
-**To connect Claude Code (CLI):**
-From within your cloned Ohmni directory, simply run:
-```bash
-# Windows
-claude mcp add ohmni -- ".venv\Scripts\python.exe" -m ohmni.mcp_server
+## Contributing and AI tools
 
-# macOS / Linux
-claude mcp add ohmni -- ".venv/bin/python" -m ohmni.mcp_server
-```
+Follow [the teammate workflow](docs/TEAM_SETUP.md#working-together). Work on a
+branch from current `origin/main`, preserve others' changes, and open a PR.
+Do not commit secrets, private datasheets, local databases or generated receipts.
 
-**To connect Claude Desktop:**
-Add the following to your Claude Desktop configuration file (`claude_desktop_config.json`):
-```json
-{
-  "mcpServers": {
-    "ohmni": {
-      "command": "/absolute/path/to/Ohmni/.venv/bin/python",
-      "args": ["-m", "ohmni.mcp_server"]
-    }
-  }
-}
-```
-*(Note: Ensure you provide the absolute path to the `.venv` python executable inside your Ohmni folder).*
-
-## 🧠 Future Roadmap (V2)
-See `docs/product/V2_COMMERCIALIZATION_HANDOFF.md` for the roadmap on parametric 3D enclosure generation, automated firmware co-design, and real-time supply chain BOM optimization.
+The optional [MCP server](docs/MCP_SERVER.md) requires `pip install -e ".[dev,mcp]"`.
+It exposes the catalog and deterministic semantic verifier over local stdio;
+it does not run AI, KiCad or SPICE. Coding assistants should first read
+[AGENTS.md](AGENTS.md), not infer permission from a roadmap or an MCP connection.
