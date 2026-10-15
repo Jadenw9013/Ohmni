@@ -91,7 +91,9 @@ URL is not an isolated test environment. Use localhost for development checks.
 
 Install KiCad with its standard symbol/footprint libraries, not just a copied
 `kicad-cli` binary. Install ngspice's console executable for simulation work.
-Add their executable directories to PATH and restart your shell. Check:
+Add their executable directories to PATH and restart your shell. The standard
+Windows per-user `Programs/ngspice-42/Spice64/bin` console install is also detected
+under `LOCALAPPDATA` if PATH has no ngspice; the GUI executable is never selected. Check:
 
 ```text
 kicad-cli --version
