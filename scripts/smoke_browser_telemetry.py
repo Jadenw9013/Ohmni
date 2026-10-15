@@ -45,6 +45,30 @@ SERVER_DSN = "https://" + "fedcba9876543210" * 2 + "@o0.ingest.invalid/43"
 CANARY = "ohmni-canary-7f3a9c"
 MODES = ("disabled", "enabled", "missing_bundle")
 HOSTINGS = ("local", "static")
+BRIEF_READY_TIMEOUT_MS = 15000
+BRIEF_READY = """() => {
+    const stage = document.querySelector('#agree');
+    const brief = document.querySelector('#brief');
+    const starter = document.querySelector('#start-supported');
+    const confirm = document.querySelector('#confirm-brief');
+    return Boolean(stage && !stage.hidden && brief && brief.childElementCount > 0
+        && starter && !starter.disabled && confirm && !confirm.disabled);
+}"""
+
+
+def is_post_response(response, origin: str, path: str) -> bool:
+    """An OPTIONS response or another origin cannot satisfy the action wait."""
+    return response.url == origin + path and response.request.method == "POST"
+
+
+def wait_for_brief_ready(page) -> None:
+    """Wait for openBrief to render and release its initiating button.
+
+    The confirm button starts enabled in the hidden HTML. Its enabled property
+    alone cannot prove that the asynchronous brief request has been consumed.
+    Keep the original bound and require all the observable completion signals.
+    """
+    page.wait_for_function(BRIEF_READY, polling=100, timeout=BRIEF_READY_TIMEOUT_MS)
 
 
 def config_source(enabled: bool, api_origin: str) -> str:
@@ -161,12 +185,13 @@ def drive_page(browser, hosting, mode, page_origin, api_origin) -> dict:
     outcome = {"telemetry_state": state}
 
     # The real fixed-example flow: brief, then confirmed run start.
-    with page.expect_response(lambda r: urlsplit(r.url).path == "/api/brief") as brief:
+    with page.expect_response(lambda r: is_post_response(r, api_origin, "/api/brief")) as brief:
         page.evaluate("document.querySelector('#start-supported').click()")
     outcome["brief_status"] = brief.value.status
+    brief.value.finished()
     # Interval polling: requestAnimationFrame polling stalls in background headless pages.
-    page.wait_for_function("!document.querySelector('#confirm-brief').disabled", polling=100, timeout=15000)
-    with page.expect_response(lambda r: urlsplit(r.url).path == "/api/demo") as demo:
+    wait_for_brief_ready(page)
+    with page.expect_response(lambda r: is_post_response(r, api_origin, "/api/demo")) as demo:
         page.evaluate("document.querySelector('#confirm-brief').click()")
     outcome["demo_status"] = demo.value.status
 

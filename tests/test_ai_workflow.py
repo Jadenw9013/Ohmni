@@ -138,7 +138,7 @@ def test_repository_product_scope_matches_human_approval():
         assert state["active_task"]=="HACK-DEMO-02"
     if state["approved_product_scope"]=="HACK-BROWSER-1":
         assert state["active_task"]=="HACK-BROWSER-01"
-    browser=json.loads((root/".ai"/"approvals"/"HACK-BROWSER-1.yaml").read_text())
+    browser=json.loads((root/".ai"/"approvals"/"HACK-BROWSER-1.yaml").read_text(encoding="utf-8"))
     assert browser["approved_by"]=="human"
     assert "hackathon browser acceptance" in browser["instruction_summary"]
     assert browser["authorized_tasks"]==["HACK-BROWSER-01"]

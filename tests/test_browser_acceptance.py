@@ -1,4 +1,4 @@
-"""Real-Chromium regressions for the saved-demo layout acceptance helper.
+"""Real-Chromium regressions for saved-demo and telemetry smoke readiness.
 
 The layout check in scripts/browser_check_offline_demo.py waits for a bounded,
 observable readiness condition and then keeps its no-overflow assertion. These
@@ -14,10 +14,12 @@ from __future__ import annotations
 import json
 import os
 import time
+from types import SimpleNamespace
 
 import pytest
 
 from scripts import browser_check_offline_demo as checker
+from scripts import smoke_browser_telemetry as telemetry_smoke
 
 REQUIRED = os.environ.get("OHMNI_REQUIRE_BROWSER") == "1"
 
@@ -76,8 +78,6 @@ sync();
 </script>"""
 
 FOLLOWS = "new ResizeObserver(sync).observe(board);"
-# A delayed follower: still bounded, but clearly not synchronous with the resize.
-FOLLOWS_LATE = "new ResizeObserver(() => setTimeout(sync, 200)).observe(board);"
 
 
 def _steps():
@@ -97,8 +97,23 @@ def _resize_and_check(page, html):
     return result, {name.split(": ", 1)[1]: (ok, detail) for name, ok, detail in recorded}
 
 
-def test_overlay_that_follows_the_board_passes_after_resize(page):
-    result, steps = _resize_and_check(page, PAGE.format(observer=FOLLOWS_LATE, extra=""))
+def test_overlay_that_follows_the_board_passes_after_resize(page, monkeypatch):
+    # Release the pending overlay update only after the initial measurement.
+    # A fixed 200 ms timer can fire before that measurement on a busy runner,
+    # making an otherwise correct readiness check fail intermittently.
+    evaluate = page.evaluate
+    released = False
+
+    def measure_then_release(expression):
+        nonlocal released
+        result = evaluate(expression)
+        if expression == checker.PAGE_WIDTH_JS and not released:
+            released = True
+            evaluate("requestAnimationFrame(sync)")
+        return result
+
+    monkeypatch.setattr(page, "evaluate", measure_then_release)
+    result, steps = _resize_and_check(page, PAGE.format(observer="", extra=""))
     assert result is True
     assert steps["board layers match the board size"][0] is True
     ok, detail = steps["no page overflow"]
@@ -151,3 +166,53 @@ def test_missing_browser_fails_the_whole_check(tmp_path):
     assert report["status"] == "FAIL"
     assert any(item["step"] == "browser acceptance completes" and item["status"] == "FAIL"
                for item in report["steps"])
+
+
+def test_telemetry_smoke_waits_for_rendered_brief_after_initial_enabled_button(page):
+    page.set_content("""<button id="start-supported">Start</button>
+        <section id="agree" hidden><div id="brief"></div>
+        <button id="confirm-brief">Confirm</button></section>
+        <script>
+        document.querySelector('#start-supported').onclick = () => {
+            document.querySelector('#start-supported').disabled = true;
+            window.finishBrief = () => {
+                document.querySelector('#brief').innerHTML = '<p>Loaded brief</p>';
+                document.querySelector('#agree').hidden = false;
+                document.querySelector('#start-supported').disabled = false;
+            };
+        };
+        </script>""")
+    page.locator("#start-supported").click()
+    # This is the previous condition: it passes while the brief is still pending.
+    assert page.evaluate("!document.querySelector('#confirm-brief').disabled") is True
+    assert page.locator("#agree").is_hidden()
+    page.evaluate("setTimeout(window.finishBrief, 300)")
+    telemetry_smoke.wait_for_brief_ready(page)
+    assert page.locator("#agree").is_visible()
+    assert page.locator("#brief").inner_text() == "Loaded brief"
+    assert page.locator("#start-supported").is_enabled()
+
+
+def test_telemetry_smoke_disabled_confirmation_still_fails_within_bound(page, monkeypatch):
+    from playwright.sync_api import TimeoutError as BrowserTimeout
+
+    page.set_content("""<button id="start-supported">Start</button>
+        <section id="agree"><div id="brief"><p>Loaded brief</p></div>
+        <button id="confirm-brief" disabled>Confirm</button></section>""")
+    monkeypatch.setattr(telemetry_smoke, "BRIEF_READY_TIMEOUT_MS", 300)
+    started = time.monotonic()
+    with pytest.raises(BrowserTimeout):
+        telemetry_smoke.wait_for_brief_ready(page)
+    assert time.monotonic() - started < 5
+
+
+def test_telemetry_smoke_response_wait_requires_expected_post_and_origin():
+    origin = "http://127.0.0.1:8000"
+    for url, method, expected in (
+        (origin + "/api/brief", "POST", True),
+        (origin + "/api/brief", "OPTIONS", False),
+        (origin + "/api/brief", "GET", False),
+        ("http://127.0.0.1:8001/api/brief", "POST", False),
+    ):
+        response = SimpleNamespace(url=url, request=SimpleNamespace(method=method))
+        assert telemetry_smoke.is_post_response(response, origin, "/api/brief") is expected
