@@ -39,6 +39,13 @@ export function turnHtml(t) {
     return `${facts}${t.kind === "unavailable" ? "<p>The saved project records do not provide an answer to this question. No engineering claim has been inferred.</p>" : ""}${changes}${t.questions.length ? `<h3>Clarify the request</h3><p>These are AI questions or support-policy limits, not verified engineering results.</p><ul>${t.questions.map(q=>`<li>${e(q)}</li>`).join("")}</ul>` : ""}<details><summary>This conversation (${t.messages.length})</summary>${t.messages.map(m=>`<p class="conversation-message">${e(m)}</p>`).join("")}</details>`;
 }
 
+/** The applied project, only if its new revision is exactly the reviewed proposal. */
+export function appliedProject(project, selected, proposed) {
+    const revision=project.revisions.at(-1);
+    if(project.project_id!==selected.projectId || revision.number!==selected.revision.number+1 || !sameBrief(revision.brief,proposed.brief) || revision.job_id!==null)throw new Error("The saved revision does not match this proposal. Reopen the project before generating.");
+    return project;
+}
+
 export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied=()=>{}, onApplying=()=>{}, idPrefix=""}={}) {
     let context=null, key=null, turn=null, identity=null, busy=false, version=0;
     root.innerHTML=`<section class="project-assistant" aria-labelledby="assistant-title"><h2 id="assistant-title">Ask about your board. Shape what comes next.</h2><p id="assistant-context"></p><form id="assistant-form"><label for="assistant-message">Ask a question or describe a change</label><textarea id="assistant-message" rows="2" maxlength="2000" placeholder="Can I make the board 80 mm wide?"></textarea><div class="assistant-actions"><button class="primary" type="submit" id="assistant-send">Ask Ohmni</button><button class="ghost" type="button" id="assistant-reset">New question</button></div></form><p id="assistant-status" role="status" aria-live="polite"></p><p id="assistant-error" role="alert" hidden></p><div id="assistant-response"></div><button class="secondary" type="button" id="assistant-apply" hidden>Save changes as a new revision</button><p class="fineprint">Answers use saved project records. Proposed edits need your confirmation and new engineering checks. Use Your plan for detailed controls.</p></section>`;
@@ -71,10 +78,10 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
         if(busy||!turn?.ready||!context||context.dirty)return;
         const current=++version, selected=structuredClone(context), proposed=turn;busy=true;$("#assistant-error").hidden=true;sync();onApplying(true);
         try {
-            const response=await projectRequest(`/api/projects/${selected.projectId}/revisions/${selected.revision.revision_id}/assistant/${proposed.turn_id}/apply`,{fetcher,identity,method:"POST",parse:parseProjectEnvelope});
+            // The applied revision must match the proposal before the request counts as a success.
+            const response=await projectRequest(`/api/projects/${selected.projectId}/revisions/${selected.revision.revision_id}/assistant/${proposed.turn_id}/apply`,{fetcher,identity,method:"POST",parse:(payload,current)=>appliedProject(parseProjectEnvelope(payload,current),selected,proposed)});
             if(version!==current)return;
             const project=response.parsed, revision=project.revisions.at(-1);
-            if(project.project_id!==selected.projectId || revision.number!==selected.revision.number+1 || !sameBrief(revision.brief,proposed.brief) || revision.job_id!==null)throw new Error("The saved revision does not match this proposal. Reopen the project before generating.");
             turn=null;onApplying(false);await onApplied(project,revision);
         }catch(err){if(version===current)error(err);}
         finally{onApplying(false);if(version===current){busy=false;sync();}}

@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "id": "HACK-BROWSER-01",
+  "task": "HACK-BROWSER-01",
+  "scope": "HACK-BROWSER-1",
+  "commit": "946d281b781d78f4ac95132791a164046e113356",
+  "verified_at": "2026-10-15",
+  "status": "PASSED",
+  "commands": [
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 12
+    },
+    {
+      "command": "python -c \"from scripts import verify; verify._PYTEST_BASE_PREFERRED=verify.ROOT/'build'/'pytest-merged'; raise SystemExit(verify.main(['fast']))\"",
+      "result": "PASS",
+      "tests": 2688,
+      "skipped": 88,
+      "deselected": 63,
+      "runtime_seconds": 401.02,
+      "note": "Same canonical fast tier and selection, with a fresh repo-local basetemp because build/pytest has a local access-denied ACL. No source/test exclusion override."
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs (files enumerated)",
+      "result": "PASS",
+      "tests": 1128,
+      "failed": 0
+    },
+    {
+      "command": "python -m pytest tests/test_telemetry.py tests/test_telemetry_integration.py tests/test_architecture.py",
+      "result": "PASS",
+      "tests": 177,
+      "skipped": 1,
+      "note": "Existing Windows shebang native-tool scenario skipped."
+    },
+    {
+      "command": "python scripts/telemetry_fault_harness.py --output build/telemetry-fault-harness",
+      "result": "PASS",
+      "checks": 8
+    },
+    {
+      "command": "node scripts/telemetry-browser/build.mjs --check",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/run_browser_acceptance.py --output build/browser-acceptance-merged",
+      "result": "PASS",
+      "saved_demo_checks": 188,
+      "telemetry_scenarios": 6,
+      "telemetry_checks": 58,
+      "browser_regressions": 14
+    },
+    {
+      "command": "python -m pytest tests/test_browser_acceptance_gate.py",
+      "result": "PASS",
+      "tests": 13
+    },
+    {
+      "command": "python -m ruff check (changed Python files)",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "tools": {
+    "python": "3.13.3",
+    "node": "22.16.0",
+    "playwright": "1.56.0",
+    "sentry-sdk": "2.72.0",
+    "pydantic": "2.14.1",
+    "chromium": "141.0.7390.37",
+    "sentry_browser": "11.7.0"
+  },
+  "review": {
+    "required": true,
+    "independent": true,
+    "status": "PASSED",
+    "record": ".ai/reviews.yaml#HACK-BROWSER-01-INDEPENDENT-REVIEW"
+  },
+  "evidence": {
+    "browser": ".ai/evidence/HACK-BROWSER-01/browser-acceptance.json",
+    "fault_harness": ".ai/evidence/HACK-BROWSER-01/fault-harness.json",
+    "results": "docs/hackathon/BROWSER_ACCEPTANCE_RESULTS.md"
+  },
+  "limitations": [
+    "No paid provider calls, live Sentry ingestion, main merge or production deployment.",
+    "Presenter browser zoom remains unqualified; viewport resizing is not browser zoom.",
+    "Fresh native KiCad/corpus gates run separately in CI; local browser evidence replays the unchanged saved board.",
+    "Earlier restricted/ACL-affected fast runs failed on repo-relative export paths after basetemp fell back outside the repo. A fresh build/pytest-merged keeps the intended canonical test layout.",
+    "An aggregate run concurrent with the full fast suite rejected two loopback asset connection failures. Their cause was not established; assertions were retained and the complete final aggregate was rerun by itself after fast finished.",
+    "Codex did not reproduce the historical CI timeout. Claude commit041d6016 reports a separate load reproduction; the combined code also fixes independently reproduced readiness/deadline defects."
+  ]
+}

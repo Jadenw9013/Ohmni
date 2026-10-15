@@ -45,6 +45,32 @@ SERVER_DSN = "https://" + "fedcba9876543210" * 2 + "@o0.ingest.invalid/43"
 CANARY = "ohmni-canary-7f3a9c"
 MODES = ("disabled", "enabled", "missing_bundle")
 HOSTINGS = ("local", "static")
+BRIEF_READY_TIMEOUT_MS = 30000
+BRIEF_READY = """() => {
+    const stage = document.querySelector('#agree');
+    const brief = document.querySelector('#brief');
+    const starter = document.querySelector('#start-supported');
+    const confirm = document.querySelector('#confirm-brief');
+    return Boolean(stage && !stage.hidden && brief && brief.childElementCount > 0
+        && starter && !starter.disabled && confirm && !confirm.disabled);
+}"""
+
+
+def is_post_response(response, origin: str, path: str) -> bool:
+    """An OPTIONS response or another origin cannot satisfy the action wait."""
+    return response.url == origin + path and response.request.method == "POST"
+
+
+def wait_for_brief_ready(page) -> None:
+    """Wait for openBrief to render and release its initiating button.
+
+    The confirm button starts enabled in the hidden HTML. Its enabled property
+    alone cannot prove that the asynchronous brief request has been consumed.
+    Preserve the loaded-runner polling budget and require all observable
+    completion signals; late readiness is still a failed scenario.
+    """
+    if not wait_until(page, BRIEF_READY, BRIEF_READY_TIMEOUT_MS / 1000):
+        raise ScenarioError("brief_not_ready")
 
 
 def config_source(enabled: bool, api_origin: str) -> str:
@@ -94,6 +120,29 @@ def parse_envelope(body: bytes) -> list[tuple[str, dict]]:
     return items
 
 
+class ScenarioError(RuntimeError):
+    """A scenario step that did not reach its expected state (a fixed code, no page text)."""
+
+
+def wait_until(page, expression: str, seconds: float) -> bool:
+    """Accept readiness only before the deadline, using process-side polling.
+
+    One page evaluation cannot itself be interrupted here. A late answer fails;
+    run_browser_acceptance.py supplies the outer 600-second process deadline if
+    the browser stops answering altogether.
+    """
+    deadline = time.monotonic() + seconds
+    while time.monotonic() < deadline:
+        ready = page.evaluate(expression)
+        now = time.monotonic()
+        if now >= deadline:
+            return False
+        if ready:
+            return True
+        page.wait_for_timeout(min(100, (deadline - now) * 1000))
+    return False
+
+
 def run_scenario(browser, hosting: str, mode: str, work: Path) -> dict:
     from demo_server import DemoHandler, DemoHTTPServer, JobStore
 
@@ -124,6 +173,13 @@ def run_scenario(browser, hosting: str, mode: str, work: Path) -> dict:
 
 def drive_page(browser, hosting, mode, page_origin, api_origin) -> dict:
     context = browser.new_context()
+    try:
+        return _drive(context, hosting, mode, page_origin, api_origin)
+    finally:
+        context.close()
+
+
+def _drive(context, hosting, mode, page_origin, api_origin) -> dict:
     context.add_cookies([{"name": "ohmni_canary", "value": CANARY, "url": page_origin}])
     if hosting == "static":
         context.add_init_script(f"window.OHMNI_API_BASE = {json.dumps(api_origin)};")
@@ -161,12 +217,15 @@ def drive_page(browser, hosting, mode, page_origin, api_origin) -> dict:
     outcome = {"telemetry_state": state}
 
     # The real fixed-example flow: brief, then confirmed run start.
-    with page.expect_response(lambda r: urlsplit(r.url).path == "/api/brief") as brief:
+    with page.expect_response(lambda r: is_post_response(r, api_origin, "/api/brief")) as brief:
         page.evaluate("document.querySelector('#start-supported').click()")
     outcome["brief_status"] = brief.value.status
-    # Interval polling: requestAnimationFrame polling stalls in background headless pages.
-    page.wait_for_function("!document.querySelector('#confirm-brief').disabled", polling=100, timeout=15000)
-    with page.expect_response(lambda r: urlsplit(r.url).path == "/api/demo") as demo:
+    brief.value.finished()
+    # Poll from Python: the continuously animated landing scene can starve
+    # in-page polling on a loaded software-GL runner. Completion still requires
+    # the visible brief and all its controls, within the configured polling budget.
+    wait_for_brief_ready(page)
+    with page.expect_response(lambda r: is_post_response(r, api_origin, "/api/demo")) as demo:
         page.evaluate("document.querySelector('#confirm-brief').click()")
     outcome["demo_status"] = demo.value.status
 
@@ -190,7 +249,6 @@ def drive_page(browser, hosting, mode, page_origin, api_origin) -> dict:
     while len(ingest) < expected_ingest and time.monotonic() < deadline:
         page.wait_for_timeout(100)
     page.wait_for_timeout(300)
-    context.close()
     outcome.update({
         "seconds": round(time.monotonic() - started, 2), "ingest": ingest, "blocked": blocked,
         "api_requests": api_requests, "page_errors": page_errors, "console_error_count": len(console_errors),
@@ -294,12 +352,21 @@ def main(argv: list[str] | None = None) -> int:
             for mode in MODES:
                 transport.envelopes.clear()
                 assert telemetry.initialize(server_config, transport=transport)
+                raw, failure = None, None
                 try:
                     raw = run_scenario(browser, hosting, mode, Path(temp))
+                except Exception as error:  # noqa: BLE001 - recorded as a failed scenario, never a pass
+                    failure = error.args[0] if isinstance(error, ScenarioError) else type(error).__name__
                 finally:
                     telemetry.flush(2.0)
                     server_items = [item for body in list(transport.envelopes) for item in parse_envelope(body)]
                     telemetry.shutdown(1.0)
+                if failure is not None:
+                    # Keep the remaining scenarios and a summary; the run still fails.
+                    results.append({"hosting": hosting, "mode": mode, "telemetry_state": None,
+                                    "checks": {"scenario_completed": False}, "error": failure,
+                                    "envelope_items": [], "api_requests": [], "passed": False})
+                    continue
                 server_transactions = [payload for kind, payload in server_items if kind == "transaction"]
                 results.append(evaluate(raw, server_transactions))
         browser.close()
@@ -316,7 +383,7 @@ def main(argv: list[str] | None = None) -> int:
     for result in results:
         mark = "PASS" if result["passed"] else "FAIL"
         failed = [name for name, ok in result["checks"].items() if not ok]
-        print(f"{mark} {result['hosting']:6} {result['mode']:14} state={result['telemetry_state']:11} "
+        print(f"{mark} {result['hosting']:6} {result['mode']:14} state={result['telemetry_state']!s:11} "
               f"items={len(result['envelope_items'])} {('failed: ' + ', '.join(failed)) if failed else ''}")
     print(f"{summary['status']}: {summary['browser']}; summary at {args.output / 'summary.json'}")
     return 0 if passed else 1

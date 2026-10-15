@@ -357,6 +357,15 @@
       "approval_evidence": ".ai/approvals/HACK-SENTRY-1.yaml",
       "plan_document": "SENTRY_IMPLEMENTATION_PLAN.md",
       "review_policy": "Independent privacy/correctness review with no open BLOCKER/HIGH; COMPLETE requires human acceptance. Live activation is a separate owner decision."
+    },
+    {
+      "id": "HACK-BROWSER-1",
+      "title": "Hackathon browser acceptance (bounded)",
+      "type": "bounded_demo_acceptance",
+      "status": "VERIFIED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/HACK-BROWSER-1.yaml",
+      "review_policy": "Independent review of the final diff focused on false-success telemetry, weakened browser assertions, privacy, stale responses and lost edits; no open BLOCKER/HIGH. COMPLETE requires human acceptance."
     }
   ],
   "tasks": [
@@ -3758,8 +3767,11 @@
         "required": true,
         "independent": true,
         "status": "PASSED",
-        "record": ".ai/reviews.yaml#HACK-SENTRY-01-CODEX-REVIEW",
-        "rereview": ".ai/reviews.yaml#HACK-SENTRY-01-FINAL-REREVIEW"
+        "record": ".ai/reviews.yaml#HACK-SENTRY-01-FINAL-REREVIEW",
+        "prior_reviews": [
+          ".ai/reviews.yaml#HACK-SENTRY-01-INDEPENDENT-REVIEW",
+          ".ai/reviews.yaml#HACK-SENTRY-01-CODEX-REVIEW"
+        ]
       },
       "verification": {
         "record": ".ai/verification/HACK-SENTRY-01.yaml",
@@ -3769,6 +3781,49 @@
           "node",
           "telemetry",
           "fault_harness",
+          "browser_smoke"
+        ]
+      }
+    },
+    {
+      "id": "HACK-BROWSER-01",
+      "title": "Dependable saved-demo browser acceptance and truthful caller-outcome telemetry",
+      "scope": "HACK-BROWSER-1",
+      "milestone": null,
+      "goal": "Correct the Sentry review attribution, make saved-demo mobile acceptance deterministic without weakening it, record project telemetry success only after the real caller accepts the response, and gate real-browser acceptance in CI.",
+      "priority": 100,
+      "status": "VERIFIED",
+      "dependencies": [],
+      "input_commit": "d0b227f0",
+      "blockers": [],
+      "acceptance_criteria": [
+        "A: HACK-SENTRY-01-CODEX-REVIEW records its own evaluated commit (1e143537) and historical CHANGES REQUIRED outcome; the later Claude re-review stays separate; ai_state.py validate passes.",
+        "B: the saved-demo checker waits for a bounded observable layout-readiness condition, keeps the no-overflow assertion, has a negative regression for persistent overflow, and passes cold-load, resize, original/fault/restore, keyboard, recovery and ZIP checks in offline, site and static modes at narrow mobile and desktop widths. Presenter zoom stays pending unless real browser zoom is automated.",
+        "C: project operations record success only after the real caller accepts the saved brief/revision; rejected responses, malformed contracts, timeouts and unavailable telemetry are tested through real caller wiring and the bundled SDK with a recording transport.",
+        "D: CI runs saved-demo browser checks (offline, site, static) and all six telemetry scenarios with pinned Playwright Chromium, external traffic denied; missing browsers, skipped scenarios or BLOCKED results fail; sanitized summaries are uploaded.",
+        "Ledger, workflow, fast, Node, telemetry, fault-harness, bundle reproducibility and browser checks pass; independent review has no open BLOCKER/HIGH."
+      ],
+      "implementation": {
+        "started_at_commit": "d0b227f07ad694259de6991ad82a1eb9345437b7",
+        "approval_evidence": ".ai/approvals/HACK-BROWSER-1.yaml",
+        "completed_at_commit": "946d281b781d78f4ac95132791a164046e113356"
+      },
+      "review": {
+        "required": true,
+        "independent": true,
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#HACK-BROWSER-01-INDEPENDENT-REVIEW"
+      },
+      "verification": {
+        "record": ".ai/verification/HACK-BROWSER-01.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "node",
+          "telemetry",
+          "fault_harness",
+          "bundle_check",
+          "saved_demo_browser",
           "browser_smoke"
         ]
       }
