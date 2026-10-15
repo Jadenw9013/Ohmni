@@ -21,8 +21,9 @@ names/outcomes, metric names/attributes), then checks the expected shape:
 5. recovery            -- the same store then completes a job: one completion,
    no new issue.
 
-Scenarios 1, 3, 4 and 5 use small scripted pipelines (and a fake ``kicad-cli``
-that sleeps) so the failure is deterministic; they prove telemetry
+Scenarios 1, 3, 4 and 5 use small scripted pipelines. The timeout scenario
+runs a real isolated Python child that announces readiness and sleeps; it is
+honestly classified as ``other``, not KiCad. These scenarios prove telemetry
 classification, not a KiCad or routing verdict. Exits 0 only if every check
 passes.
 """
@@ -30,10 +31,10 @@ passes.
 from __future__ import annotations
 
 import argparse
+import errno
 import json
 import os
 import socket
-import stat
 import subprocess
 import sys
 import tempfile
@@ -52,13 +53,15 @@ SYNTHETIC_DSN = "https://" + "0123456789abcdef" * 2 + "@o0.ingest.invalid/42"
 CANARY = "ohmni-fault-canary-41d2"
 TRACE = "4bf92f3577b34da6a3ce929d0e0e4736"
 PARENT = "00f067aa0ba902b7"
+TIMEOUT_CHILD_READY = "ohmni-timeout-child-ready"
 OPENER = build_opener(ProxyHandler({}))
 
 
 @contextmanager
 def refuse_outbound():
     """Refuse every non-loopback connection while the harness runs."""
-    real_connect, real_getaddrinfo, attempts = socket.socket.connect, socket.getaddrinfo, []
+    real_connect, real_connect_ex = socket.socket.connect, socket.socket.connect_ex
+    real_getaddrinfo, attempts = socket.getaddrinfo, []
 
     def connect(sock, address):
         host = address[0] if isinstance(address, tuple) else address
@@ -67,17 +70,24 @@ def refuse_outbound():
             raise ConnectionRefusedError("fault harness denies outbound network")
         return real_connect(sock, address)
 
+    def connect_ex(sock, address):
+        host = address[0] if isinstance(address, tuple) else address
+        if sock.family in (socket.AF_INET, socket.AF_INET6) and host not in {"127.0.0.1", "::1", "localhost"}:
+            attempts.append("connect_ex")
+            return errno.ECONNREFUSED
+        return real_connect_ex(sock, address)
+
     def getaddrinfo(host, *args, **kwargs):
         if host not in {"127.0.0.1", "::1", "localhost", None}:
             attempts.append("resolve")
             raise socket.gaierror("fault harness denies name resolution")
         return real_getaddrinfo(host, *args, **kwargs)
 
-    socket.socket.connect, socket.getaddrinfo = connect, getaddrinfo
+    socket.socket.connect, socket.socket.connect_ex, socket.getaddrinfo = connect, connect_ex, getaddrinfo
     try:
         yield attempts
     finally:
-        socket.socket.connect, socket.getaddrinfo = real_connect, real_getaddrinfo
+        socket.socket.connect, socket.socket.connect_ex, socket.getaddrinfo = real_connect, real_connect_ex, real_getaddrinfo
 
 
 def items_of(transport) -> list[tuple[str, dict]]:
@@ -142,6 +152,16 @@ def settle(telemetry, transport, count, timeout=20):
         time.sleep(0.05)
 
 
+def timeout_child_command(directory: Path) -> list[str]:
+    """Use an actual executable on Windows and POSIX, without a shell wrapper."""
+    child = directory / "timeout_child.py"
+    child.write_text(
+        f"import time\nprint({TIMEOUT_CHILD_READY!r}, flush=True)\ntime.sleep(30)\n",
+        encoding="utf-8",
+    )
+    return [sys.executable, "-I", "-S", str(child), CANARY]
+
+
 def run(output: Path) -> dict:
     from demo_server import DEMO_REQUEST, DemoHandler, DemoHTTPServer, JobStore
 
@@ -171,12 +191,16 @@ def run(output: Path) -> dict:
             stage.outcome("ok", "reject")
             raise RoutingIncompleteError(CANARY)
 
-    def slow_tool(executable):
+    def slow_tool(command):
         def behavior():
             with telemetry.stage("erc"):
                 try:
-                    process.run_tool([str(executable), "sch", "erc", CANARY], timeout=0.3)
-                except subprocess.TimeoutExpired:
+                    process.run_tool(command, timeout=1.0)
+                except subprocess.TimeoutExpired as error:
+                    # A spawn error or a stalled interpreter startup cannot
+                    # stand in for exercising the intended sleeping child.
+                    if TIMEOUT_CHILD_READY not in (error.stdout or ""):
+                        raise RuntimeError("timeout fixture did not announce readiness") from None
                     raise EdaToolFailedError(CANARY) from None
         return behavior
 
@@ -239,12 +263,8 @@ def run(output: Path) -> dict:
             return {"status": status, "error": body.get("error")}
 
         def tool_timeout():
-            bin_dir = temp / "bin"
-            bin_dir.mkdir()
-            fake = bin_dir / "kicad-cli"
-            fake.write_text(f"#!{sys.executable}\nimport time\ntime.sleep(30)\n", encoding="utf-8")
-            fake.chmod(fake.stat().st_mode | stat.S_IEXEC)
-            return job_with(JobStore(temp / "timeout", pipeline(slow_tool(fake))))
+            command = timeout_child_command(temp)
+            return job_with(JobStore(temp / "timeout", pipeline(slow_tool(command))))
 
         recovering = JobStore(temp / "recovery", pipeline(lambda: Report()))
         recovering.enable_persistence()
@@ -291,7 +311,8 @@ def run(output: Path) -> dict:
             and metric(provider_run, "ohmni.provider.calls", outcome="provider_connection") == 1,
         "tool_timeout_is_distinct": timeout_run["public"] == {"status": "failed", "error_code": "eda_tool_failed"}
             and [i["value"] for i in timeout_run["issues"]] == ["worker.eda_tool_failed"]
-            and any(s["op"] == "ohmni.tool" and s.get("ohmni.execution_outcome") == "timeout"
+            and any(s["op"] == "ohmni.tool" and s["name"] == "other"
+                    and s.get("ohmni.execution_outcome") == "timeout"
                     for s in worker(timeout_run)["spans"]),
         "failed_publication_never_completes": publication_run["public"] == {"status": "failed", "error_code": "job_state_invalid"}
             and metric(publication_run, "ohmni.jobs.terminal", terminal="complete") == 0

@@ -5,6 +5,7 @@ from __future__ import annotations
 import ast
 import io
 import json
+import re
 import ssl
 import threading
 import time
@@ -17,6 +18,7 @@ import pytest
 from scripts import rehearse_hackathon_release as check
 
 SITE = "https://demo.example.test"
+BACKEND = "https://backend.example.test"
 CANARY = "secret-server-response-must-not-appear"
 
 
@@ -25,19 +27,30 @@ def candidate():
     return check.load_candidate()
 
 
+@pytest.fixture(scope="module")
+def expanded_candidate():
+    return check.load_candidate(include_app=True, include_backend=True)
+
+
 def _health(**updates):
     return {"status": "ready", "free_text": True, "api_version": 2,
             "ui_version": "a" * 64, "server_instance_id": "b" * 16,
-            "fixture_id": "saved_fixture", **updates}
+            "fixture_id": "esp32-bme280-environmental-logger", **updates}
 
 
-def test_expected_api_version_matches_server_source_without_importing_runtime():
+def test_expected_health_constants_match_server_and_client_without_importing_runtime():
     tree = ast.parse((check.ROOT / "scripts/demo_server.py").read_text(encoding="utf-8"))
-    definitions = [ast.literal_eval(node.value) for node in tree.body
-                   if isinstance(node, ast.Assign)
-                   and any(isinstance(target, ast.Name) and target.id == "API_VERSION"
-                           for target in node.targets)]
-    assert definitions == [check.EXPECTED_API_VERSION] == [2]
+    constants = {target.id: ast.literal_eval(node.value) for node in tree.body
+                 if isinstance(node, ast.Assign) for target in node.targets
+                 if isinstance(target, ast.Name) and target.id in {"API_VERSION", "DEMO_FIXTURE_ID"}}
+    assert constants == {"API_VERSION": check.EXPECTED_API_VERSION,
+                         "DEMO_FIXTURE_ID": check.EXPECTED_FIXTURE_ID}
+    client = (check.ROOT / "apps/web/client-contract.js").read_text(encoding="utf-8")
+    for name, value in constants.items():
+        definition = re.findall(rf"^const {name} = (.+);$", client, re.MULTILINE)
+        assert len(definition) == 1 and json.loads(definition[0]) == value
+    fields = re.findall(r"export function parseHealth\(payload\) \{\s*const fields = (\[[^\]]+\]);", client)
+    assert len(fields) == 1 and set(json.loads(fields[0])) == check.HEALTH_FIELDS
 
 
 def _fetcher(candidate, *, changes=None, health=None):
@@ -46,16 +59,17 @@ def _fetcher(candidate, *, changes=None, health=None):
 
     def fetch(url, *, timeout, max_bytes):
         calls.append((url, timeout, max_bytes))
-        assert url.startswith(SITE + "/")
-        path = url.removeprefix(SITE + "/")
+        origin = next((origin for origin in (SITE, BACKEND) if url.startswith(origin + "/")), None)
+        assert origin is not None
+        path = url.removeprefix(origin + "/")
         if path == "api/health":
             return check.Response(200, "application/json", json.dumps(health).encode())
-        if path in changes:
-            value = changes[path]
+        if url in changes or path in changes:
+            value = changes.get(url, changes.get(path))
             if isinstance(value, Exception):
                 raise value
             return value
-        assert path in check.ASSET_FILES
+        assert path in candidate.assets
         content_type = min(check.MIME_TYPES[Path(path).suffix])
         return check.Response(200, content_type, candidate.assets[path])
 
@@ -67,9 +81,12 @@ def test_exact_candidate_matches_with_no_health_or_provider_requests(candidate):
     result = check.rehearse(SITE, candidate, fetcher=fetch)
     assert result["status"] == result["static_alignment"] == "PASS"
     assert result["health"] == {"status": "NOT_RUN"}
+    assert result["app_entry_alignment"] == result["backend_static_alignment"] == {"status": "NOT_RUN"}
     assert result["candidate_commit"] == candidate.commit
     assert result["capture_commit"] != result["candidate_commit"]
     assert len(result["assets"]) == len(check.ASSET_FILES) == len(calls)
+    assert result["maximum_requests"] == 20
+    assert [url for url, _, _ in calls] == [SITE + "/" + path for path in check.ASSET_FILES]
     assert all(item["expected_sha256"] == item["observed_sha256"] for item in result["assets"])
     assert "not whole-site or release approval" in result["limitations"][0]
     assert all("/api/" not in url for url, _, _ in calls)
@@ -105,7 +122,7 @@ def test_capture_metadata_tamper_is_not_accepted_even_if_json_parses(candidate):
 
 
 def test_health_capabilities_are_allowlisted_and_do_not_expose_instance(candidate):
-    fetch, calls = _fetcher(candidate, health=_health(secret=CANARY))
+    fetch, calls = _fetcher(candidate, health=_health())
     result = check.rehearse(SITE, candidate, fetcher=fetch, health_url=SITE + "/api/health")
     assert result["status"] == "PASS"
     assert result["health"]["kind"] == "configuration_only"
@@ -113,11 +130,22 @@ def test_health_capabilities_are_allowlisted_and_do_not_expose_instance(candidat
     serialized = json.dumps(result)
     assert CANARY not in serialized and "b" * 16 not in serialized
     assert len(calls) == len(check.ASSET_FILES) + 1
+    assert result["maximum_requests"] == 21
+
+
+def test_absent_optional_health_capability_matches_frontend_default(candidate):
+    health = _health()
+    del health["free_text"]
+    fetch, _ = _fetcher(candidate, health=health)
+    result = check.rehearse(SITE, candidate, fetcher=fetch, health_url=SITE + "/api/health")
+    assert result["status"] == "PASS"
+    assert result["health"]["capabilities"]["free_text"] is False
 
 
 @pytest.mark.parametrize("health", [
     _health(status="starting"), _health(free_text="true"), _health(api_version=True),
-    _health(api_version=1), _health(ui_version="invalid"), {}, [], None,
+    _health(api_version=1), _health(ui_version="invalid"), _health(fixture_id="saved_fixture"),
+    _health(free_text=None), _health(server_instance_id="invalid"), _health(secret=CANARY), {}, [], None,
 ])
 def test_bad_health_fails_overall_without_relabeling_static_evidence(candidate, health):
     fetch, _ = _fetcher(candidate, health=health)
@@ -125,6 +153,93 @@ def test_bad_health_fails_overall_without_relabeling_static_evidence(candidate, 
     assert result["static_alignment"] == "PASS"
     assert result["status"] == result["health"]["status"] == "FAIL"
     assert "capabilities" not in result["health"]
+    assert CANARY not in json.dumps(result)
+
+
+@pytest.mark.parametrize(("include_app", "backend_site", "maximum"), [
+    (True, None, 35), (False, BACKEND, 26), (True, BACKEND, 41),
+])
+def test_opt_in_asset_groups_have_explicit_bounded_origins(expanded_candidate, include_app, backend_site, maximum):
+    fetch, calls = _fetcher(expanded_candidate, health=_health())
+    result = check.rehearse(SITE, expanded_candidate, include_app=include_app,
+                            backend_site=backend_site, health_url=SITE + "/api/health", fetcher=fetch)
+    assert result["status"] == result["static_alignment"] == "PASS"
+    assert result["maximum_requests"] == len(calls) == maximum + 1
+    expected = [SITE + "/" + path for path in check.ASSET_FILES]
+    if include_app:
+        expected += [SITE + "/" + path for path in check.APP_FILES]
+    if backend_site:
+        expected += [BACKEND + "/" + path for path in check.BACKEND_FILES]
+    assert [url for url, _, _ in calls] == [*expected, SITE + "/api/health"]
+    assert BACKEND + "/" + check.TELEMETRY_METADATA not in expected
+    for key, enabled in (("app_entry_alignment", include_app), ("backend_static_alignment", backend_site)):
+        group = result[key]
+        assert group["status"] == ("PASS" if enabled else "NOT_RUN")
+        if enabled:
+            assert group["kind"] == "selected_static_assets_only"
+            assert all(item["expected_sha256"] == item["observed_sha256"] for item in group["assets"])
+
+
+@pytest.mark.parametrize(("origin", "path", "replacement", "failed_group"), [
+    (SITE, "app.js", check.Response(200, "text/javascript", b"old app"), "app_entry_alignment"),
+    (BACKEND, "app.js", check.Response(200, "text/javascript", b"old app"), "backend_static_alignment"),
+    (BACKEND, "vendor/sentry-telemetry.js", check.PreflightError("http_error", status_code=404), "backend_static_alignment"),
+    (SITE, "telemetry-config.js", check.Response(200, "text/javascript", CANARY.encode()), "app_entry_alignment"),
+])
+def test_selected_asset_skew_fails_its_group_without_relabeling_saved_capture(
+        expanded_candidate, origin, path, replacement, failed_group):
+    fetch, _ = _fetcher(expanded_candidate, changes={origin + "/" + path: replacement}, health=_health())
+    result = check.rehearse(SITE, expanded_candidate, include_app=True, backend_site=BACKEND,
+                            health_url=SITE + "/api/health", fetcher=fetch)
+    assert result["status"] == result[failed_group]["status"] == "FAIL"
+    assert result["static_alignment"] == result["health"]["status"] == "PASS"
+    other_group = "backend_static_alignment" if failed_group == "app_entry_alignment" else "app_entry_alignment"
+    assert result[other_group]["status"] == "PASS"
+    assert CANARY not in json.dumps(result)
+    assert any("does not identify backend code" in text for text in result["limitations"])
+
+
+@pytest.mark.parametrize("metadata", [
+    b"not JSON", b"null", b"[]", b"{}",
+    json.dumps({"bundle": "sentry-telemetry.js", "sdk": "@sentry/browser", "bytes": 1, "sha256": "0" * 64}).encode(),
+])
+def test_invalid_local_bundle_metadata_fails_before_any_request(expanded_candidate, metadata):
+    assets = {**expanded_candidate.assets, check.TELEMETRY_METADATA: metadata}
+    invalid = check.Candidate(expanded_candidate.commit, assets, expanded_candidate.capture_commit)
+    fetch, calls = _fetcher(invalid)
+    with pytest.raises(check.PreflightError, match="candidate_telemetry_bundle_invalid"):
+        check.rehearse(SITE, invalid, include_app=True, fetcher=fetch)
+    assert calls == []
+
+
+@pytest.mark.parametrize("field,value", [("sha256", "0" * 64), ("bytes", True), ("bundle", "untrusted.js")])
+def test_bundle_metadata_fields_are_verified_against_committed_bytes(expanded_candidate, field, value):
+    metadata = json.loads(expanded_candidate.assets[check.TELEMETRY_METADATA])
+    metadata[field] = value
+    assets = {**expanded_candidate.assets, check.TELEMETRY_METADATA: json.dumps(metadata).encode()}
+    with pytest.raises(check.PreflightError, match="candidate_telemetry_bundle_invalid"):
+        check.validate_telemetry_bundle(assets)
+
+
+def test_unselected_optional_assets_are_not_required(candidate):
+    fetch, calls = _fetcher(candidate)
+    with pytest.raises(check.PreflightError, match="candidate_selected_assets_missing"):
+        check.rehearse(SITE, candidate, include_app=True, fetcher=fetch)
+    assert calls == []
+
+
+def test_invalid_backend_origin_rejected_before_any_request(expanded_candidate):
+    fetch, calls = _fetcher(expanded_candidate)
+    with pytest.raises(check.PreflightError, match="invalid_site_url"):
+        check.rehearse(SITE, expanded_candidate, backend_site=BACKEND + "/api/health", fetcher=fetch)
+    assert calls == []
+
+
+def test_optional_asset_selection_does_not_weaken_viewer_dependency_guard(expanded_candidate):
+    assets = dict(expanded_candidate.assets)
+    assets["hackathon-demo.js"] += b'\nimport "./app.js";'
+    with pytest.raises(check.PreflightError, match="candidate_dependency_not_allowlisted"):
+        check.validate_dependencies(assets)
 
 
 def test_malformed_health_body_is_not_reported(candidate):
@@ -239,8 +354,12 @@ def test_capture_lineage_is_validated_not_just_mirror_equality(candidate, edit):
         check.validate_capture(assets, canonical)
 
 
-def test_candidate_uses_git_bytes_but_checks_local_capture_mirror(candidate, tmp_path, monkeypatch):
+def test_candidate_uses_git_bytes_but_checks_local_capture_mirror(expanded_candidate, tmp_path, monkeypatch):
+    candidate = expanded_candidate
+    requested = []
+
     def git(root, *arguments):
+        requested.append(arguments)
         if arguments[0] == "rev-parse":
             return candidate.commit.encode() + b"\n"
         path = arguments[1].split(":", 1)[1]
@@ -256,8 +375,12 @@ def test_candidate_uses_git_bytes_but_checks_local_capture_mirror(candidate, tmp
             target.write_bytes(candidate.assets["hackathon-demo/" + name])
     module = tmp_path / "apps/web/hackathon-demo.js"
     module.write_bytes(candidate.assets["hackathon-demo.js"].replace(b"\n", b"\r\n"))
-    loaded = check.load_candidate(tmp_path)
+    (tmp_path / "apps/web/telemetry-config.js").write_bytes(CANARY.encode())
+    loaded = check.load_candidate(tmp_path, include_app=True, include_backend=True)
     assert loaded.assets["hackathon-demo.js"] == candidate.assets["hackathon-demo.js"]
+    assert loaded.assets["telemetry-config.js"] == candidate.assets["telemetry-config.js"]
+    assert all(args[1].startswith(candidate.commit + ":") for args in requested if args[0] == "show")
+    assert len([args for args in requested if args == ("show", candidate.commit + ":apps/web/telemetry.js")]) == 1
     (tmp_path / "apps/web/hackathon-demo/demo.json").write_bytes(b"{}")
     with pytest.raises(check.PreflightError, match="local_capture_mismatch"):
         check.load_candidate(tmp_path)
@@ -371,9 +494,32 @@ def test_cli_needs_explicit_site_and_reports_local_failure_without_network(monke
         check.main([])
     assert raised.value.code == 2
 
-    def unavailable():
+    def unavailable(**kwargs):
         raise check.PreflightError("candidate_capture_invalid")
 
     monkeypatch.setattr(check, "load_candidate", unavailable)
     assert check.main(["--site", SITE]) == 1
     assert json.loads(capsys.readouterr().out)["code"] == "candidate_capture_invalid"
+
+
+def test_cli_options_select_git_inputs_and_matching_report_groups(expanded_candidate, monkeypatch, capsys):
+    observed = []
+
+    def load(**kwargs):
+        observed.append(kwargs)
+        return expanded_candidate
+
+    def rehearse(site, candidate, **kwargs):
+        observed.append((site, candidate.commit, kwargs))
+        return {"status": "PASS"}
+
+    monkeypatch.setattr(check, "load_candidate", load)
+    monkeypatch.setattr(check, "rehearse", rehearse)
+    assert check.main(["--site", SITE, "--include-app", "--backend-site", BACKEND,
+                       "--health-url", BACKEND + "/api/health"]) == 0
+    assert observed == [
+        {"include_app": True, "include_backend": True},
+        (SITE, expanded_candidate.commit, {"include_app": True, "backend_site": BACKEND,
+                                          "health_url": BACKEND + "/api/health", "timeout": 10}),
+    ]
+    assert json.loads(capsys.readouterr().out) == {"status": "PASS"}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only alignment check for the saved demo on an explicitly supplied site.
+"""Read-only alignment check for the saved demo and optional application assets.
 
 Uses only the standard library and GET requests. Expected bytes come from the
 current Git commit, not platform-dependent checkout line endings. This checks
@@ -31,6 +31,8 @@ ROOT = Path(__file__).resolve().parents[1]
 MAX_RESPONSE_BYTES = 8 * 1024 * 1024
 HEALTH_MAX_BYTES = 16 * 1024
 EXPECTED_API_VERSION = 2  # Guarded against scripts/demo_server.py by a source-only test.
+EXPECTED_FIXTURE_ID = "esp32-bme280-environmental-logger"
+HEALTH_FIELDS = {"status", "fixture_id", "api_version", "server_instance_id", "ui_version"}
 CAPTURE_FILES = (
     "demo.json",
     "saved-run/golden.kicad_pcb",
@@ -47,6 +49,20 @@ VIEWER_FILES = (
     "visual-version.js", "vendor/three.module.js", "vendor/three.core.min.js",
 )
 ASSET_FILES = VIEWER_FILES + tuple("hackathon-demo/" + name for name in CAPTURE_FILES)
+# Selected entry points, not the complete application dependency graph. Their
+# alignment cannot establish a usable application; the browser rehearsal does.
+APP_FILES = (
+    "index.html", "app.js", "client-contract.js", "project-contract.js",
+    "conversation.js", "project-assistant.js", "project-workbench.js", "plan-summary.js",
+    "telemetry.js", "telemetry-config.js", "vendor/sentry-telemetry.js",
+    "vendor/sentry-telemetry.json", "styles.css", "workbench-theme.css", "guided-flow.css",
+)
+# The backend does not serve bundle metadata. Check only its allowlisted files.
+BACKEND_FILES = (
+    "app.js", "client-contract.js", "project-contract.js", "telemetry.js",
+    "telemetry-config.js", "vendor/sentry-telemetry.js",
+)
+TELEMETRY_METADATA = "vendor/sentry-telemetry.json"
 DIGEST = re.compile(r"[0-9a-f]{64}\Z")
 COMMIT = re.compile(r"[0-9a-f]{40}\Z")
 MIME_TYPES = {
@@ -63,7 +79,9 @@ LIMITATIONS = [
     "The capture contains historical engineering receipts; no engineering check was rerun.",
     "No browser rendering, accessibility, live AI request, SPICE run or Sentry ingestion was tested.",
     "Health reports configuration only; it does not establish provider success, quota availability or budget persistence.",
-    "Each GET has a caller deadline. A timed-out daemon worker may finish its read-only request later; this fixed check starts at most 21 workers and never retries.",
+    "Application checks cover selected entry assets, not their complete dependency graph.",
+    "Backend asset alignment does not identify backend code or establish that telemetry is enabled; a mismatch may be deployment skew or intentional configuration drift.",
+    "Each GET has a caller deadline. A timed-out daemon worker may finish its read-only request later; requests and workers are bounded by maximum_requests and never retried.",
 ]
 
 
@@ -163,7 +181,7 @@ def validate_dependencies(assets: dict[str, bytes]) -> None:
             if parsed.scheme or parsed.netloc or parsed.query or parsed.fragment or "\\" in reference:
                 raise PreflightError("candidate_external_dependency")
             resolved = posixpath.normpath(posixpath.join("/" + posixpath.dirname(name), parsed.path)).lstrip("/")
-            if resolved not in assets:
+            if resolved not in ASSET_FILES or resolved not in assets:
                 raise PreflightError("candidate_dependency_not_allowlisted")
 
 
@@ -202,14 +220,34 @@ def validate_capture(assets: dict[str, bytes], canonical: dict[str, bytes]) -> s
         raise PreflightError("candidate_capture_invalid") from None
 
 
-def load_candidate(root: Path = ROOT) -> Candidate:
+def validate_telemetry_bundle(assets: dict[str, bytes]) -> None:
+    """Verify committed bundle metadata locally; never inspect runtime config."""
+    try:
+        metadata = json.loads(assets[TELEMETRY_METADATA])
+        bundle = assets["vendor/sentry-telemetry.js"]
+        valid = (metadata["bundle"] == "sentry-telemetry.js"
+                 and metadata["sdk"] == "@sentry/browser"
+                 and type(metadata["bytes"]) is int and metadata["bytes"] == len(bundle)
+                 and metadata["sha256"] == sha256(bundle))
+        if not valid:
+            raise PreflightError("candidate_telemetry_bundle_invalid")
+    except (KeyError, TypeError, ValueError, RecursionError):
+        raise PreflightError("candidate_telemetry_bundle_invalid") from None
+
+
+def load_candidate(root: Path = ROOT, *, include_app: bool = False,
+                   include_backend: bool = False) -> Candidate:
     try:
         commit = _git(root, "rev-parse", "--verify", "HEAD").decode("ascii").strip()
     except UnicodeError:
         raise PreflightError("candidate_git_unavailable") from None
     if not COMMIT.fullmatch(commit):
         raise PreflightError("candidate_git_unavailable")
-    assets = {name: _git(root, "show", f"{commit}:apps/web/{name}") for name in ASSET_FILES}
+    selected = [*ASSET_FILES, *(APP_FILES if include_app else ()),
+                *(BACKEND_FILES if include_backend else ())]
+    if include_app or include_backend:
+        selected.append(TELEMETRY_METADATA)
+    assets = {name: _git(root, "show", f"{commit}:apps/web/{name}") for name in dict.fromkeys(selected)}
     canonical = {name: _git(root, "show", f"{commit}:examples/hackathon-demo/{name}") for name in CAPTURE_FILES}
     capture_commit = validate_capture(assets, canonical)
     # Capture files are -text in .gitattributes; the local fallback must also
@@ -222,6 +260,8 @@ def load_candidate(root: Path = ROOT) -> Candidate:
     except OSError:
         raise PreflightError("local_capture_unavailable") from None
     validate_dependencies(assets)
+    if include_app or include_backend:
+        validate_telemetry_bundle(assets)
     return Candidate(commit, assets, capture_commit)
 
 
@@ -289,8 +329,8 @@ def fetch_url(url: str, *, timeout: float, max_bytes: int) -> Response:
 
     urllib's socket timeout measures inactivity, not total elapsed time. A
     daemon worker may continue its bounded GET after this caller gives up. The
-    CLI's fixed asset list plus optional health starts at most 21 workers; it
-    does not retry, and lingering workers cannot hold process exit open.
+    CLI's explicitly selected fixed lists bound the worker count. It does not
+    retry, and lingering workers cannot hold process exit open.
     """
     completed: Queue[Response | PreflightError] = Queue(maxsize=1)
 
@@ -325,18 +365,19 @@ def _health(url: str, fetcher, timeout: float) -> dict:
         value = json.loads(response.body)
         valid = (
             isinstance(value, dict) and value.get("status") == "ready"
-            and type(value.get("free_text")) is bool
+            and set(value) in (HEALTH_FIELDS, HEALTH_FIELDS | {"free_text"})
+            and type(value.get("free_text", False)) is bool
             and type(value.get("api_version")) is int and value["api_version"] == EXPECTED_API_VERSION
             and isinstance(value.get("ui_version"), str) and DIGEST.fullmatch(value["ui_version"])
             and isinstance(value.get("server_instance_id"), str)
             and re.fullmatch(r"[0-9a-f]{16}", value["server_instance_id"])
-            and isinstance(value.get("fixture_id"), str) and 0 < len(value["fixture_id"]) <= 100
+            and value.get("fixture_id") == EXPECTED_FIXTURE_ID
         )
         if not valid:
             raise PreflightError("health_contract_invalid")
         # Do not publish instance IDs, unknown fields or raw response content.
         result.update(status="PASS", code="ready_contract_observed", capabilities={
-            "status": "ready", "free_text": value["free_text"], "api_version": value["api_version"],
+            "status": "ready", "free_text": value.get("free_text", False), "api_version": value["api_version"],
         })
     except (ValueError, UnicodeError, RecursionError):
         result["code"] = "health_json_invalid"
@@ -347,15 +388,10 @@ def _health(url: str, fetcher, timeout: float) -> dict:
     return result
 
 
-def rehearse(site: str, candidate: Candidate, *, health_url: str | None = None,
-             timeout: float = 10, fetcher=fetch_url) -> dict:
-    site = validate_url(site)
-    if health_url is not None:
-        health_url = validate_url(health_url, health=True)
-    if not 0 < timeout <= 30:
-        raise PreflightError("invalid_timeout")
+def _check_assets(site: str, candidate: Candidate, files: tuple[str, ...], fetcher,
+                  timeout: float) -> list[dict]:
     assets = []
-    for name in ASSET_FILES:
+    for name in files:
         expected = candidate.assets[name]
         item = {
             "path": "/" + name, "status": "FAIL", "expected_sha256": sha256(expected),
@@ -383,14 +419,47 @@ def rehearse(site: str, candidate: Candidate, *, health_url: str | None = None,
             if error.content_type is not None:
                 item["content_type"] = error.content_type
         assets.append(item)
+    return assets
+
+
+def _asset_group(site: str | None, candidate: Candidate, files: tuple[str, ...],
+                 fetcher, timeout: float) -> dict:
+    if site is None:
+        return {"status": "NOT_RUN"}
+    assets = _check_assets(site, candidate, files, fetcher, timeout)
+    return {"status": "PASS" if all(item["status"] == "PASS" for item in assets) else "FAIL",
+            "kind": "selected_static_assets_only", "site": site, "assets": assets}
+
+
+def rehearse(site: str, candidate: Candidate, *, health_url: str | None = None,
+             include_app: bool = False, backend_site: str | None = None,
+             timeout: float = 10, fetcher=fetch_url) -> dict:
+    site = validate_url(site)
+    if health_url is not None:
+        health_url = validate_url(health_url, health=True)
+    if backend_site is not None:
+        backend_site = validate_url(backend_site)
+    if not 0 < timeout <= 30:
+        raise PreflightError("invalid_timeout")
+    selected = (*ASSET_FILES, *(APP_FILES if include_app else ()),
+                *(BACKEND_FILES if backend_site else ()))
+    if any(name not in candidate.assets for name in selected):
+        raise PreflightError("candidate_selected_assets_missing")
+    if include_app or backend_site:
+        validate_telemetry_bundle(candidate.assets)
+    assets = _check_assets(site, candidate, ASSET_FILES, fetcher, timeout)
     static_status = "PASS" if all(item["status"] == "PASS" for item in assets) else "FAIL"
+    app = _asset_group(site if include_app else None, candidate, APP_FILES, fetcher, timeout)
+    backend = _asset_group(backend_site, candidate, BACKEND_FILES, fetcher, timeout)
     health = _health(health_url, fetcher, timeout) if health_url else {"status": "NOT_RUN"}
     return {
         "schema_version": 1, "kind": "saved_demo_static_alignment",
         "checked_at": datetime.now(UTC).isoformat(), "candidate_commit": candidate.commit,
         "capture_commit": candidate.capture_commit, "site": site,
-        "status": "PASS" if static_status == "PASS" and health["status"] != "FAIL" else "FAIL",
+        "status": "FAIL" if "FAIL" in (static_status, app["status"], backend["status"], health["status"]) else "PASS",
         "static_alignment": static_status, "assets": assets, "health": health,
+        "app_entry_alignment": app, "backend_static_alignment": backend,
+        "maximum_requests": len(selected) + int(health_url is not None),
         "limitations": LIMITATIONS,
     }
 
@@ -399,6 +468,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--site", required=True, help="Explicit HTTPS origin (HTTP allowed only on loopback)")
     parser.add_argument("--health-url", help="Optional explicit /api/health or /health URL; no provider call")
+    parser.add_argument("--include-app", action="store_true", help="Also compare selected application and telemetry entry assets")
+    parser.add_argument("--backend-site", help="Optional explicit backend origin; compare its selected static assets, not its code identity")
     parser.add_argument("--timeout", type=float, default=10, help="Per-request timeout in seconds, up to 30")
     parser.add_argument("--output", type=Path, help="Also save the JSON report at this path")
     args = parser.parse_args(argv)
@@ -406,7 +477,11 @@ def main(argv: list[str] | None = None) -> int:
         validate_url(args.site)
         if args.health_url:
             validate_url(args.health_url, health=True)
-        result = rehearse(args.site, load_candidate(), health_url=args.health_url, timeout=args.timeout)
+        if args.backend_site:
+            validate_url(args.backend_site)
+        candidate = load_candidate(include_app=args.include_app, include_backend=args.backend_site is not None)
+        result = rehearse(args.site, candidate, health_url=args.health_url, timeout=args.timeout,
+                          include_app=args.include_app, backend_site=args.backend_site)
     except PreflightError as error:
         result = {"schema_version": 1, "kind": "saved_demo_static_alignment", "status": "FAIL",
                   "code": error.code, "limitations": LIMITATIONS}
