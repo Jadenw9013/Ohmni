@@ -121,7 +121,7 @@ def plan_request(server):
     return {**server._identity(), "message": f"A USB temperature board {CANARY}", "parent_id": None}
 
 
-def test_planner_provider_outage_is_one_issue_with_the_unchanged_public_response(tmp_path, monkeypatch):
+def test_planner_provider_outage_is_one_issue_with_a_service_failure_response(tmp_path, monkeypatch):
     def outage():
         return AnthropicProvider(api_key="test", client=VendorClient(APIConnectionError(CANARY)))
     with served(tmp_path / "off", provider=outage()) as (server, base):
@@ -134,12 +134,12 @@ def test_planner_provider_outage_is_one_issue_with_the_unchanged_public_response
         raw = recorder.raw()
         values = recorder.failure_values()
     assert disabled[:2] == enabled[:2]
-    assert enabled[0] == 400 and enabled[1]["error"] == "invalid_plan"
+    assert enabled[0] == 503 and enabled[1]["error"] == "planner_provider_unavailable"
     assert values == ["provider.provider_connection"]
     trace = transaction["contexts"]["trace"]
     assert (trace["trace_id"], trace["parent_span_id"]) == (TRACE, PARENT)
     assert transaction["transaction"] == "POST /api/project-plans"
-    assert trace["data"]["ohmni.http.status_code"] == 400
+    assert trace["data"]["ohmni.http.status_code"] == 503
     assert [s["op"] for s in transaction["spans"]] == ["ohmni.stage", "gen_ai.chat"]
     assert CANARY.encode() not in raw and b"test" not in raw.replace(b"latest", b"")
 

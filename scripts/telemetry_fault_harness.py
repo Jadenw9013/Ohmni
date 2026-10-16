@@ -13,7 +13,7 @@ names/outcomes, metric names/attributes), then checks the expected shape:
 1. expected_rejection  -- an engineering reject (incomplete routing) is a
    rejected outcome, never an issue;
 2. provider_failure    -- a planner provider outage is one owned issue and the
-   unchanged public 400 response;
+   explicit public 503 service-failure response;
 3. tool_timeout        -- a native tool timeout is a distinct ``timeout`` tool
    span and one ``eda_tool_failed`` issue;
 4. publication_failure -- a failed persisted completion is never counted as a
@@ -306,7 +306,7 @@ def run(output: Path) -> dict:
             and reject_run["public"] == {"status": "failed", "error_code": "routing_incomplete"}
             and worker(reject_run)["outcome"].get("ohmni.engineering_outcome") == "reject"
             and metric(reject_run, "ohmni.jobs.terminal", terminal="failed", reason="routing_incomplete") == 1,
-        "provider_outage_one_issue_unchanged_response": provider_run["public"] == {"status": 400, "error": "invalid_plan"}
+        "provider_outage_one_issue_service_response": provider_run["public"] == {"status": 503, "error": "planner_provider_unavailable"}
             and [i["value"] for i in provider_run["issues"]] == ["provider.provider_connection"]
             and metric(provider_run, "ohmni.provider.calls", outcome="provider_connection") == 1,
         "tool_timeout_is_distinct": timeout_run["public"] == {"status": "failed", "error_code": "eda_tool_failed"}

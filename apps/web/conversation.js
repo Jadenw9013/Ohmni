@@ -54,7 +54,7 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
       <section id="conversation-recovery" class="conversation-recovery" aria-labelledby="conversation-recovery-title" tabindex="-1" hidden>
         <span class="recovery-mark" aria-hidden="true">!</span><div class="recovery-copy"><p class="eyebrow">Your idea is safe</p>
         <h2 id="conversation-recovery-title">We couldn’t create the plan</h2>
-        <p>The AI planner is unavailable right now. Continue with the step-by-step setup, or retry without typing your idea again.</p>
+        <p id="conversation-recovery-message">We couldn’t prepare your plan. Your idea is still here.</p>
         <div class="preserved-request"><span>Your request</span><blockquote id="conversation-preserved"></blockquote></div>
         <details class="recovery-details"><summary>Technical details</summary><p id="conversation-error-detail"></p></details>
         <div class="recovery-actions"><button type="button" id="conversation-guided-recovery" class="primary">Continue with guided setup</button>
@@ -72,6 +72,7 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
         $("#conversation-error").textContent = message;
         $("#conversation-error").hidden = recoverable;
         $("#conversation-error-detail").textContent = message;
+        $("#conversation-recovery-message").textContent = message;
         failed = recoverable;
     };
     function sync() {

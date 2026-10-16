@@ -84,6 +84,18 @@ test("model text is escaped and suggested choices do not become verified facts",
     assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/);
     assert.match(html,/Engineering checks have not run/);assert.match(html,/Suggested choices/);
 });
+test("invalid plan recovery does not claim the planner is unavailable",async()=>{
+    const ui=dom();
+    const detail="The AI returned a response that did not match the supported board plan.";
+    const fetcher=async url=>url==="/api/health"
+        ? response({status:"ready",fixture_id:"esp32-bme280-environmental-logger",free_text:true})
+        : response({error:"invalid_plan",refusal:{message:detail}},502);
+    const controller=mountConversation(ui.root,{fetcher,onOpen(){},onSaved(){assert.fail("must not save");}});
+    await controller.begin("A USB-powered sensor board");
+    assert.equal(ui.node("#conversation-recovery-message").textContent,detail);
+    assert.doesNotMatch(ui.node("#conversation-recovery-message").textContent,/unavailable/);
+    assert.equal(ui.node("#conversation-preserved").textContent,"A USB-powered sensor board");
+});
 test("plan shape, attribution and readiness inconsistencies fail closed",()=>{
     for (const p of [plan({ready:true,questions:["unresolved"]}),plan({stated:[{field:"verified",quote:"USB"}]}),plan({assumed_fields:[]}),plan({stated:[{field:"status_led_count",quote:"invented"}]})]) {
         assert.throws(()=>parsePlan({...identity,plan:p},identity));

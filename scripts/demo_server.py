@@ -1167,6 +1167,10 @@ class DemoHandler(SimpleHTTPRequestHandler):
             return self._json({"error":"assistant_unavailable","refusal":{"message":"Assistance is unavailable. Your saved revision is unchanged. Try again or use the detailed controls."}},HTTPStatus.SERVICE_UNAVAILABLE)
 
     def _post_plan(self,plan_id=None):
+        from ohmni.adapters.anthropic_provider import (
+            ProviderRequestError,
+            StructuredGenerationError,
+        )
         from ohmni.application.conversation import PlanUnavailable
         from ohmni.application.projects import ProjectRefusalError
 
@@ -1194,9 +1198,18 @@ class DemoHandler(SimpleHTTPRequestHandler):
             return self._json({"error":"plan_unavailable","refusal":{"message":str(error)}},HTTPStatus.CONFLICT)
         except ProjectRefusalError as error:
             return self._json({"error":"project_refused","refusal":error.refusal.model_dump(mode="json")},HTTPStatus.UNPROCESSABLE_ENTITY)
+        except ProviderRequestError as error:
+            # Owned category only: never print the exception, prompt, key or response.
+            print(json.dumps({"component":"ohmni_demo","event":"planner_provider_failure",
+                              "reason":error.reason}),file=sys.stderr,flush=True)
+            message=("The AI service is not configured correctly on this server. Use guided setup while we restore it."
+                     if error.reason=="provider_auth" else
+                     "The AI service could not complete the request. Your idea is still here. Try again later or use guided setup.")
+            return self._json({"error":"planner_provider_unavailable","refusal":{"message":message}},HTTPStatus.SERVICE_UNAVAILABLE)
+        except StructuredGenerationError:
+            return self._json({"error":"invalid_plan","refusal":{"message":"The AI returned a response that did not match the supported board plan. Your idea is still here; retry or use guided setup."}},HTTPStatus.BAD_GATEWAY)
         except (ValueError,TypeError):
-            # A provider outage arrives here too (StructuredGenerationError is a
-            # ValueError); the provider boundary has already reported it once.
+            # Invalid input or rejected attribution; vendor failures are handled above.
             if telemetry.provider_calls_in_operation():
                 telemetry.record_boundary_failure("planner","plan_output_rejected",level="warning")
             return self._json({"error":"invalid_plan","refusal":{"message":"The plan could not be validated. Keep your requirements and try again or use guided setup."}},HTTPStatus.BAD_REQUEST)

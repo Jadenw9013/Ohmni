@@ -2,6 +2,7 @@
 import threading
 from contextlib import contextmanager
 
+import pytest
 from test_conversation import Provider, output
 from test_project_api import _request, _wait
 
@@ -48,6 +49,44 @@ def test_plan_confirm_is_identity_bound_and_ignores_no_client_edits(tmp_path, mo
         assert _request(base, f"/api/projects/{project['project_id']}/revisions/{revision['revision_id']}/run", identity)[0] == 202
         assert launched == [(project["project_id"], revision["revision_id"])]
         assert len(server.planner.provider.requests) == 1
+
+
+@pytest.mark.parametrize("reason", ["provider_auth", "provider_connection", "provider_rate_limited"])
+def test_vendor_failure_is_not_reported_as_an_invalid_plan(tmp_path, reason, capsys):
+    from ohmni.adapters.anthropic_provider import ProviderRequestError
+
+    with server_at(tmp_path) as (server, base):
+        def unavailable(*_args):
+            raise ProviderRequestError("private-vendor-response-canary", reason)
+        server.planner.provider.generate_structured = unavailable
+        status, body = _request(base, "/api/project-plans", {
+            **server._identity(), "message": "A USB temperature board", "parent_id": None,
+        })
+        assert status == 503
+        assert body["error"] == "planner_provider_unavailable"
+        assert "private-vendor-response-canary" not in str(body)
+        if reason == "provider_auth":
+            assert "not configured correctly" in body["refusal"]["message"]
+        else:
+            assert "could not complete the request" in body["refusal"]["message"]
+    logs = capsys.readouterr().err
+    assert reason in logs
+    assert "private-vendor-response-canary" not in logs
+
+
+def test_invalid_model_schema_is_a_bad_gateway_not_a_provider_outage(tmp_path):
+    from ohmni.adapters.anthropic_provider import StructuredGenerationError
+
+    with server_at(tmp_path) as (server, base):
+        def invalid(*_args):
+            raise StructuredGenerationError("private-proposal-canary")
+        server.planner.provider.generate_structured = invalid
+        status, body = _request(base, "/api/project-plans", {
+            **server._identity(), "message": "A USB temperature board", "parent_id": None,
+        })
+        assert status == 502
+        assert body["error"] == "invalid_plan"
+        assert "private-proposal-canary" not in str(body)
 
 
 def test_a_configured_model_never_enters_the_saved_revision_pipeline(tmp_path, monkeypatch):

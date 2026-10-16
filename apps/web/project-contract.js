@@ -227,6 +227,7 @@ async function requestProject(path, { fetcher, identity, method = "GET", data, t
         const refusal = payload?.refusal?.message;
         const messages = {
             plan_unavailable: "The AI planner is unavailable right now. Your idea is still here.",
+            planner_provider_unavailable: "The AI service could not complete the request. Your idea is still here. Try again later or use guided setup.",
             invalid_plan: "The AI response could not be turned into a safe plan. Your idea is still here.",
             proposal_unavailable: "The AI assistant is unavailable right now. Your saved project is unchanged.",
             assistant_unavailable: "The AI assistant is unavailable right now. Your saved project is unchanged.",

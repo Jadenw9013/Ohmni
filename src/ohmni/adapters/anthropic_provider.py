@@ -117,6 +117,17 @@ class StructuredGenerationError(ValueError):
     """
 
 
+class ProviderRequestError(StructuredGenerationError):
+    """The vendor request failed, rather than returning an invalid proposal."""
+
+    def __init__(self, message: str, reason: str = "provider_error"):
+        super().__init__(message)
+        self.reason = reason if reason in {
+            "provider_timeout", "provider_connection", "provider_rate_limited",
+            "provider_auth", "provider_status", "provider_error",
+        } else "provider_error"
+
+
 class CallUsage(BaseModel):
     """What one structured call actually cost, retries included.
 
@@ -405,13 +416,13 @@ class AnthropicProvider:
             # may well have been billed, and an unbilled one costs nothing to
             # count. Undercounting spend is the error that matters here.
             usage.attempts += 1
+            outcome = telemetry.classify_provider_failure(type(exc))
             if span is not None:
                 # Classified by exception class name only; the instance is never
                 # handed to telemetry, so its text cannot reach an envelope.
-                outcome = telemetry.classify_provider_failure(type(exc))
                 span.result(outcome)
                 telemetry.record_boundary_failure("provider", outcome)
-            raise StructuredGenerationError(_describe_vendor_failure(exc)) from None
+            raise ProviderRequestError(_describe_vendor_failure(exc), outcome) from None
         usage.record(message)
         if span is not None and telemetry.enabled():
             # Telemetry-only reads run no vendor code: plain instance data or
@@ -465,5 +476,6 @@ __all__ = [
     "MODEL_ENV_VAR",
     "AnthropicProvider",
     "CallUsage",
+    "ProviderRequestError",
     "StructuredGenerationError",
 ]
