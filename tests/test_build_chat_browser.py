@@ -44,7 +44,7 @@ def test_build_motion_and_prefixed_board_chat(tmp_path):
                     response = route.fetch()
                     body = response.json()
                     if mode["value"]:
-                        body.update(status=mode["value"], report=None, error=None,
+                        body.update(status=mode["value"], report=None, error="Demo pipeline failed" if mode["value"] == "failed" else None,
                             error_code="eda_tool_failed" if mode["value"] == "failed" else None,
                             progress=[{"stage": "routing", "label": "Drawing the copper connections",
                                 "status": "RUNNING", "detail": "Finding paths between your components.", "percent": 40}])
@@ -56,6 +56,7 @@ def test_build_motion_and_prefixed_board_chat(tmp_path):
                 page.get_by_role("button", name="Generate my board", exact=True).click()
                 page.wait_for_function("document.querySelector('#design').dataset.buildState === 'running'")
                 assert page.locator("#progress-track").get_attribute("aria-valuenow") == "40"
+                assert "Server responding" in page.locator("#build-connection-status").inner_text()
                 signal = page.locator(".signal").first
                 assert signal.evaluate("e => getComputedStyle(e).animationPlayState") == "running"
                 page.locator("#build-motion").click()
@@ -72,6 +73,7 @@ def test_build_motion_and_prefixed_board_chat(tmp_path):
                 page.locator("#run-error").wait_for(state="visible")
                 assert signal.evaluate("e => getComputedStyle(e).animationPlayState") == "paused"
                 assert page.locator("#error-back").is_visible()
+                assert "build stopped" in page.locator("#build-connection-status").inner_text()
                 # Resume polling the actual completed run by reopening its saved revision.
                 mode["value"] = None
                 page.set_viewport_size({"width": 1440, "height": 1000})
@@ -115,3 +117,41 @@ def test_build_motion_and_prefixed_board_chat(tmp_path):
         server.shutdown()
         server.server_close()
         thread.join(timeout=5)
+
+
+@pytest.mark.integration
+def test_planning_feedback_and_clarification_hint(tmp_path):
+    from test_conversation import output
+    from test_conversation_api import server_at
+
+    playwright = pytest.importorskip("playwright.sync_api")
+    release = threading.Event()
+    with server_at(tmp_path / "workspace") as (server, origin):
+        def proposal(request, schema):
+            assert release.wait(15)
+            return output(questions=["USB power only is supported. Is that acceptable?"])
+        server.planner.provider.generate_structured = proposal
+        with playwright.sync_playwright() as p:
+            browser = p.chromium.launch()
+            try:
+                page = browser.new_page(viewport={"width": 1100, "height": 900})
+                page.route("**/*", lambda route: route.continue_() if route.request.url.startswith(origin + "/") else route.abort())
+                page.goto(origin + "/#workspace")
+                page.locator("#free-text-request").fill("A USB temperature board with one light")
+                page.locator("#start-free-text").click()
+                page.locator("#conversation-activity").wait_for(state="visible")
+                page.wait_for_function("document.querySelector('#conversation-elapsed').textContent !== '0s elapsed'")
+                assert "Preparing" in page.locator("#conversation-activity-label").inner_text()
+                page.screenshot(path=str(tmp_path / "planning.png"), full_page=True)
+                release.set()
+                page.locator("#conversation-confirm-hint").wait_for(state="visible")
+                assert page.locator("#conversation-confirm").is_disabled()
+                assert "Generation is paused: answer" in page.locator("#conversation-confirm-hint").inner_text()
+                assert not page.locator("#conversation-activity").is_visible()
+                page.locator("#conversation-confirm-hint").scroll_into_view_if_needed()
+                page.screenshot(path=str(tmp_path / "clarification.png"), full_page=True)
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+            finally:
+                release.set()
+                browser.close()

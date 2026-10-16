@@ -42,6 +42,13 @@
 .app-layout #conversation-plan section { padding: 0; margin: 0; border: 0; background: none; }
 .app-layout #conversation-reply-form { margin: 20px 0; }
 .app-layout .conversation-actions { justify-content: flex-end; }
+.app-layout .conversation-confirm-hint { padding: 12px 16px; margin: 0 0 20px; border-left: 3px solid #73d9e6; background: #0c1b2b; color: #c4d4e6; line-height: 1.6; }
+.app-layout .conversation-activity { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; margin: 12px 0; border: 1px solid #37516d; border-radius: 12px; background: #122137; color: #dce9f8; }
+.app-layout .conversation-activity[hidden] { display: none; }
+.app-layout #conversation-elapsed { margin-left: auto; font-variant-numeric: tabular-nums; color: #9db4cd; }
+.app-layout .conversation-spinner { width: 18px; height: 18px; flex-shrink: 0; border: 2px solid #36516b; border-top-color: #78dcdf; border-radius: 50%; animation: conversation-spin 1s linear infinite; }
+@keyframes conversation-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .app-layout .conversation-spinner { animation: none; } }
 .app-layout .result-workspace { display: grid; grid-template-columns: minmax(0,1fr) minmax(290px,360px); gap: 24px; align-items: start; }
 .app-layout .result-workspace:has(#result-assistant[hidden]) { grid-template-columns: minmax(0,1fr); }
 .app-layout .result-workspace .board-shell { grid-template-columns: minmax(0,1fr); }
@@ -781,3 +788,5 @@
 
 .assistant-confirmation:has(button:not([hidden])) { padding: 0 12px 12px; }
 .assistant-confirmation button { width: 100%; font-size: .78rem; border-color: #83ccec; background: #163b50; }
+
+.build-connection-status { color: var(--muted, #a8bad0); font-size: .85rem; line-height: 1.5; padding: .75rem 1rem; border-left: 3px solid #69d9e8; background: #101e30; }

@@ -43,6 +43,7 @@ test("unresolved questions disable confirmation and short answers reference thei
     await controller.begin(p.messages[0]);
     await controller.confirm();
     assert.equal(ui.node("#conversation-confirm").disabled,true);
+    assert.match(ui.node("#conversation-confirm-hint").textContent,/Generation is paused: answer/);
     assert.equal(ui.node("#conversation-reply").focused,true);
     await controller.propose("Yes");
     assert.equal(calls.at(-1).body.parent_id,p.plan_id);
@@ -100,4 +101,34 @@ test("plan shape, attribution and readiness inconsistencies fail closed",()=>{
     for (const p of [plan({ready:true,questions:["unresolved"]}),plan({stated:[{field:"verified",quote:"USB"}]}),plan({assumed_fields:[]}),plan({stated:[{field:"status_led_count",quote:"invented"}]})]) {
         assert.throws(()=>parsePlan({...identity,plan:p},identity));
     }
+});
+
+test("planning displays elapsed feedback and cancellation clears its timer",async()=>{
+    const ui=dom();let resolve,tick,clock=1000,cleared=0;
+    const controller=mountConversation(ui.root,{onOpen(){},now:()=>clock,
+        setIntervalFn:fn=>{tick=fn;return 123;},clearIntervalFn:id=>{assert.equal(id,123);cleared++;},
+        fetcher:async url=>url==="/api/health"?response({status:"ready",fixture_id:"esp32-bme280-environmental-logger"}):new Promise(r=>{resolve=r;})});
+    const pending=controller.begin("USB temperature board");await new Promise(setImmediate);
+    assert.equal(ui.node("#conversation-activity").hidden,false);
+    clock=22000;tick();
+    assert.match(ui.node("#conversation-activity-label").textContent,/Still waiting/);
+    assert.match(ui.node("#conversation-elapsed").textContent,/21s elapsed/);
+    controller.cancel();assert.equal(cleared,1);assert.equal(ui.node("#conversation-activity").hidden,true);
+    resolve(response({plan:plan()}));await pending;
+    assert.equal(ui.node("#conversation-plan").innerHTML,"");
+});
+
+test("saving and starting display separate states without duplicate confirmation",async()=>{
+    const p=plan(),ui=dom(),calls=[];let save,start;
+    const base=transport(p,calls);
+    const controller=mountConversation(ui.root,{onOpen(){},
+        fetcher:async(url,options)=>url.endsWith("/confirm")?new Promise(resolve=>{calls.push({url});save=()=>resolve(response({project:project(p)},201));}):base(url,options),
+        onSaved:()=>new Promise(resolve=>{start=resolve;})});
+    await controller.begin(p.messages[0]);const pending=controller.confirm();
+    await new Promise(setImmediate);
+    assert.equal(ui.node("#conversation-confirm").textContent,"Saving your plan…");
+    await controller.confirm();assert.equal(calls.filter(c=>c.url.endsWith("/confirm")).length,1);
+    save();await new Promise(setImmediate);
+    assert.equal(ui.node("#conversation-confirm").textContent,"Starting your board…");
+    start();await pending;assert.equal(ui.node("#conversation-activity").hidden,true);
 });

@@ -800,3 +800,15 @@ test("a brief or demo response is a telemetry success only after it passes its c
         }
     } finally { reset(); }
 });
+
+test("a hung status request times out with a reconnect for the same build",async()=>withApp(async(app,dom)=>{
+    let signal;
+    await app.poll(JOB_ID,identity,{requestTimeoutMs:5,fetcher:async(url,options)=>{signal=options.signal;return new Promise(()=>{});}});
+    assert.equal(signal.aborted,true);
+    assert.equal(dom.get("#error-retry").textContent,"Reconnect to this run");
+    assert.match(dom.get("#build-connection-status").textContent,/build may still be running/);
+}));
+test("successful status polling identifies a responding server",async()=>withApp(async(app,dom)=>{
+    await app.poll(JOB_ID,identity,{fetcher:async()=>response(200,jobEnvelope()),schedule:()=>{}});
+    assert.match(dom.get("#build-connection-status").textContent,/Server responding/);
+}));

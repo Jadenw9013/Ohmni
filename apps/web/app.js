@@ -559,6 +559,9 @@ const PENDING_STAGES = [
 ];
 
 function renderPendingStages(custom = false) {
+    state.buildProgressKey = null;
+    state.buildProgressAt = Date.now();
+    setText("#build-connection-status", "Waiting for the server to accept this build…");
     $("#design")?.setAttribute("data-build-state", "waiting");
     $("#progress-track")?.setAttribute("aria-valuenow", "0");
     const detail = $("#progress-detail");
@@ -576,6 +579,12 @@ function renderPendingStages(custom = false) {
 function renderProgress(events) {
     $("#design")?.setAttribute("data-build-state", "running");
     const last = events.at(-1);
+    const now = Date.now();
+    const key = JSON.stringify(last || null);
+    if (state.buildProgressKey !== key) { state.buildProgressKey = key; state.buildProgressAt = now; }
+    const unchanged = Math.floor((now - state.buildProgressAt) / 1000);
+    setText("#build-connection-status", `Server responding · checked at ${new Date(now).toLocaleTimeString()}. `
+        + (unchanged >= 15 ? `No new stage update for ${unchanged}s; this step is still pending.` : "Following this saved build; no need to click Generate again."));
     const percent = last ? last.percent : 0;
     $("#progress-track")?.setAttribute("aria-valuenow", String(percent));
     $("#progress-bar").style.width = `${percent}%`;
@@ -600,6 +609,7 @@ function renderProgress(events) {
  * nothing here that can imply a finished board is still executing.
  */
 function renderSettledStages(stages) {
+    setText("#build-connection-status", "Build complete. Review the actual checks and warnings below.");
     $("#design")?.setAttribute("data-build-state", "complete");
     $("#progress-track")?.setAttribute("aria-valuenow", "100");
     $("#progress-bar").style.width = "100%";
@@ -612,20 +622,30 @@ function renderSettledStages(stages) {
         ${badge(stage.status)}</li>`).join("");
 }
 
-export async function poll(id, identity, { fetcher = globalThis.fetch, schedule = globalThis.setTimeout, monitorer = beginCompletionMonitor } = {}) {
+export async function poll(id, identity, { fetcher = globalThis.fetch, schedule = globalThis.setTimeout,
+    monitorer = beginCompletionMonitor, requestTimeoutMs = 15000 } = {}) {
     const version = state.pollVersion;
     state.jobId = id;
     state.identity = identity;
     try {
-        let response;
-        try { response = await fetcher(API_BASE + `/api/jobs/${id}`, { cache: "no-store", headers: pollHeaders(identity) }); }
-        catch { fail("backend_unavailable"); }
-        if (!response.ok) {
-            fail(await serverErrorKind(response, response.status === 404 ? "lost_job"
-                : response.status >= 500 ? "backend_unavailable" : "api_ui_mismatch"));
-        }
+        const controller = new AbortController();
+        let timer;
+        const load = async () => {
+            let response;
+            try { response = await fetcher(API_BASE + `/api/jobs/${id}`, { cache: "no-store", headers: pollHeaders(identity), signal: controller.signal }); }
+            catch { fail("backend_unavailable"); }
+            if (!response.ok) {
+                fail(await serverErrorKind(response, response.status === 404 ? "lost_job"
+                    : response.status >= 500 ? "backend_unavailable" : "api_ui_mismatch"));
+            }
+            try { return await response.json(); } catch { fail("api_ui_mismatch"); }
+        };
         let payload;
-        try { payload = await response.json(); } catch { fail("api_ui_mismatch"); }
+        try {
+            payload = await Promise.race([load(), new Promise((_, reject) => {
+                timer = setTimeout(() => { controller.abort(); reject(new Error("build_status_timeout")); }, requestTimeoutMs);
+            })]);
+        } finally { clearTimeout(timer); }
         if (version !== state.pollVersion) return;
         const job = parseJob(payload, id, identity);
         const disposition = pollDisposition(job.status);
@@ -638,6 +658,7 @@ export async function poll(id, identity, { fetcher = globalThis.fetch, schedule 
             return;
         }
         if (disposition === "failed") {
+            setText("#build-connection-status", "The server reported that this build stopped. Review the error before retrying.");
             state.runStatus = "failed";
             $("#confirm-brief").disabled = false;
             const kind = ["worker_start_failed", "routing_incomplete", "eda_tool_failed"].includes(job.error_code)
@@ -649,15 +670,18 @@ export async function poll(id, identity, { fetcher = globalThis.fetch, schedule 
         state.runStatus = "running";
         updateShell();
         renderProgress(job.progress);
-        const dependencies = { fetcher, schedule, monitorer };
+        const dependencies = { fetcher, schedule, monitorer, requestTimeoutMs };
         schedule(() => { if (version === state.pollVersion) void poll(id, identity, dependencies); }, 900);
     } catch (error) {
         if (version !== state.pollVersion) return;
         const kind = errorKind(error, "backend_unavailable");
         state.runStatus = kind === "backend_unavailable" ? "paused" : "failed";
+        setText("#build-connection-status", kind === "backend_unavailable"
+            ? "Connection interrupted. The build may still be running; reconnect to this run rather than generating another board."
+            : "This run could not be read safely. Review the error before continuing.");
         $("#confirm-brief").disabled = false;
         return showError(kind, kind === "backend_unavailable"
-            ? () => poll(id, identity, { fetcher, schedule, monitorer })
+            ? () => poll(id, identity, { fetcher, schedule, monitorer, requestTimeoutMs })
             : () => freshRun(fetcher), kind === "backend_unavailable" ? "Reconnect to this run" : state.customProject ? "Retry this revision" : "Start a new example");
     }
 }
