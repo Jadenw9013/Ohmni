@@ -216,3 +216,49 @@ def test_provider_schema_constrains_ids_and_response_shape_before_return(tmp_pat
     service.provider = SchemaProvider()
     turn = service.ask(pid, rid, "Which processor did I select?")
     assert turn["facts"][0]["value"] == "ESP32-WROOM-32E"
+
+
+def test_requirement_outcomes_are_available_without_model_written_verdicts(tmp_path):
+    service, pid, rid = setup(tmp_path, {"kind": "answer", "fact_ids": ["report.requirements"]})
+    service.projects.claim_job(pid, rid, {"job_id": "a" * 12, "status": "queued", "progress": [],
+                                        "report": None, "error": None, "error_code": None})
+    service.jobs.value = {"status": "complete", "report": {"requirements": [
+        {"field": "hand_solderable_preferred", "label": "Assembly preference", "display_value": "Yes",
+         "status": "VIOLATED", "detail": "Selected package needs reflow.", "private_path": "canary"},
+        {"field": "budget_usd", "status": "UNKNOWN", "detail": "Total cost is unknown."},
+    ]}}
+    turn = service.ask(pid, rid, "Does it meet my choices?")
+    rows = turn["facts"][0]["value"]
+    assert rows[0]["status"] == "VIOLATED" and rows[1]["status"] == "UNKNOWN"
+    assert "canary" not in str(turn)
+    assert "manufacturing readiness is not the same" in service.provider.requests[0].instructions
+    assert len(service.projects.get(pid)["revisions"]) == 1
+
+
+@pytest.mark.parametrize("code,detail", [
+    ("routing_incomplete", "copper connections"),
+    ("server_restarted", "not evidence of a circuit defect"),
+    ("private-error-canary", "did not finish"),
+])
+def test_failed_build_guidance_uses_safe_recorded_failure(tmp_path, code, detail):
+    service, pid, rid = setup(tmp_path, {"kind": "answer", "fact_ids": ["run.failure"]})
+    service.projects.claim_job(pid, rid, {"job_id": "a" * 12, "status": "queued", "progress": [],
+                                        "report": None, "error": None, "error_code": None})
+    service.jobs.value = {"status": "failed", "error_code": code, "error": "secret-path-canary", "report": None}
+    turn = service.ask(pid, rid, "Why did it stop?")
+    assert detail in turn["facts"][0]["value"]
+    assert "canary" not in str(turn)
+    assert turn["brief"] is None and not turn["ready"]
+
+
+def test_recovery_clarification_preserves_goal_until_user_accepts_tradeoff(tmp_path):
+    brief = SynthesisBrief().model_dump(mode="json")
+    pending = {"kind": "change", "fact_ids": [], "proposal": {"brief": brief, "stated": [],
+               "questions": ["This sensor needs reflow assembly. Would you use an assembly service?"]}}
+    service, pid, rid = setup(tmp_path, pending, change(hand_solderable_preferred=False))
+    first = service.ask(pid, rid, "Help me resolve the assembly issue")
+    assert not first["ready"] and not first["changes"] and first["questions"]
+    assert service.projects.get(pid)["revisions"][0]["brief"]["hand_solderable_preferred"] is True
+    next_turn = service.ask(pid, rid, "Yes, I accept assembly beyond a soldering iron", first["turn_id"])
+    assert next_turn["ready"]
+    assert len(service.projects.get(pid)["revisions"]) == 1

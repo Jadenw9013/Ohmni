@@ -78,6 +78,17 @@ class ProjectAssistant:
         job = self.jobs.get(revision["job_id"]) if revision["job_id"] else None
         facts.append({"id": "run.status", "label": "Generation run", "value": (job or {}).get("status", "not_run"),
                       "source": f"Revision {revision['number']} run record", "basis": "run_state"})
+        if (job or {}).get("status") == "failed":
+            code = (job or {}).get("error_code")
+            reasons = {
+                "routing_incomplete": "The copper connections could not all be completed within the routing limits. No build package was released.",
+                "eda_tool_failed": "KiCad could not complete an independent check. No build package was released.",
+                "server_restarted": "The server restarted before this run finished. This is not evidence of a circuit defect.",
+                "worker_start_failed": "The build worker did not start. This is not evidence of a circuit defect.",
+            }
+            facts.append({"id": "run.failure", "label": "Why this build stopped",
+                          "value": reasons.get(code, "The build did not finish. The recorded run does not establish a working board."),
+                          "source": f"Revision {revision['number']} run record", "basis": "run_state"})
         # A run's completion is not a verdict. Only expose the actual recorded bounded summary.
         report = (job or {}).get("report") or {}
         bom = report.get("bom") or {}
@@ -90,6 +101,16 @@ class ProjectAssistant:
             if inventory:
                 facts.append({"id": "report.bom.parts", "label": "Parts used in this board",
                               "value": inventory, "source": f"Revision {revision['number']} generated bill of materials",
+                              "basis": "recorded_result"})
+        requirements = report.get("requirements")
+        if isinstance(requirements, list) and requirements:
+            # Only expose bounded report-owned outcomes, never model-authored verdicts.
+            rows = [{key: row[key] for key in ("field", "label", "display_value", "status", "detail") if key in row}
+                    for row in requirements if isinstance(row, dict)
+                    and row.get("status") in {"MET", "VIOLATED", "UNKNOWN"}]
+            if rows:
+                facts.append({"id": "report.requirements", "label": "How your saved choices checked out",
+                              "value": rows, "source": f"Revision {revision['number']} requirement checks",
                               "basis": "recorded_result"})
         for field in ("verification_ladder", "limitations"):
             if isinstance(report.get(field), list) and report[field]:
@@ -141,6 +162,11 @@ class ProjectAssistant:
                     "For which-parts questions use report.bom.parts when present; otherwise select the relevant saved brief fields and do not imply a board has been generated. "
                     "Select at most 12 IDs, without duplicates. For unavailable use fact_ids [] and proposal null. "
                     "If supplied facts cannot answer, return unavailable. Run complete never means checks passed. "
+                    "For whether-goals-were-met questions, select report.requirements when present, plus relevant limitations; manufacturing readiness is not the same as meeting every saved choice. "
+                    "For help with an unmet choice or failed build, use the recorded requirement outcomes and run.failure. Do not invent a root cause or say that another build will pass. "
+                    "When a tradeoff needs the user’s consent, return kind change with the unchanged brief and at most two plain-language questions that explain the recorded obstacle and offer supported alternatives. "
+                    "Ask about the outcome and assembly preference, not part numbers, bus addresses or verifier rule IDs. An UNKNOWN may need firmware, measurements or human review rather than another PCB build. "
+                    "Never resolve a conflict just by dropping the requested feature or relaxing a saved preference without explicit consent in the conversation. "
                     "For requested edits use kind change with a BoardPlan proposal. Preserve every unrequested field of the "
                     "saved brief (or previous proposal); apply explicit corrections. Use only project_options. "
                     "Do not silently drop unsupported requests: list necessary questions in the proposal. Attribute stated "

@@ -74,6 +74,13 @@ def test_build_motion_and_prefixed_board_chat(tmp_path):
                 assert signal.evaluate("e => getComputedStyle(e).animationPlayState") == "paused"
                 assert page.locator("#error-back").is_visible()
                 assert "build stopped" in page.locator("#build-connection-status").inner_text()
+                recovery = page.locator("#recovery-assistant")
+                recovery.locator("textarea").wait_for(state="visible")
+                assert "Let’s work out the next step" in recovery.inner_text()
+                recovery.get_by_role("button", name="Help me with this build", exact=True).click()
+                assert "why this build stopped" in recovery.locator("textarea").input_value()
+                assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+                page.screenshot(path=str(tmp_path / "recovery-mobile.png"), full_page=True)
                 # Resume polling the actual completed run by reopening its saved revision.
                 mode["value"] = None
                 page.set_viewport_size({"width": 1440, "height": 1000})
@@ -84,6 +91,9 @@ def test_build_motion_and_prefixed_board_chat(tmp_path):
                 page.set_viewport_size({"width": 390, "height": 844})
                 chat = page.locator("#result-assistant")
                 field = chat.locator("textarea")
+                page.locator("#outcome-guidance").wait_for(state="visible")
+                page.locator("[data-guide-chat]").click()
+                assert "supported alternatives" in field.input_value()
                 field.fill("What parts are used?")
                 chat.get_by_role("button", name="Send", exact=False).click()
                 chat.get_by_text("Parts used in this board", exact=True).wait_for()

@@ -40,3 +40,40 @@ detector or silently replaced with a temperature/humidity board.
 Health's free_text flag means a provider is configured, not that credentials
 have been tested successfully. After credential changes, perform a bounded live
 planning rehearsal rather than inferring success from health alone.
+
+
+## Production flow and beginner recovery (2026-10-16)
+
+The live flow was exercised through the Vercel UI with a plain-language room
+sensor idea, server-owned plan confirmation, real KiCad generation and the
+complete build-package download. The ZIP contained 20 CRC-valid entries; all nine
+manufacturing file hashes matched the recorded release. A manufacturing-review
+release still had a violated hand-soldering preference, which motivated the
+following recovery changes:
+
+- A result summary prominently separates unmet choices, unverified items and
+  manufacturing readiness. Firmware, assembly and bench work remain explicit.
+- Chat is available beside a failed saved-revision build, as well as beside a
+  completed board. Suggested prompts prepare editable messages without sending
+  model requests automatically.
+- The assistant receives report-owned per-choice outcomes and allowlisted failure
+  explanations. It can ask plain-language tradeoff questions while preserving the
+  saved brief. Only a reviewed proposal can create a new revision; old results do
+  not become evidence for the new revision.
+- Requirement answers group unmet, unknown and met records; long check ladders
+  are presented as separate records rather than one dense paragraph.
+
+Regression commands:
+
+```sh
+node --test apps/web/tests/*.test.mjs
+.venv/bin/python -m pytest tests/test_conversation.py tests/test_conversation_api.py tests/test_project_assistant.py tests/test_project_assistant_api.py
+.venv/bin/python -m pytest -m integration tests/test_build_chat_browser.py
+.venv/bin/python scripts/verify.py fast
+```
+
+Failed-build UI is exercised with controlled job responses locally; do not break
+production tools to test an error. Paid production acceptance must also check
+that a conversational clarification preserves the goal, a new revision needs a
+fresh run, and its downloaded files match that run's report. Never interpret
+UNKNOWN as a defect automatically cured by another PCB build.

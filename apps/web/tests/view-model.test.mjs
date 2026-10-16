@@ -812,3 +812,29 @@ test("successful status polling identifies a responding server",async()=>withApp
     await app.poll(JOB_ID,identity,{fetcher:async()=>response(200,jobEnvelope()),schedule:()=>{}});
     assert.match(dom.get("#build-connection-status").textContent,/Server responding/);
 }));
+
+test("a manufacturing-ready result still prominently shows an unmet choice",async()=>withApp(async(app,dom)=>{
+    const report={...completedReport(),mode:"bounded_synthesis",requirements:[
+        {field:"hand_solderable_preferred",label:"Assembly preference",value:"Yes",status:"VIOLATED",detail:"Sensor needs reflow.",rule_ids:[]},
+        {field:"budget_usd",value:"Unknown",status:"UNKNOWN",detail:"Total cost is unknown.",rule_ids:[]},
+    ]};
+    await app.poll(JOB_ID,identity,{fetcher:async()=>response(200,jobEnvelope({status:"complete",report})),monitorer:()=>{}});
+    assert.equal(dom.get("#outcome-guidance").hidden,false);
+    assert.match(dom.get("#outcome-guidance").innerHTML,/Your design needs a decision/);
+    assert.match(dom.get("#outcome-guidance").innerHTML,/assembly methods beyond a soldering iron/);
+    assert.match(dom.get("#outcome-guidance").innerHTML,/1 choices or limits still need proof/);
+    assert.match(dom.get("#outcome-guidance").innerHTML,/Help me resolve this/);
+}));
+
+test("failed revision exposes recovery chat and editing invalidates it",async()=>withApp(async(app,dom)=>{
+    const projectId="1".repeat(16),revisionId="2".repeat(16),stamp="2026-10-16T00:00:00+00:00";
+    const saved={revision_id:revisionId,number:1,created_at:stamp,brief:defaultProjectBrief(),brief_fingerprint:"b".repeat(64),preview:brief(),job_id:JOB_ID};
+    const project={project_id:projectId,created_at:stamp,updated_at:stamp,revisions:[saved]};
+    dom.get("#recovery-assistant").querySelector=dom.get;
+    await app.startProjectRun({projectId,revisionId,identity,preview:brief(),fetcher:async()=>response(202,startEnvelope()),poller:()=>{}});
+    await app.poll(JOB_ID,identity,{fetcher:async url=>url.includes("/api/projects/")?response(200,{...identity,project}):response(200,jobEnvelope({status:"failed",error:"Demo pipeline failed",error_code:"routing_incomplete"}))});
+    assert.equal(dom.get("#recovery-assistant").hidden,false);
+    assert.match(dom.get("#recovery-assistant").innerHTML,/Let’s work out the next step/);
+    assert.equal(dom.get("#recovery-assistant-context").textContent,"Working with saved revision 1.");
+    app.invalidateProjectResult();assert.equal(dom.get("#recovery-assistant").hidden,true);
+}));

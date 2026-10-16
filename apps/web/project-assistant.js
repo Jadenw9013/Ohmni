@@ -1,4 +1,4 @@
-import { escapeHtml as e } from "./view-model.js";
+import { escapeHtml as e, requirementResultsHtml } from "./view-model.js";
 import { checkIdentity, projectRequest, parseProjectEnvelope, sameBrief, supportedBrief } from "./project-contract.js";
 
 const id = x => typeof x === "string" && /^[a-f0-9]{16}$/.test(x);
@@ -34,6 +34,20 @@ export function parseTurn(payload, identity, context) {
 }
 
 function factValue(fact) {
+    if (fact.id === "report.requirements" && Array.isArray(fact.value)) {
+        const rows = fact.value.map(row=>({...row, value:row.display_value ?? "Saved choice", rule_ids:[]}));
+        if (!requirementResultsHtml(rows)) return "These choice results could not be displayed safely.";
+        const unmet=rows.filter(row=>row.status==="VIOLATED"), unknown=rows.filter(row=>row.status==="UNKNOWN"), met=rows.filter(row=>row.status==="MET");
+        return `<p>${unmet.length} unmet · ${unknown.length} not yet verified · ${met.length} met within the recorded checks.</p>
+            ${unmet.length ? requirementResultsHtml(unmet) : ""}
+            ${unknown.length ? `<details><summary>Not yet verified (${unknown.length})</summary>${requirementResultsHtml(unknown)}</details>` : ""}
+            ${met.length ? `<details><summary>Met within recorded checks (${met.length})</summary>${requirementResultsHtml(met)}</details>` : ""}`;
+    }
+    if (Array.isArray(fact.value) && fact.id !== "report.bom.parts") {
+        return `<ul class="assistant-records">${fact.value.map(item=>`<li>${object(item) && fact.id === "report.verification_ladder"
+            ? `<strong>${e(String(item.stage || item.label || "Recorded check"))}${item.status ? ` · ${e(String(item.status).replaceAll("_"," "))}` : ""}</strong>${item.detail ? `<p>${e(String(item.detail))}</p>` : `<p>${e(display(item))}</p>`}`
+            : e(display(item))}</li>`).join("")}</ul>`;
+    }
     if (fact.id === "report.bom.parts" && Array.isArray(fact.value)) {
         return `<ul class="assistant-parts">${fact.value.map(part => `<li><strong>${e(String(part.part ?? "Recorded part"))}</strong><span>${e(display(part.references ?? []))} · Quantity ${e(String(part.quantity ?? "not recorded"))}</span><span>${e(String(part.description ?? part.package ?? ""))}</span></li>`).join("")}</ul>`;
     }
@@ -43,7 +57,7 @@ function factValue(fact) {
 export function turnHtml(t) {
     const facts = t.facts.length ? `<p>From revision ${t.revision_number}. AI selected these records; they may not fully answer your question.</p><dl class="assistant-facts">${t.facts.map(f=>`<div><dt>${e(label(f.label))}</dt><dd>${factValue(f)}<small>${e(f.source)} · ${e(f.basis.replaceAll("_"," "))}</small></dd></div>`).join("")}</dl>` : "";
     const changes = t.kind === "change" ? `<h3>Review your changes</h3>${t.changes.length ? `<dl class="assistant-diff">${t.changes.map(c=>`<div><dt>${e(label(c.field))}</dt><dd><span>Before: ${e(display(c.before))}</span><strong>After: ${e(display(c.after))}</strong></dd></div>`).join("")}</dl>` : "<p>No changes were proposed.</p>"}<p>${e(t.invalidation)}</p>` : "";
-    return `${facts}${t.kind === "unavailable" ? "<p>The saved project records do not provide an answer to this question. No engineering claim has been inferred.</p>" : ""}${changes}${t.questions.length ? `<h3>Clarify the request</h3><p>These are AI questions or support-policy limits, not verified engineering results.</p><ul>${t.questions.map(q=>`<li>${e(q)}</li>`).join("")}</ul>` : ""}<details><summary>This conversation (${t.messages.length})</summary>${t.messages.map(m=>`<p class="conversation-message">${e(m)}</p>`).join("")}</details>`;
+    return `${t.kind === "change" && t.questions.length ? "<p>Let’s settle the next choice together. Nothing has changed yet.</p>" : t.kind === "answer" ? "<p>Here is what the saved records establish. Unverified items still need separate work.</p>" : ""}${facts}${t.kind === "unavailable" ? "<p>The saved project records do not provide an answer to this question. No engineering claim has been inferred.</p>" : ""}${changes}${t.questions.length ? `<h3>Clarify the request</h3><p>These are AI questions or support-policy limits, not verified engineering results.</p><ul>${t.questions.map(q=>`<li>${e(q)}</li>`).join("")}</ul>` : ""}<details><summary>This conversation (${t.messages.length})</summary>${t.messages.map(m=>`<p class="conversation-message">${e(m)}</p>`).join("")}</details>`;
 }
 
 /** The applied project, only if its new revision is exactly the reviewed proposal. */
@@ -53,12 +67,12 @@ export function appliedProject(project, selected, proposed) {
     return project;
 }
 
-export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied=()=>{}, onApplying=()=>{}, idPrefix=""}={}) {
+export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied=()=>{}, onApplying=()=>{}, idPrefix="", recovery=false}={}) {
     let context=null, key=null, turn=null, identity=null, busy=false, version=0, transcript=[];
     root.innerHTML=`<section class="project-assistant" aria-labelledby="assistant-title">
       <header class="assistant-header"><span class="assistant-avatar" aria-hidden="true">Ω</span><div><h2 id="assistant-title">Board chat</h2><p id="assistant-context"></p></div><button class="ghost" type="button" id="assistant-reset">New chat</button></header>
-      <div class="assistant-thread"><div id="assistant-welcome" class="assistant-welcome"><span class="assistant-avatar" aria-hidden="true">Ω</span><h3>Let's talk about your board.</h3><p>Ask about its parts, check a result, or describe a change.</p><p class="assistant-example">Try “What parts are used?” or “Make the board 80 mm wide.”</p></div><div id="assistant-response" role="log" aria-label="Board conversation" aria-live="polite"></div><p id="assistant-status" role="status" aria-live="polite"></p><p id="assistant-error" role="alert" hidden></p></div><div class="assistant-confirmation"><button class="secondary" type="button" id="assistant-apply" hidden>Save changes as a new revision</button></div>
-      <form id="assistant-form" class="assistant-composer"><label for="assistant-message">Message Ohmni</label><textarea id="assistant-message" rows="3" maxlength="2000" placeholder="Ask about your board or describe a change…"></textarea><div class="assistant-actions"><span>Up to 2,000 characters</span><button class="primary" type="submit" id="assistant-send">Send <span aria-hidden="true">↑</span></button></div></form>
+      <div class="assistant-thread"><div id="assistant-welcome" class="assistant-welcome"><span class="assistant-avatar" aria-hidden="true">Ω</span><h3>${recovery ? "Let’s work out the next step." : "Let's talk about your board."}</h3><p>${recovery ? "Your saved choices are safe. Ask what stopped this build, or explore a simpler supported design. Another run is not guaranteed to fix it." : "Ask what the results mean, what still needs work, or describe a change in everyday language."}</p><p class="assistant-example">You don’t need to know part numbers or electronics terms.</p></div><div id="assistant-response" role="log" aria-label="Board conversation" aria-live="polite"></div><p id="assistant-status" role="status" aria-live="polite"></p><p id="assistant-error" role="alert" hidden></p></div><div class="assistant-confirmation"><button class="secondary" type="button" id="assistant-apply" hidden>Save changes as a new revision</button></div>
+      <div class="assistant-prompts" aria-label="Conversation starters"><button type="button" class="ghost" id="assistant-help">${recovery ? "Help me with this build" : "What still needs work?"}</button><button type="button" class="ghost" id="assistant-change">Help me change the design</button></div><form id="assistant-form" class="assistant-composer"><label for="assistant-message">Message Ohmni</label><textarea id="assistant-message" rows="3" maxlength="2000" placeholder="Ask about your board or describe a change…"></textarea><div class="assistant-actions"><span>Up to 2,000 characters</span><button class="primary" type="submit" id="assistant-send">Send <span aria-hidden="true">↑</span></button></div></form>
       <p class="assistant-footnote">Answers use saved project records. You review changes before saving; a new revision needs new checks.</p></section>`;
     if (idPrefix) root.innerHTML = root.innerHTML.replaceAll('id="assistant-', `id="${idPrefix}assistant-`).replaceAll('for="assistant-', `for="${idPrefix}assistant-`).replaceAll('aria-labelledby="assistant-', `aria-labelledby="${idPrefix}assistant-`);
     const $=s=>root.querySelector(s.replace("#assistant-", `#${idPrefix}assistant-`));
@@ -68,6 +82,8 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
         $("#assistant-context").textContent=!context ? "Save a revision to ask about it or propose changes." : context.dirty ? "Save or reopen your revision before asking, so your answer matches your choices." : `Working with saved revision ${context.revision.number}.`;
         $("#assistant-send").disabled=busy||!available;$("#assistant-message").disabled=busy||!available;
         $("#assistant-reset").disabled=busy;
+        $("#assistant-help").disabled=busy||!available;$("#assistant-change").disabled=busy||!available;
+        $("#assistant-send").textContent=busy ? "Working…" : "Send ↑";
         $("#assistant-apply").hidden=!turn?.ready;$("#assistant-apply").disabled=busy||!available;
         root.setAttribute("aria-busy",String(busy));
     }
@@ -84,7 +100,7 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
             $("#assistant-response").innerHTML=transcript.join("");$("#assistant-welcome").hidden=true;$("#assistant-message").value="";
             const thread=root.querySelector(".assistant-thread");
             thread.scrollTop=Math.max(0, (root.querySelector(".assistant-user-message:nth-last-child(2)")?.offsetTop ?? 0) - 20);
-            $("#assistant-status").textContent=turn.ready ? "Review every change before saving. Nothing has changed yet." : "Your saved revision is unchanged.";
+            $("#assistant-status").textContent=turn.questions.length ? "Your answer is needed. Reply below; your saved revision is unchanged." : turn.ready ? "Review every change before saving. Nothing has changed yet." : "Your saved revision is unchanged.";
         } catch(err){if(version===current){error(err);$("#assistant-status").textContent="Your saved revision is unchanged. Your request is still in the text field.";}}
         finally{if(version===current){busy=false;sync();}}
     }
@@ -100,6 +116,11 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
         }catch(err){if(version===current)error(err);}
         finally{onApplying(false);if(version===current){busy=false;sync();}}
     }
+    const prepare = message => {if(busy || !context || context.dirty)return;$("#assistant-message").value=message;$("#assistant-message").focus();};
+    $("#assistant-help").addEventListener("click",()=>prepare(recovery
+        ? "Help me understand why this build stopped. Use its recorded results and ask me about supported alternatives before changing my goals."
+        : "Which saved choices are unmet or unverified? Explain the obstacle simply and ask me about supported alternatives before changing my goals."));
+    $("#assistant-change").addEventListener("click",()=>prepare("I would like help changing this design. Ask me what I want it to do and guide me through supported options."));
     $("#assistant-form").addEventListener("submit",event=>{event.preventDefault();void ask($("#assistant-message").value);});
     $("#assistant-apply").addEventListener("click",()=>void apply());
     $("#assistant-reset").addEventListener("click",()=>{reset();$("#assistant-message").focus();});

@@ -76,3 +76,12 @@ test("generated parts render as escaped readable records",()=>{
     assert.match(html,/assistant-parts/);assert.match(html,/U1 · Quantity 1/);
     assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>|<img>/);
 });
+
+test("requirement facts stay readable and distinguish unmet from unverified",()=>{
+    const html=turnHtml({...change(),kind:"answer",facts:[{id:"report.requirements",label:"Saved choices",source:"Recorded checks",basis:"recorded_result",value:[
+        {field:"hand_solderable_preferred",label:"Assembly",status:"VIOLATED",detail:"Needs reflow <tool>.",display_value:"Yes"},
+        {field:"budget_usd",label:"Budget",status:"UNKNOWN",detail:"Total cost unknown.",display_value:"$20"},
+    ]}]});
+    assert.match(html,/Violated/);assert.match(html,/Unknown/);assert.match(html,/Needs reflow &lt;tool&gt;/);
+    assert.doesNotMatch(html,/<tool>/);
+});

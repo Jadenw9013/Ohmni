@@ -47,7 +47,7 @@ const MESSAGES = Object.freeze({
     generation_mismatch: "The Ohmni server restarted or changed. This run belongs to the earlier server. Start a new example to continue.",
     fixture_rejected: "The server rejected the deterministic demo fixture. This page needs the matching Ohmni server; reload after restarting it.",
     brief_unavailable: "The server could not prepare the example brief. Nothing has been built. Try again when the server is ready.",
-    job_initialization_failed: "The server could not start this example. Nothing has been built. Try again.",
+    job_initialization_failed: "The server could not confirm that this build started. Check this saved revision’s run before retrying.",
     worker_start_failed: "The demo worker failed before progress began. Check the local server setup, then start a fresh run.",
     lost_job: "This run is no longer available from the server that created it. Start a new example to continue.",
     pipeline_failed: "The engineering pipeline failed before a completed result was available. Start a fresh run after checking the local server setup.",
@@ -475,6 +475,10 @@ export async function startRun({ fetcher = globalThis.fetch, poller = poll, poll
 export function invalidateProjectResult() {
     state.resultAssistant?.dispose();
     state.resultAssistant = null;
+    state.recoveryAssistant?.dispose();
+    state.recoveryAssistant = null;
+    setHidden("#recovery-assistant", true);
+    setHidden("#outcome-guidance", true);
     setHidden("#result-assistant", true);
     state.pollVersion += 1;
     stopCompletionMonitor();
@@ -535,6 +539,7 @@ export async function startProjectRun({ projectId, revisionId, identity, preview
         if (version !== state.pollVersion) return;
         state.runStatus = "failed";
         showError(errorKind(error, "job_initialization_failed"), () => retryProjectRun({ fetcher }), "Retry this revision");
+        await loadResultAssistant({fetcher,recovery:true});
     }
 }
 
@@ -663,8 +668,10 @@ export async function poll(id, identity, { fetcher = globalThis.fetch, schedule 
             $("#confirm-brief").disabled = false;
             const kind = ["worker_start_failed", "routing_incomplete", "eda_tool_failed"].includes(job.error_code)
                 ? job.error_code : "pipeline_failed";
-            return showError(kind,
+            showError(kind,
                 () => freshRun(fetcher), state.customProject ? "Retry this revision" : "Start a new example");
+            await loadResultAssistant({fetcher, recovery:true});
+            return;
         }
         clearError();
         state.runStatus = "running";
@@ -757,6 +764,7 @@ function renderResult(report, jobId) {
         choices.hidden = report.mode !== "bounded_synthesis";
         choices.innerHTML = `<h2>Your choices checked</h2><p>See which requested choices are present in this design and what still needs proof. These checks do not establish working firmware or tested hardware.</p>${requirements || `<p>No usable per-choice results were supplied by this run.</p>`}`;
     }
+    renderOutcomeGuidance(report);
     renderConfidence(exp.confidence);
     renderParts(exp.components);
     renderFiles(report, jobId);
@@ -771,28 +779,59 @@ function renderResult(report, jobId) {
     void loadResultAssistant();
 }
 
-export async function loadResultAssistant({fetcher=globalThis.fetch}={}) {
-    const root = $("#result-assistant"), context = state.revisionContext, report = state.report;
-    state.resultAssistant?.dispose(); state.resultAssistant = null;
+function renderOutcomeGuidance(report) {
+    const root = $("#outcome-guidance");
     if (!root) return;
-    root.hidden = !context || !report;
+    root.hidden = report.mode !== "bounded_synthesis";
     if (root.hidden) return;
+    const valid = requirementResultsHtml(report.requirements);
+    const unmet = valid ? report.requirements.filter(row=>row.status === "VIOLATED") : [];
+    const unknown = valid ? report.requirements.filter(row=>row.status === "UNKNOWN") : [];
+    const ready = report.release?.current === true && report.release?.status === "READY_FOR_MANUFACTURING_REVIEW";
+    const title = unmet.length ? "Your design needs a decision" : ready ? "Your files are ready for review" : "This design needs more review";
+    root.innerHTML = `<h2>${escapeHtml(title)}</h2><p>${unmet.length ? `${unmet.length} saved choice${unmet.length===1 ? " is" : "s are"} not met. Finishing the PCB does not resolve these choices.` : "A completed PCB is one step toward a working device."}</p>
+        ${unmet.length ? `<ul>${unmet.map(row=>`<li><strong>${escapeHtml(row.label || row.field.replaceAll("_"," "))}</strong>: ${escapeHtml(row.field === "hand_solderable_preferred" ? "Some selected parts need assembly methods beyond a soldering iron. Discuss assembly help or a supported change to the design before building." : row.detail)}</li>`).join("")}</ul>` : ""}
+        <p>${valid ? `${unknown.length} choices or limits still need proof. ` : "Per-choice results are unavailable. "}Firmware, assembly and physical testing still need separate work.</p>
+        <div class="outcome-actions"><button type="button" class="secondary" data-guide-chat>${unmet.length ? "Help me resolve this" : "Help me understand the next steps"}</button><button type="button" class="ghost" data-guide-checks>Review all choice checks</button></div><p class="fineprint">Chat can propose changes and ask questions. You review each change before saving and running fresh checks.</p>`;
+    root.querySelector("[data-guide-chat]")?.addEventListener("click",async()=>{
+        selectResultPanel("board");
+        if (!state.resultAssistant) await loadResultAssistant();
+        const field = $("#result-assistant-message");
+        if (field && !field.disabled) {
+            field.value = "Help me understand which saved choices are unmet or unverified. Explain the obstacle simply and ask me about supported alternatives before changing my goals.";
+            field.focus(); field.scrollIntoView?.({block:"center",behavior:prefersReducedMotion() ? "auto" : "smooth"});
+        }
+    });
+    root.querySelector("[data-guide-checks]")?.addEventListener("click",()=>{
+        selectResultPanel("checks"); $("#choices-checked")?.scrollIntoView?.({block:"start"});
+    });
+}
+
+export async function loadResultAssistant({fetcher=globalThis.fetch, recovery=false}={}) {
+    const selector = recovery ? "#recovery-assistant" : "#result-assistant";
+    const slot = recovery ? "recoveryAssistant" : "resultAssistant";
+    const root = $(selector), context = state.revisionContext, report = state.report;
+    state[slot]?.dispose(); state[slot] = null;
+    if (!root) return;
+    root.hidden = !context || (recovery ? state.runStatus !== "failed" : !report);
+    if (root.hidden) return;
+    const current = () => state.revisionContext === context && (recovery ? state.runStatus === "failed" : state.report === report);
     root.innerHTML = '<p role="status">Opening this board’s conversation…</p>';
     try {
         const response = await projectRequest(`/api/projects/${context.projectId}`, {fetcher, identity:state.identity});
-        if (state.report !== report || state.revisionContext !== context) return;
+        if (!current()) return;
         const project = parseProjectEnvelope(response.payload,response.identity);
         const revision = project.revisions.find(r=>r.revision_id===context.revisionId);
         if (project.project_id !== context.projectId || !revision) throw new Error("The board’s saved revision could not be found.");
-        state.resultAssistant = mountProjectAssistant(root,{fetcher,idPrefix:"result-",onApplied:async()=>{
+        state[slot] = mountProjectAssistant(root,{fetcher,idPrefix:recovery ? "recovery-" : "result-",recovery,onApplied:async()=>{
             invalidateProjectResult();
             await state.workbench?.openProject(context.projectId);
         }});
-        state.resultAssistant.setContext({projectId:project.project_id,revision,dirty:false});
+        state[slot].setContext({projectId:project.project_id,revision,dirty:false});
     } catch(error) {
-        if (state.report !== report || state.revisionContext !== context) return;
+        if (!current()) return;
         root.innerHTML = `<p role="alert">${escapeHtml(error.message || "Conversation unavailable.")}</p><button type="button" class="secondary" data-retry-assistant>Retry conversation</button>`;
-        root.querySelector("[data-retry-assistant]")?.addEventListener("click",()=>void loadResultAssistant({fetcher}));
+        root.querySelector("[data-retry-assistant]")?.addEventListener("click",()=>void loadResultAssistant({fetcher,recovery}));
     }
 }
 
