@@ -65,7 +65,9 @@ The README's opening and feature copy includes broader phrases about universal
 verification and automatic transient simulation (`README.md:5`, `:15`). Do not use
 that prose as the evidence for a stage claim. This review does not edit it.
 
-Sentry remains a proposed integration in `SENTRY_IMPLEMENTATION_PLAN.md:3`, `:18`.
+At this historical review, Sentry was proposed. Its plan is now archived in
+`docs/hackathon/archive/SENTRY_IMPLEMENTATION_PLAN.md`; see `SENTRY_CORE_RESULTS.md`
+for the subsequently implemented offline core.
 Do not describe Sentry tracing, replay or sponsor-specific results as delivered
 unless a later implementation and actual account evidence establish them. The
 overnight demo task deliberately excludes that integration.

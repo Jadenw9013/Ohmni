@@ -1,3 +1,13 @@
+# Historical Sentry implementation plan
+
+Retired from the October 2026 weekend scope on 2026-10-16. Retained only as
+implementation and review history; do not execute its handoff instructions.
+The offline core is implemented; live telemetry remains a separate decision.
+See [current hackathon plan](../FETCH_AI_IMPLEMENTATION_PLAN.md) and
+[Sentry results](../SENTRY_CORE_RESULTS.md).
+
+---
+
 # Ohmni Sentry implementation and AI handoff plan
 
 Status: **PROPOSED implementation; research and documentation only authorized.**
@@ -9,8 +19,8 @@ Owner: Jaden. No Sentry account/projects/DSNs are configured at this handoff.
 
 This replaces the technical recommendations in the supplied
 `Sentry_Integration_Proposal_Ohmni.md` and the earlier conversational plan.
-It does not replace [SECURITY.md](SECURITY.md), [AGENTS.md](AGENTS.md), or
-[the development workflow](docs/AI_WORKFLOW.md). Sections below distinguish
+It does not replace [SECURITY.md](../../../SECURITY.md), [AGENTS.md](../../../AGENTS.md), or
+[the development workflow](../../AI_WORKFLOW.md). Sections below distinguish
 observed facts, proposed decisions, and external facts awaiting confirmation.
 
 ## 1. Start here: authority and scope

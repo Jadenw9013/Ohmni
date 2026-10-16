@@ -4,8 +4,8 @@ Status: **offline core VERIFIED, live telemetry NOT activated.** Nothing in this
 change sends data anywhere by default. Every claim below was checked against the
 real pinned SDKs with a recording transport (Python) or intercepted requests
 (browser); no Sentry account, DSN, dashboard or paid call was used, so nothing
-here proves live ingestion. Plan: [SENTRY_IMPLEMENTATION_PLAN.md](../../SENTRY_IMPLEMENTATION_PLAN.md).
-Assignment: [CLAUDE_SENTRY_CORE_PROMPT.md](CLAUDE_SENTRY_CORE_PROMPT.md).
+here proves live ingestion. Plan: [SENTRY_IMPLEMENTATION_PLAN.md](archive/SENTRY_IMPLEMENTATION_PLAN.md).
+Assignment: [CLAUDE_SENTRY_CORE_PROMPT.md](archive/CLAUDE_SENTRY_CORE_PROMPT.md).
 
 ## 1. What works offline
 
