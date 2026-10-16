@@ -72,6 +72,16 @@ See the [PCB explorer guide](docs/PCB_EXPLORER.md) for the landing board's scope
 The [product documents](docs/product/README.md) describe proposed work; they are
 not evidence that those features are implemented or approved.
 
+## Built at LA AI Hackathon 2026
+
+Ohmni existed before AI Hackathon 2026 by LA Hacks (October 17-18, 2026). Every
+feature described above this section is pre-existing work. Only the features
+listed here were built during the event, and only these should be judged.
+
+<!-- Fill in during the event: feature, what it does, and the commits or PR that built it. -->
+
+- _Nothing yet. This list is filled in during the event._
+
 ## Contributing and AI tools
 
 Follow [the teammate workflow](docs/TEAM_SETUP.md#working-together). Work on a
@@ -106,3 +116,10 @@ The unused 1.92 MB `apps/web/landing-board.png` concept image was retired after
 its UI replacement. Historical checkpoint mentions remain historical; retrieve
 it from Git history if needed. Its obsolete server startup requirement was
 removed with it. No saved project, research source or behavior receipt was removed.
+
+## License
+
+Ohmni is released under the [MIT License](LICENSE). Bundled third-party files keep
+their own licenses, for example `apps/web/vendor/THREE-LICENSE.txt`,
+`apps/web/vendor/SENTRY-LICENSE.txt`, and the KiCad library footprints copied
+under `fixtures/` and `examples/`, which remain under the KiCad libraries' license.
