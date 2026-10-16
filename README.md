@@ -34,6 +34,8 @@ Start with `python3.13 scripts/setup_hackathon.py` on macOS/Linux or
 `py -3.13 scripts/setup_hackathon.py` on Windows. This prepares `.venv` and checks
 dependencies without starting an agent. Use the [troubleshooting guide](docs/hackathon/TROUBLESHOOTING.md)
 and [submission template](docs/hackathon/SUBMISSION_TEMPLATE.md) during the event.
+Once tools are installed, run `python scripts/rehearse_hackathon.py` from the venv
+for one fresh local demo readiness report, including board and browser checks.
 
 ## Five-minute saved demo
 

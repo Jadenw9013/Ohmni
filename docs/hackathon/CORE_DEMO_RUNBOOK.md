@@ -56,7 +56,24 @@ prices and fabrication assumptions are synthetic, not a supplier quotation.
 
 ## Repeatable checks
 
-Use the project venv, installed with `pip install -e ".[dev,browser]"`, then
+For a single readiness report covering setup, a fresh qualified board and the
+three-family browser rehearsal, run from the project venv:
+
+```sh
+python scripts/rehearse_hackathon.py
+```
+
+Each invocation creates a new directory under `build/hackathon-rehearsal/` with
+`report.txt`, `summary.json`, child logs and engineering/browser receipts. Existing
+output directories are refused. A blocked/failed stage stops later stages and
+remains visible as such; nothing skipped counts as ready. Exit codes are 0 for
+local guided-demo PASS, 1 for failure and 2 for blocked setup. This does not
+qualify live AI, Fetch, whole-board simulation or bench hardware. It makes no
+model calls and does not register an agent. It installs nothing; run teammate
+setup first. A full run includes local board generation and takes about a minute
+on the currently qualified Mac; allow longer on other machines.
+
+Use the project venv, installed with `pip install -e ".[dev,mcp,browser,fetch]"`, then
 `python -m playwright install chromium`. KiCad 10.0.5 with its libraries must be
 available. Follow `docs/TEAM_SETUP.md` for OS-specific setup.
 
