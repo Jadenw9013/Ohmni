@@ -18,6 +18,23 @@ check is not a hardware bench test or a guarantee that a board is ready to build
 | Understand the engineering boundaries | [Architecture](ARCHITECTURE.md), [verification](VERIFICATION.md), [decisions](docs/DECISIONS.md) |
 | Find current approved work | `.ai/state.yaml`, then `python scripts/ai_state.py next` |
 
+## October 2026 hackathon
+
+Start with the [Fetch.ai implementation and setup guide](docs/hackathon/FETCH_AI_IMPLEMENTATION_PLAN.md)
+for the weekend scope, local commands, integration checklist and fallback.
+The Fetch adapter is not implemented yet. Paper redesign and new Sentry prize work
+are deferred; the existing disabled telemetry core remains available.
+See [research and readiness](docs/hackathon/RESEARCH_AND_READINESS.md) for eligibility
+and submission details, and [assistant coordination](docs/hackathon/ASSISTANT_WORKFLOW.md)
+for Codex, Claude and Antigravity assignments. Run `python scripts/hackathon_preflight.py`
+from the project venv for a local setup check.
+Every teammate should follow the [engineering tool setup](docs/LOCAL_ENGINEERING_SETUP.md)
+for the pinned native tools and run the included verification after pulling.
+Start with `python3.13 scripts/setup_hackathon.py` on macOS/Linux or
+`py -3.13 scripts/setup_hackathon.py` on Windows. This prepares `.venv` and checks
+dependencies without starting an agent. Use the [troubleshooting guide](docs/hackathon/TROUBLESHOOTING.md)
+and [submission template](docs/hackathon/SUBMISSION_TEMPLATE.md) during the event.
+
 ## Five-minute saved demo
 
 Install Git and Python 3.12 or newer (3.13 is used by CI), then:

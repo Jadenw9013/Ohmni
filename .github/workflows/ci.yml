@@ -5,6 +5,21 @@ on:
   push:
 
 jobs:
+  # Fresh teammate setup, without browser downloads, native tools or agent startup.
+  # Full history is needed by the existing development-ledger validation.
+  hackathon-setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python scripts/setup_hackathon.py --skip-browser
+      - run: .venv/bin/python -m pytest tests/test_hackathon_setup.py
+
   fast:
     runs-on: ubuntu-latest
     steps:

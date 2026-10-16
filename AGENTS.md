@@ -14,6 +14,8 @@ and supersedes `PRD.md`/`MVP_SCOPE.md` as the product contract.
 For a new clone, follow [docs/TEAM_SETUP.md](docs/TEAM_SETUP.md). For a coding
 assistant handoff, use [docs/AI_TEAMMATE_HANDOFF.md](docs/AI_TEAMMATE_HANDOFF.md).
 `CLAUDE.md` is a pointer to this manual, not a separate policy or task ledger.
+For October hackathon work, use [engineering tool setup](docs/LOCAL_ENGINEERING_SETUP.md)
+and [assistant coordination](docs/hackathon/ASSISTANT_WORKFLOW.md) before taking an assignment.
 
 ## Repository map
 

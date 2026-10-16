@@ -3,7 +3,7 @@
 Rehearsed on 2026-10-14 against candidate
 `00016f5fb406b7c0633501e749a0299c04a33aec` (main after PR #76).
 This is the independent rehearsal assigned in
-[the Claude handoff](CLAUDE_SENTRY_CORE_PROMPT.md). The owner confirmed that the
+[the Claude handoff](archive/CLAUDE_SENTRY_CORE_PROMPT.md). The owner confirmed that the
 handoff was sent. Claude owns Sentry and the ledger; this work changes neither
 application behavior nor `.ai` acceptance records.
 

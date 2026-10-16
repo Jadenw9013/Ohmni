@@ -7,6 +7,9 @@ repository records rather than assuming the last chat or this guide is current.
 
 1. `AGENTS.md`: operating rules and architectural invariants.
 2. `README.md` and `docs/TEAM_SETUP.md`: actual setup and current capability limits.
+   For the hackathon, also read `docs/LOCAL_ENGINEERING_SETUP.md` and run its
+   per-machine verification before implementation. Coordinate assistant ownership
+   through `docs/hackathon/ASSISTANT_WORKFLOW.md`.
 3. `git status --short --branch`, `git log -5 --oneline`, then
    `python scripts/ai_state.py validate`, `python scripts/project_status.py` and
    `python scripts/ai_state.py next`: current state and approved task selection.

@@ -9,12 +9,14 @@
   The owner must send or explicitly adopt it before its product work is authorized;
   storing the template does not activate a task or approve unrelated milestones.
 
-## Proposed observability work
+## October hackathon execution plan
 
-- [Sentry implementation and AI handoff plan](../../SENTRY_IMPLEMENTATION_PLAN.md):
-  researched architecture, repository integration points, privacy requirements,
-  staged implementation and acceptance tests. Documentation only; runtime
-  implementation and live telemetry are not authorized by the document.
+- [Fetch.ai implementation and setup](../hackathon/FETCH_AI_IMPLEMENTATION_PLAN.md):
+  weekend priority, local startup, integration tasks, decision gates and submission checklist.
+- [Sentry core results](../hackathon/SENTRY_CORE_RESULTS.md): implemented offline
+  telemetry retained; live activation and further sponsor work are deferred.
+- The Paper frontend proposal has been removed. Keep the existing interface and
+  complete the primary Fetch.ai workflow inside ASI:One.
 
 ## Current UI/UX work
 
@@ -22,11 +24,6 @@
   forms, results, library and dialogs; current verification and takeover notes.
 - [Reference-led landing rebuild](UX_REFERENCE_LANDING_CHECKPOINT.md): current dark
   PCB landing, matching the user's supplied reference; supersedes the light landing.
-
-- [Proposed Paper frontend implementation plan](../../PAPER_FRONTEND_IMPLEMENTATION_PLAN.md):
-  audited design-tool capabilities, current-code corrections, complete journey
-  design and incremental implementation gates. Research only; not authorization
-  to rebuild the frontend or activate Paper services.
 
 - [UX audit and implementation direction](UX_CLARITY_AUDIT.md): six reported concerns
   and eight additional findings, with evidence, solutions and acceptance criteria.

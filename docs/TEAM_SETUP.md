@@ -1,5 +1,13 @@
 # Teammate setup
 
+For the October hackathon, follow [local engineering tools and verification](LOCAL_ENGINEERING_SETUP.md)
+after installing Python. It contains the pinned KiCad 10.0.5 installer, ngspice 42
+macOS build workaround, browser/MCP setup and mandatory no-key smoke commands.
+Pulling this repo does not install native tools. Each teammate must run the checks.
+The shortcut is `python3.13 scripts/setup_hackathon.py` (macOS/Linux) or
+`py -3.13 scripts/setup_hackathon.py` (Windows); it prepares the local venv and
+declared extras without starting a server or agent. See [troubleshooting](hackathon/TROUBLESHOOTING.md).
+
 Run commands from the repository root. Use a full Git clone, not a source ZIP or
 shallow clone: the development ledger verifies historical commit references.
 Do not copy another person's `.venv`, `.env`, `out/` or database.

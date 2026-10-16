@@ -22,8 +22,8 @@ its enabled-mode residual is MEDIUM and still violates the no-inspection gate.
 Later Claude commits require re-review; do not apply this outcome blindly to a
 moving branch.
 
-The main requirements are in [the implementation plan](../../SENTRY_IMPLEMENTATION_PLAN.md)
-and [Claude's assignment](CLAUDE_SENTRY_CORE_PROMPT.md). No live DSN, provider
+The main requirements are in [the implementation plan](archive/SENTRY_IMPLEMENTATION_PLAN.md)
+and [Claude's assignment](archive/CLAUDE_SENTRY_CORE_PROMPT.md). No live DSN, provider
 request, telemetry activation, deployment or paid service was used. SDK probes
 used Sentry Python **2.72.0** and browser **11.7.0**, recording transports/stubs and
 synthetic inputs. This is not evidence of Sentry account ingestion.
