@@ -84,8 +84,25 @@ including release gates; no stubbed native success is used.
 Private/local evidence is under `build/product-audit/` (ignored): planning before/
 after JSON, planned-build receipts and ZIPs, native matrix logs, test/deployment
 logs and browser screenshots. Do not commit agent download capabilities or keys.
-Production follow-up results and exact source commit are recorded in
-`.ai/verification/PPA-T01.yaml`.
+Production follow-up (same code):
+
+- Website: the untuned temperature-to-memory prompt reached job `1bc1950ead9e`
+  through Plan → Generate → board preview → Build & export → actual browser
+  download. Its 20-file ZIP has zero DRC violations, zero unrouted connections,
+  zero violated saved requirements, and 15 UNKNOWN results retained.
+- ASI: “I need two buttons and a light connected to a small computer board”
+  reached a reviewed plan, exact confirmation and job `b75876b30cf5`. Its browser
+  download contains 20 files with the requested two buttons and one indicator;
+  zero DRC violations, zero unrouted connections, zero violated requirements,
+  and 14 UNKNOWN results retained. Repeating confirmation referred to the same
+  job. ASI was refreshed to read the latest persisted build result; automatic
+  live chat rendering is not established by that observation.
+- All nine fabrication hashes in each production download matched their
+  manifests. Production smell/TMP102 requests stopped before building and offered
+  an explicitly different supported option without claiming smell/air-quality
+  sensing.
+- Website, backend and ASI agent were deployed. Exact source commit, image
+  references and checks are recorded in `.ai/verification/PPA-T01.yaml`.
 
 ## Remaining quality work
 
