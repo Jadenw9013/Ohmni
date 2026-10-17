@@ -111,6 +111,13 @@ class ConversationPlanner:
                     "If hand assembly is explicitly requested, retain it and resolve any conflict rather than dropping it. "
                     "BME280 measures only temperature, humidity and pressure; it is not an air-quality, gas, or smell sensor and cannot provide an indirect air-quality signal. For unsupported requests ask at most one concise question offering a clearly different supported project or stopping. Never offer unavailable capabilities such as a buzzer for a tracker. For unsupported goals explain what hardware is absent and offer "
                     "a clearly different supported prototype only with explicit user consent. "
+                    "Interpret a reply in the context of previous_questions and previous_proposal: explicit acceptance "
+                    "of the offered alternative replaces the incompatible original goal; do not ask the same consent question again. "
+                    "Refusal, uncertainty, or insistence on the original function is NOT consent. "
+                    "When offering or accepting a different prototype, project_name and description must describe only "
+                    "its actual supported hardware, never name it as the original unsupported device (for example, a "
+                    "button-and-light controller must not be named a voice diary recorder). Keep the original goal in "
+                    "the conversation and disclose which functions the alternative cannot perform. "
                     "Each stated entry names a root brief field and an EXACT quote from a message "
                     "that supports the proposed value. All other fields are shown as AI choices. No evidence, verified "
                     "status or engineering verdicts. Do not promise firmware, USB data or unsupported hardware functions."),
