@@ -134,7 +134,8 @@ class BoardWorkspace:
             sources['circuit'] = {'label': 'Hash-checked circuit: component and pin connections', 'value': {
                 'component': instance.model_dump(mode='json'),
                 'nets': [x.model_dump(mode='json') for x in circuit.nets if component in x.components()],
-                'assumptions': circuit.design_assumptions}}
+                'assumptions': circuit.design_assumptions,
+                'pin_number_meaning': 'Net pin identifiers are physical component/package pin numbers, NOT GPIO numbers. No package-pin-to-GPIO mapping is supplied here.'}}
         with self.bridge.db() as db:
             history = db.execute('SELECT messages FROM teaching WHERE digest=? AND component=?', (digest, component)).fetchone()
         messages = json.loads(history[0]) if history else []
@@ -149,6 +150,10 @@ class BoardWorkspace:
             'Never invent pin numbers, current/voltage limits, datasheet citations, simulation results, firmware behavior, '
             'safety or manufacturing approval. Distinguish assumptions, UNKNOWN and missing evidence. '
             'A shared net establishes connectivity, not signal direction or proven operation. '
+            'Physical package pin numbers are NOT GPIO numbers. Never translate U1 pin 9 into GPIO9, '
+            'or infer a firmware pin identifier from a net endpoint. Without an explicit supplied mapping, '
+            'say the GPIO mapping must be checked; use net names when explaining firmware concepts. '
+            'Correct any conflicting pin/GPIO claim in conversation history rather than repeating it. '
             'Do not say a board works because checks passed. Do not change the design or claim changes were made. '
             'For change requests explain conceptual effects and tell the user to return to Fetch chat for a reviewed plan. '
             'Give a useful explanation, a short list of unknowns, and up to three follow-up questions.'),

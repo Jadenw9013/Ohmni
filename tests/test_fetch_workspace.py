@@ -73,6 +73,7 @@ def test_teaching_is_component_bound_with_history_and_no_verdict_mutation(tmp_pa
         bridge.board_workspace.teach(token, ref, 'Tell me more')
         assert teacher.requests[-1].data['history'][0]['text'] == 'Explain this part'
         assert teacher.requests[-1].data['sources']['component']['value']['ref'] == ref
+        assert 'Physical package pin numbers are NOT GPIO numbers' in teacher.requests[-1].instructions
         assert json.dumps(jobs.items[state['job_id']], sort_keys=True) == before
         with pytest.raises(ValueError):
             bridge.board_workspace.teach(token, 'NOT_ON_BOARD', 'Explain')
