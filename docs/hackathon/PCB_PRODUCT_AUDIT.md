@@ -145,6 +145,9 @@ Rehearse the recovery, not just a supported first prompt:
 The paid local browser rehearsal completed these steps with job `a9946d76197f`:
 20 files, nine matching fabrication hashes, zero DRC violations and unrouted
 connections, zero violated requirements, and 14 UNKNOWN results retained.
-Production results and exact source/deployment identities are recorded in
+The production website also completed the flow with the short reply “Yes, let’s
+do that.” and job `da657c15c223`; its actual browser download passed the same
+20-file, nine-hash and native-check assertions. Exact source/deployment identities
+are recorded in
 `.ai/verification/PR-T01.yaml`. This recovery does not add microphone, audio
 recording, voice activation, or noise-filtering support.

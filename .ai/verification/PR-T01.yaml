@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "id": "PR-T01",
+  "task": "PR-T01",
+  "scope": "PLAN-RECOVERY-1",
+  "status": "PASSED",
+  "commit": "50038ffd2b52787fc0e5ca293d136b6b77cb885a",
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "passed": 2770,
+      "skipped": 101,
+      "deselected": 70,
+      "seconds": 245.02
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "passed": 1145
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "passed": 12
+    },
+    {
+      "command": "ruff check changed Python files; git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "Compare production conversation.js, plan-summary.js, guided-flow.css bytes with source",
+      "result": "PASS"
+    },
+    {
+      "command": "Compare deployed ASI planner source SHA-256 with source; Fly health checks",
+      "result": "PASS"
+    }
+  ],
+  "local": {
+    "job_id": "a9946d76197f",
+    "zip_sha256": "886cfa539077aa69eeeee0601a5a710a99e16ad1e960545044a9d31f7bf01f33",
+    "file_count": 20,
+    "fabrication_hashes_checked": 9,
+    "drc_status": "PASS",
+    "violations": 0,
+    "unrouted": 0,
+    "requirements": {
+      "MET": 14,
+      "UNKNOWN": 14
+    },
+    "brief": {
+      "archetype": "a2_usb_gpio_controller",
+      "board_height_mm": 70.0,
+      "board_width_mm": 100.0,
+      "budget_usd": 20.0,
+      "button_count": 1,
+      "description": "USB-C powered ESP32 board with one button and a status light. Does not support audio recording, voice activation, or noise filtering.",
+      "hand_solderable_preferred": false,
+      "include_programming_header": true,
+      "input_power": "usb_c_5v",
+      "input_voltage_v": 5.0,
+      "logic_voltage_v": 3.3,
+      "max_board_layers": 2,
+      "mcu_part_id": "ESP32-WROOM-32E",
+      "project_name": "Button and light controller",
+      "safety_domains": [],
+      "schema_version": 1,
+      "sensors": [],
+      "spi_devices": [],
+      "status_led_count": 1
+    },
+    "source": "local paid browser flow: audio idea, refusal, explicit controller acceptance, generate, download"
+  },
+  "production": {
+    "job_id": "da657c15c223",
+    "zip_sha256": "3bde77c752ee9619c42a3e100d68870c04c01eae3a7bd8a63f89247f5e473247",
+    "file_count": 20,
+    "fabrication_hashes_checked": 9,
+    "drc_status": "PASS",
+    "violations": 0,
+    "unrouted": 0,
+    "requirements": {
+      "MET": 14,
+      "UNKNOWN": 14
+    },
+    "brief": {
+      "archetype": "a2_usb_gpio_controller",
+      "board_height_mm": 70.0,
+      "board_width_mm": 100.0,
+      "budget_usd": 20.0,
+      "button_count": 1,
+      "description": "USB-C powered ESP32 board with one button and a status LED for triggering actions; no microphone, audio capture, or noise filtering hardware is included.",
+      "hand_solderable_preferred": false,
+      "include_programming_header": true,
+      "input_power": "usb_c_5v",
+      "input_voltage_v": 5.0,
+      "logic_voltage_v": 3.3,
+      "max_board_layers": 2,
+      "mcu_part_id": "ESP32-WROOM-32E",
+      "project_name": "Button and light controller",
+      "safety_domains": [],
+      "schema_version": 1,
+      "sensors": [],
+      "spi_devices": [],
+      "status_led_count": 1
+    },
+    "source": "production paid browser flow: audio idea, Yes let us do that, generate, complete ZIP download"
+  },
+  "deployments": {
+    "website": "https://ohmni-yvnd.vercel.app",
+    "vercel": "dpl_DrbvqcwvxHGD6Qen2Fg7kJhJNtqS",
+    "backend_image": "registry.fly.io/ohmni-demo:deployment-01M55VRGCWMYEG3ZNF0WC9YD18",
+    "agent_image": "registry.fly.io/ohmni-agent:deployment-01M55VTXSFYGKZ2CPKE0B3GQ6H",
+    "ui_version": "1d31312e6d0524a5fed6a7067704b5fdf026f43cc8c938dcf0726bd0eb9f4dc3"
+  },
+  "production_prompt": "A USB-C powered voice-activated diary recorder with one button to start and stop recording, a status light, and noise filtering.",
+  "production_reply": "Yes, let’s do that.",
+  "review": {
+    "independent": false,
+    "status": "SELF_REVIEW_PASSED"
+  },
+  "limitations": [
+    "Audio recording hardware remains unsupported. The tested build is the explicitly accepted controller alternative.",
+    "14 UNKNOWN requirement results remain; no physical build, firmware or bench testing claimed.",
+    "This turn tested the website conversation end to end. The shared ASI planner was deployed and health/source checked; no fresh ASI chat flow is claimed.",
+    "Browser layout verified at 1280x720; no general mobile/accessibility conformance claim."
+  ]
+}
