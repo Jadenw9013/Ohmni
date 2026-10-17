@@ -7,15 +7,17 @@ export function mountComponentTutor(root,{context,component,fetcher=globalThis.f
     if(root.hidden){root.innerHTML='';return null;}
     let disposed=false,busy=false,before=null,rows=[];
     const path=`/api/projects/${context.projectId}/revisions/${context.revisionId}`;
-    root.innerHTML=`<section class="project-assistant"><h3>Ask about ${e(component)}</h3><p class="fineprint">Saved with this revision. Switch parts to continue their conversations.</p><div data-tutor-thread role="log" aria-label="Component conversation"></div><p data-tutor-error role="alert"></p><form data-tutor-form><label>Question about ${e(component)}<textarea data-tutor-question rows="3" maxlength="2000" required placeholder="How does this part work?"></textarea></label><button class="primary" data-tutor-send>Ask Ohmni</button></form><p class="fineprint">AI explanations use recorded design information. To edit the board, use Board chat or project settings.</p></section>`;
+    root.innerHTML=`<section class="project-assistant"><h3>Ask about ${e(component)}</h3><p class="fineprint">Saved with this revision. Switch parts to continue their conversations.</p><div class="assistant-thread" data-tutor-thread tabindex="0" role="log" aria-label="Component conversation"></div><p data-tutor-error role="alert"></p><form class="assistant-composer" data-tutor-form><label>Question about ${e(component)}<textarea data-tutor-question rows="3" maxlength="2000" required placeholder="How does this part work?"></textarea></label><button class="primary" data-tutor-send>Ask Ohmni</button></form><p class="fineprint">AI explanations use recorded design information. To edit the board, use Board chat or project settings.</p></section>`;
     const $=s=>root.querySelector(s);
-    function render(){
+    function render(older=false){
+        const thread=$('[data-tutor-thread]'), previousHeight=thread.scrollHeight, previousTop=thread.scrollTop;
         $('[data-tutor-thread]').innerHTML=(before?'<button type="button" class="ghost" data-tutor-older>Load earlier messages</button>':'')+rows.map(item=>`<div class="assistant-user-message"><span>You</span><p>${e(item.message)}</p></div><div class="assistant-reply"><span>Ohmni · ${e(component)}</span><p style="white-space:pre-wrap">${e(item.answer.explanation)}</p>${item.answer.unknowns?.length?`<p>Still unknown: ${e(item.answer.unknowns.join(' '))}</p>`:''}<details><summary>Records used</summary><ul>${(item.answer.sources||[]).map(source=>`<li>${e(source.label)}</li>`).join('')}</ul></details></div>`).join('');
+        thread.scrollTop=older ? previousTop+thread.scrollHeight-previousHeight : thread.scrollHeight;
         $('[data-tutor-older]')?.addEventListener('click',()=>void load(true));
     }
     async function load(older=false){
         try{const {payload}=await projectRequest(path+'/history?channel='+encodeURIComponent('component:'+component)+(older&&before?'&before='+before:''),{fetcher});
-            if(disposed)return;rows=older?[...payload.messages,...rows]:payload.messages;before=payload.before;render();
+            if(disposed)return;rows=older?[...payload.messages,...rows]:payload.messages;before=payload.before;render(older);
         }catch(error){if(!disposed)$('[data-tutor-error]').textContent=error.message;}
     }
     async function ask(event){

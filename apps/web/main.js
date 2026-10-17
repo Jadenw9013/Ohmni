@@ -12,6 +12,10 @@ async function boot() {
             const note=document.querySelector('.starter-footnote');
             if(note)note.textContent='Projects and chats are saved online. This browser remembers your private workspace. Save edits before reloading.';
         }
+        // Start optional telemetry after removing connection credentials, but
+        // before the renderer's module graph competes for loading time.
+        const {startTelemetry} = await import('./telemetry.js');
+        void startTelemetry();
         const app = await import('./app.js');
         if (globalThis.OHMNI_OPEN_PROJECT) {
             window.dispatchEvent(new HashChangeEvent('hashchange'));
@@ -34,4 +38,4 @@ async function boot() {
     }
 }
 window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#connect='))void boot();});
-void boot();
+export const ready = boot();
