@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Your board · Ohmni</title><link rel="icon" href="/assets/favicon.svg"><link rel="stylesheet" href="/assets/fetch-workspace.css"></head>
+<body>
+<header><a class="brand" href="https://ohmni-yvnd.vercel.app">Ω OHMNI</a><span>YOUR BOARD, EXPLAINED</span><a href="https://asi1.ai/ai/agent1qvzucpk72r48d4gys9npx2an8jjj5mqpzwfjz4yt6a7mnqyag5gzqm5dc32" target="_blank" rel="noreferrer">Return to Fetch chat ↗</a></header>
+<main>
+<div id="loading" role="status">Opening your generated board…</div><div id="error" role="alert" hidden></div>
+<section id="workspace" hidden>
+<div class="heading"><div><p class="eyebrow">FROM YOUR FETCH CONVERSATION</p><h1 id="title">Your board</h1><p id="identity"></p></div><button id="download">Download design files</button></div>
+<p id="outcome" class="outcome"></p>
+<div class="layout">
+<section class="explorer" aria-label="Explore your PCB">
+<div class="board-stage"><canvas id="board" tabindex="0" aria-label="Interactive PCB. Drag to orbit, scroll to zoom, click a component to select. Use the component list below for keyboard selection."></canvas><p id="renderer-note" role="status"></p></div>
+<div id="controls"></div><p class="fine">Geometry comes from this build. Component bodies are illustrative; trace pulses do not simulate electricity.</p>
+<div class="parts-heading"><h2>Components on your board</h2><label>Find a component <input id="search" type="search" placeholder="Name, reference or part number"></label></div><div id="parts" class="parts" aria-label="Components"></div>
+</section>
+<aside class="tutor" aria-label="Component learning">
+<p class="eyebrow">LEARN WITH OHMNI</p><div id="selection"><h2>Every part has a purpose.</h2><p>Click a component on the board or in the list. Then ask what it does and how it connects to the rest of your design.</p></div>
+<div id="starters" class="starters" hidden><button data-question="Explain what this component does on my board, as if I’m new to electronics.">Explain this part</button><button data-question="How is this component connected to the other parts, and why?">Explain its connections</button><button data-question="What would happen if this component were removed? Distinguish general principles from what is verified.">What if I remove it?</button></div>
+<div id="conversation" role="log" aria-live="polite" aria-label="Component teaching conversation"></div>
+<form id="ask"><label for="question">Ask about the selected component</label><textarea id="question" rows="3" maxlength="2000" required disabled placeholder="Why is this part here?"></textarea><button id="send" disabled>Ask Ohmni</button><p id="teaching-status" role="status"></p></form>
+<p class="fine">AI explanations use this board’s records. They do not add engineering verification or change your design. Request design changes in Fetch chat.</p>
+</aside></div>
+<details class="results"><summary>Build findings and what still needs verification</summary><div id="findings"></div></details>
+<p class="fine">This private link lasts 24 hours. Anyone with the link can view the board and ask the tutor. For a new link, send OPEN in your original Fetch conversation.</p>
+</section></main><script type="module" src="/assets/fetch-workspace.js"></script></body></html>

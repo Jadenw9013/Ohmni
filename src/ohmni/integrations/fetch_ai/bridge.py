@@ -148,6 +148,8 @@ class ChatBridge:
                     CREATE TABLE IF NOT EXISTS messages(owner TEXT, id TEXT, reply TEXT, created REAL, PRIMARY KEY(owner,id));
                     CREATE TABLE IF NOT EXISTS downloads(digest TEXT PRIMARY KEY, job TEXT, expires REAL);
                 ''')
+            from .workspace import BoardWorkspace
+            self.board_workspace = BoardWorkspace(self, provider)
             self.path.chmod(0o600)
         except Exception:
             self.workspace.close()
@@ -213,7 +215,7 @@ class ChatBridge:
             return supported_options_reply(text).replace(
                 'This first connectivity release lists options only: it has not saved a plan or started a build. Planning, explicit confirmation and build tools are the next integration step.',
                 'Describe your idea to prepare a plan. Review it, answer questions, then use its exact CONFIRM code to save and build. STATUS and FINDINGS inspect your latest build without model charges.')
-        if command in {'status', 'findings', 'files', 'download'}:
+        if command in {'status', 'findings', 'files', 'download', 'open', 'view', 'workspace'}:
             return self.result(owner)
         if command == 'retry':
             if not state.get('job_id') or self.jobs.get(state['job_id'])['status'] != 'failed':
@@ -323,6 +325,11 @@ class ChatBridge:
             return 'The recorded job is unavailable. No replacement build was started.'
         reply = describe_result(job)
         if job['status'] == 'complete':
+            if state.get('project_id') and state.get('revision_id'):
+                workspace_url = self.board_workspace.issue(owner, state)
+                reply += (f'\n\n[Open your board in Ohmni — 3D view and component tutor]({workspace_url})'
+                          '\nSelect a component to learn about it. This private workspace link lasts 24 hours; '
+                          'anyone with it can view the board and use its tutor. Ask OPEN for a fresh link.')
             check, _ = self.jobs.read_build_package(job_id)
             if check == 'current':
                 token = secrets.token_urlsafe(32)
