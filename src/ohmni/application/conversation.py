@@ -10,8 +10,9 @@ from dataclasses import dataclass
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from ..adapters import StructuredGenerationRequest
+from ..catalog import default_catalog
 from ..synthesis import SynthesisBrief
-from .projects import ProjectRefusalError, preview_project, project_options
+from .projects import ProjectRefusalError, prepare_project, preview_project, project_options
 
 
 class StatedChoice(BaseModel):
@@ -99,7 +100,18 @@ class ConversationPlanner:
                     "Do not require a beginner to choose part numbers, bus addresses or electrical rule IDs. "
                     "Distinguish board design files from assembly and firmware; never imply a complete working device will be delivered. "
                     "Ask only questions necessary to resolve a conflict or choose a supported family; otherwise use the "
-                    "listed family defaults. Each stated entry names a root brief field and an EXACT quote from a message "
+                    "listed family defaults. Do not ask the user to reconfirm facts they already gave: 'a light' means one LED, "
+                    "and a requested temperature/humidity monitor does not need a question about whether it should measure temperature/humidity. "
+                    "Use BME280 for temperature requests too. TMP102AIDRLR is catalogued but NOT generation-ready: its 0.15 mm pad gaps conflict with the current 0.20 mm PCB clearance policy. Never choose TMP102 by default; if explicitly requested, explain the limitation and ask about using BME280 without dropping the requested measurement. "
+                    "Set hand_solderable_preferred=false unless the user explicitly requested hand soldering. For a supported request with no unresolved conflict, questions must be empty. Do not ask whether a default memory type is acceptable when no memory type was requested. Do not ask hypothetical questions about placement failure: the host runs the placement check before returning the plan. Choose ordinary engineering details yourself and label them as assumed. A limitation disclosure is not by itself a question. "
+                    "Do not ask users to pick sensor part numbers. Ask about desired measurements or assembly only when the choice changes the outcome. "
+                    "The exact board dimension bounds are in project_options.board_dimensions; never invent a 70 mm minimum or any other policy. "
+                    "The server will run a real placement preflight and return a concrete larger-size option if the selected layout cannot fit. "
+                    "For sensors without an explicit hand-soldering requirement, use the family default allowing assembly help and disclose the assembly need. The server automatically displays assembly guidance next to the plan. Never ask permission for machine/reflow assembly unless the user explicitly requested hand soldering. Never offer a hand-solderable sensor alternative: neither supported sensor is catalog-qualified for hand soldering. "
+                    "If hand assembly is explicitly requested, retain it and resolve any conflict rather than dropping it. "
+                    "BME280 measures only temperature, humidity and pressure; it is not an air-quality, gas, or smell sensor and cannot provide an indirect air-quality signal. For unsupported requests ask at most one concise question offering a clearly different supported project or stopping. Never offer unavailable capabilities such as a buzzer for a tracker. For unsupported goals explain what hardware is absent and offer "
+                    "a clearly different supported prototype only with explicit user consent. "
+                    "Each stated entry names a root brief field and an EXACT quote from a message "
                     "that supports the proposed value. All other fields are shown as AI choices. No evidence, verified "
                     "status or engineering verdicts. Do not promise firmware, USB data or unsupported hardware functions."),
                 data={"messages": transcript, "project_options": project_options(),
@@ -121,11 +133,22 @@ class ConversationPlanner:
                 preview = preview_project(plan.brief).model_dump(mode="json")
             except ProjectRefusalError as error:
                 questions.append(error.refusal.message)
+            design_notes = []
+            if preview is not None:
+                circuit, _ = prepare_project(plan.brief)
+                catalog = default_catalog()
+                difficult = [catalog.require(part.part_id).display_name for part in circuit.components
+                             if not catalog.require(part.part_id).package(part.package).hand_solderable]
+                if difficult:
+                    design_notes.append("Assembly: " + ", ".join(dict.fromkeys(difficult)) +
+                        " is not classified as hand-solderable in the component catalog. Plan for suitable reflow equipment or an assembly service.")
+                    if plan.brief.hand_solderable_preferred:
+                        questions.append("This selected sensor conflicts with assembly using only a soldering iron. Is reflow or an assembly service acceptable, or would you like to discuss a different supported measurement? Your requested measurements will not be removed without your agreement.")
             result = {"plan_id": uuid.uuid4().hex[:16], "messages": transcript,
                       "brief": plan.brief.model_dump(mode="json"), "brief_fingerprint": plan.brief.fingerprint,
                       "stated": [item.model_dump() for item in plan.stated],
                       "assumed_fields": sorted(allowed - set(fields)),
-                      "questions": questions, "ready": not questions, "preview": preview}
+                      "questions": list(dict.fromkeys(questions)), "ready": not questions, "preview": preview, "design_notes": design_notes}
             with self._lock:
                 if parent_id:
                     current = self._get(parent_id)

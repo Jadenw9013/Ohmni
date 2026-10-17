@@ -19,6 +19,7 @@ export function parsePlan(payload, identity) {
     if (!object(p) || !/^[0-9a-f]{16}$/.test(p.plan_id) || !/^[0-9a-f]{64}$/.test(p.brief_fingerprint)
         || !object(p.brief) || typeof p.ready !== "boolean" || !Array.isArray(p.messages) || !p.messages.length || !p.messages.every(text)
         || !Array.isArray(p.questions) || !p.questions.every(text) || p.ready !== (p.questions.length === 0)
+        || p.design_notes !== undefined && (!Array.isArray(p.design_notes) || !p.design_notes.every(text))
         || !Array.isArray(p.stated) || !p.stated.every(s => object(s) && Object.hasOwn(labels, s.field) && text(s.quote) && p.messages.some(m => m.includes(s.quote)))
         || !Array.isArray(p.assumed_fields) || !p.assumed_fields.every(f => Object.hasOwn(labels, f))) throw new Error("This plan cannot be read safely. Try again.");
     const fields = [...p.stated.map(s => s.field), ...p.assumed_fields];
@@ -133,7 +134,8 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
             const next = response.parsed;
             plan = next; identity = response.identity; confirmed = null;
             $("#conversation-questions").innerHTML = plan.questions.length ? `<h2>Before we build</h2><ul>${plan.questions.map(q => `<li>${e(q)}</li>`).join("")}</ul>` : "";
-            $("#conversation-summary").innerHTML = planSummaryHtml(plan.brief, {requested:plan.stated.map(s=>s.field)});
+            $("#conversation-summary").innerHTML = planSummaryHtml(plan.brief, {requested:plan.stated.map(s=>s.field)})
+                + (plan.design_notes?.length ? `<aside class="plan-build-notes"><h3>Before you order or assemble</h3>${plan.design_notes.map(note => `<p>${e(note)}</p>`).join("")}</aside>` : "");
             $("#conversation-plan").innerHTML = planHtml(plan, {includeSummary:false});
             $("#conversation-reply").value = "";
             $("#conversation-status").textContent = plan.ready ? "Proposed plan. Engineering checks have not run." : "Your answer is needed. Nothing has been saved or generated.";

@@ -39,7 +39,7 @@ def test_options_offer_complete_supported_defaults_and_auto_address_slots():
 
 @pytest.mark.parametrize("brief",_briefs(),ids=lambda brief:brief.archetype.value)
 def test_every_confirmed_choice_is_preserved_and_outcomes_are_narrow(brief,catalog):
-    brief=brief.model_copy(update={"description":"Invented free-text capability: fly to Mars", "budget_usd":None})
+    brief=brief.model_copy(update={"description":"Invented free-text capability: fly to Mars", "budget_usd":None, "hand_solderable_preferred":True})
     circuit,requirements=prepare_project(brief)
     result=synthesize(brief)
     semantic=verify(circuit,catalog,requirements.requirements)
@@ -157,3 +157,7 @@ def test_every_family_creates_runs_reopens_and_exports_through_the_real_api(tmp_
         assert status==200 and job["status"]=="complete" and job["report"]["release"]["current"]
         with OPENER.open(Request(base+f"/api/artifacts/{job_id}/build-package.zip"),timeout=30) as response:
             assert response.status==200
+
+
+def test_new_project_defaults_do_not_invent_an_assembly_requirement():
+    assert all(not family["defaults"]["hand_solderable_preferred"] for family in project_options()["families"])

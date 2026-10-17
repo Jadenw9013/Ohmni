@@ -22,7 +22,7 @@ class Provider:
 
 
 def output(**overrides):
-    return {"brief": SynthesisBrief().model_dump(mode="json"), "stated": [], "questions": [], **overrides}
+    return {"brief": SynthesisBrief(hand_solderable_preferred=False).model_dump(mode="json"), "stated": [], "questions": [], **overrides}
 
 
 def planner(tmp_path, *outputs, **kwargs):
@@ -141,3 +141,53 @@ def test_unavailable_provider_and_empty_answer_fail_closed(tmp_path):
     first = service.propose("A useful board with some parts")
     with pytest.raises(ValueError):
         service.propose(" ", first["plan_id"])
+
+
+def test_assembly_disclosure_is_visible_without_an_unrequested_conflict(tmp_path):
+    service = planner(tmp_path, output())
+    plan = service.propose("A USB temperature and humidity monitor")
+    assert plan["ready"]
+    assert any("assembly service" in note for note in plan["design_notes"])
+    assert not plan["brief"]["hand_solderable_preferred"]
+
+
+def test_explicit_hand_assembly_conflict_requires_resolution(tmp_path):
+    proposed = output(brief=SynthesisBrief(hand_solderable_preferred=True).model_dump(mode="json"))
+    service = planner(tmp_path, proposed)
+    plan = service.propose("A humidity monitor I can assemble using only a soldering iron")
+    assert not plan["ready"]
+    assert any("soldering iron" in question for question in plan["questions"])
+    with pytest.raises(PlanUnavailable):
+        service.confirm(plan["plan_id"])
+
+
+def test_placement_failure_blocks_confirmation_with_checked_alternative(tmp_path):
+    from ohmni.application.projects import generate_placement
+    from ohmni.physical.placement import PlacementFailure, PlacementFailureCode
+    calls = []
+    def constrained(circuit, request, catalog):
+        calls.append(request.outline.width_mm)
+        if request.outline.width_mm == 50:
+            raise PlacementFailure(PlacementFailureCode.NO_FEASIBLE_POSITION, "No space")
+        return generate_placement(circuit, request, catalog)
+    proposed = output(brief=SynthesisBrief(hand_solderable_preferred=False, board_width_mm=50, board_height_mm=50).model_dump(mode="json"))
+    service = planner(tmp_path, proposed)
+    with patch("ohmni.application.projects.generate_placement", side_effect=constrained):
+        plan = service.propose("A sensor board fitting a 50 mm square case")
+    assert not plan["ready"] and plan["preview"] is None
+    assert calls[0] == 50 and any(width > 50 for width in calls)
+    assert any("60 × 50" in question for question in plan["questions"])
+    with pytest.raises(PlanUnavailable):
+        service.confirm(plan["plan_id"])
+
+
+def test_known_incompatible_package_is_refused_before_build(tmp_path):
+    from ohmni.synthesis import I2cSensorSlot
+    proposed = output(brief=SynthesisBrief(hand_solderable_preferred=False,
+        sensors=(I2cSensorSlot(part_id="TMP102AIDRLR"),)).model_dump(mode="json"))
+    service = planner(tmp_path, proposed)
+    plan = service.propose("I specifically need a TMP102 temperature sensor")
+    assert not plan["ready"] and plan["preview"] is None
+    assert any("0.15 mm" in question and "BME280" in question for question in plan["questions"])
+    with pytest.raises(PlanUnavailable):
+        service.confirm(plan["plan_id"])

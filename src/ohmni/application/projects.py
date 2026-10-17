@@ -19,8 +19,9 @@ from ..generation.models import (
     RequirementOrigin,
     RequirementStatement,
 )
-from ..physical.placement import generate_placement
+from ..physical.placement import PlacementFailure, generate_placement
 from ..synthesis import ArchetypeId, SpiPeripheralSlot, SynthesisBrief, synthesize
+from ..synthesis.models import RefusalCode, SynthesisRefusal
 from ..synthesis.peripherals import SUPPORTED_I2C_PARTS
 from ..verifier import verify
 from .demo import DemoPipeline, DemoReport, eda_check_outcomes, require_eda_check
@@ -47,11 +48,11 @@ def project_options() -> dict:
     options the compiler can actually wire. Null requests automatic allocation.
     """
     catalog=default_catalog()
-    defaults=[SynthesisBrief(),SynthesisBrief(archetype=ArchetypeId.A2_USB_GPIO_CONTROLLER,
+    defaults=[SynthesisBrief(hand_solderable_preferred=False),SynthesisBrief(archetype=ArchetypeId.A2_USB_GPIO_CONTROLLER,
         project_name="Button and light controller",description="USB-C powered ESP32 with buttons and indicator LEDs.",
-        sensors=(),button_count=1),SynthesisBrief(archetype=ArchetypeId.A3_USB_SPI_PERIPHERAL,
+        sensors=(),button_count=1,hand_solderable_preferred=False),SynthesisBrief(archetype=ArchetypeId.A3_USB_SPI_PERIPHERAL,
         project_name="SPI memory board",description="USB-C powered ESP32 with SPI EEPROM memory.",
-        sensors=(),spi_devices=(SpiPeripheralSlot(part_id="25LC256-I/SN"),))]
+        sensors=(),spi_devices=(SpiPeripheralSlot(part_id="25LC256-I/SN"),),hand_solderable_preferred=False)]
     bounds=[((1,3),(0,1),(0,0),(0,0)),((0,1),(1,4),(1,2),(0,0)),((0,1),(0,1),(0,0),(1,2))]
     families=[]
     for brief,limits in zip(defaults,bounds,strict=True):
@@ -65,7 +66,7 @@ def project_options() -> dict:
                                      {"part_id":"TMP102AIDRLR","address":None}][:limits[0][1]])})
     return {"schema_version":1,"families":families,
         "sensors":[{"part_id":part_id,"label":catalog.require(part_id).display_name,
-                    "description":catalog.require(part_id).description,
+                    "description":catalog.require(part_id).description + (" Not available for generation: its 0.15 mm pad gaps conflict with the current 0.20 mm PCB clearance policy. Use BME280 for temperature sensing." if part_id == "TMP102AIDRLR" else ""),
                     "addresses":[option.address for option in catalog.require(part_id).i2c_addresses
                                  if option.strap_pin and option.strap_level in {"low","high"}]}
                    for part_id in sorted(SUPPORTED_I2C_PARTS)],
@@ -160,7 +161,39 @@ def prepare_project(brief: SynthesisBrief, catalog=None):
 
 
 def preview_project(brief: SynthesisBrief) -> Brief:
-    _, requirements = prepare_project(brief)
+    catalog = default_catalog()
+    result, requirements = _prepare_project(brief, catalog)
+    if any(slot.part_id == "TMP102AIDRLR" for slot in brief.sensors):
+        raise ProjectRefusalError(SynthesisRefusal(
+            code=RefusalCode.PACKAGE_CLEARANCE_UNAVAILABLE,
+            message="The TMP102 package has 0.15 mm gaps between pads, below the current 0.20 mm PCB clearance policy. It cannot produce a released board with these rules. BME280 can measure temperature with the current rules, and also measures humidity and pressure. Would that sensor work for your requirements?",
+            field_paths=("sensors",),
+        ))
+    try:
+        generate_placement(result.circuit, result.placement_request, catalog)
+    except PlacementFailure as error:
+        suggestion = "Try a larger board or fewer parts."
+        sizes = [(min(100.0, brief.board_width_mm + 10), brief.board_height_mm),
+                 (brief.board_width_mm, min(70.0, brief.board_height_mm + 10)), (100.0, 70.0)]
+        for width, height in sorted(set(sizes), key=lambda size: size[0] * size[1]):
+            if (width, height) == (brief.board_width_mm, brief.board_height_mm):
+                continue
+            candidate = brief.model_copy(update={"board_width_mm": width, "board_height_mm": height})
+            generated = synthesize(candidate, catalog)
+            if not generated.accepted:
+                continue
+            try:
+                generate_placement(generated.circuit, generated.placement_request, catalog)
+            except PlacementFailure:
+                continue
+            suggestion = f"The placement check fits the same parts on {width:g} × {height:g} mm. Would that larger size work for you? Routing and final checks have not run."
+            break
+        raise ProjectRefusalError(SynthesisRefusal(
+            code=RefusalCode.BOARD_PLACEMENT_UNAVAILABLE,
+            message=(f"The current placement engine could not fit these parts on {brief.board_width_mm:g} × {brief.board_height_mm:g} mm. "
+                     + suggestion + " This is an engine limit, not proof that an engineer could never design it."),
+            field_paths=("board_width_mm", "board_height_mm"),
+        )) from error
     return build_brief(requirements)
 
 

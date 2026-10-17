@@ -99,6 +99,8 @@ class RefusalCode(StrEnum):
     """Stable machine-readable reasons a well-formed brief is not synthesized."""
 
     SAFETY_DOMAIN_UNSUPPORTED = "safety_domain_unsupported"
+    PACKAGE_CLEARANCE_UNAVAILABLE = "package_clearance_unavailable"
+    BOARD_PLACEMENT_UNAVAILABLE = "board_placement_unavailable"
     ARCHETYPE_NOT_IMPLEMENTED = "archetype_not_implemented"
     INPUT_POWER_UNSUPPORTED = "input_power_unsupported"
     INPUT_VOLTAGE_UNSUPPORTED = "input_voltage_unsupported"

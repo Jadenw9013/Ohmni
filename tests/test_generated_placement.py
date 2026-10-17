@@ -73,3 +73,17 @@ def test_unsupported_generated_orientation_is_not_silently_ignored():
     with pytest.raises(PlacementFailure) as failure:
         generate_placement(result.circuit, request, default_catalog())
     assert failure.value.code == PlacementFailureCode.UNSUPPORTED_ORIENTATION
+
+
+def test_compact_controller_reserves_required_decoupling_space(tmp_path):
+    brief = SynthesisBrief(archetype=ArchetypeId.A2_USB_GPIO_CONTROLLER, sensors=(),
+                           button_count=1, status_led_count=1,
+                           board_width_mm=50, board_height_mm=50)
+    result = synthesize(brief)
+    generated = generate_placement(result.circuit, result.placement_request, default_catalog())
+    sch = KiCadSchematicCompiler(default_catalog()).compile(result.circuit, tmp_path / "compact.kicad_sch")
+    pcb = KiCadPcbCompiler(default_catalog()).compile(result.circuit, sch, generated.board, tmp_path / "compact.kicad_pcb")
+    assert pcb.compilation.physical_verification.passed
+    assert generated.metrics.board_area_mm2 == 2500
+    assert generated.algorithm.endswith("-proximity-reservation")
+    assert generated.model_dump_json() == generate_placement(result.circuit, result.placement_request, default_catalog()).model_dump_json()

@@ -56,6 +56,7 @@ def review_plan(plan: dict) -> str:
              f"Hand soldering preferred: {'yes' if brief['hand_solderable_preferred'] else 'no'}; budget target: {brief['budget_usd']} USD (actual total unknown)."]
     if plan['stated']:
         lines += ['Your stated choices:'] + [f"- {x['field'].replace('_', ' ')}: {x['quote']}" for x in plan['stated']]
+    lines += plan.get('design_notes', [])
     lines += ['AI/default choices to review: ' + ', '.join(field.replace('_', ' ') for field in plan['assumed_fields']), LIMITATIONS]
     if not plan['ready'] and not plan['questions']:
         lines += ['There are no actionable changes to confirm. Describe a specific change, or reply STATUS.']

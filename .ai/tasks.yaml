@@ -411,6 +411,15 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/FETCH-AI-1.yaml",
       "review_policy": "self_review_allowed; independent review not claimed"
+    },
+    {
+      "id": "PCB-PRODUCT-AUDIT-1",
+      "title": "Real-user PCB generation reliability audit and repairs",
+      "type": "product_quality",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/PCB-PRODUCT-AUDIT-1.yaml",
+      "review_policy": "self_review_allowed; independent review not claimed"
     }
   ],
   "tasks": [
@@ -4108,6 +4117,36 @@
           "live_asi_full_flow"
         ],
         "record": ".ai/verification/FETCH-T02.yaml"
+      }
+    },
+    {
+      "id": "PPA-T01",
+      "scope": "PCB-PRODUCT-AUDIT-1",
+      "title": "Audit ordinary ideas through verified downloads and fix failures",
+      "priority": 100,
+      "status": "IN_PROGRESS",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Untuned natural-language supported ideas reach a fresh generated PCB and validated download through real UI.",
+        "Audit separates unsupported hardware, planning/UX defects and native build failures; records failures honestly.",
+        "Fix reproduced defects with regressions, deploy and rerun affected real flows; no weakened release gates."
+      ],
+      "implementation": {
+        "started_at_commit": "1f972971",
+        "approval_evidence": ".ai/approvals/PCB-PRODUCT-AUDIT-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PENDING"
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "browser",
+          "live_audit"
+        ]
       }
     }
   ]
