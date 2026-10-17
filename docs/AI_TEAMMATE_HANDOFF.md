@@ -24,6 +24,11 @@ history, approval wording and independent-review attribution.
 
 ## Where to look
 
+For the USB robot assignment, start with the
+[Stack-chan developer handoff](hackathon/STACKCHAN_HANDOFF.md), its connector
+contract, acceptance script and copyable Claude assignment. It targets the
+current unified Fetch workspace; hardware and speech connectors still need implementation.
+
 | Concern | Entry points |
 |---|---|
 | Local HTTP server and project persistence | `scripts/demo_server.py`, `src/ohmni/application/` |
