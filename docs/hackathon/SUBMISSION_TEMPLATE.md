@@ -49,8 +49,8 @@ the weekend. Explain how the new agent uses that existing platform.
 - Agent name/handle: Ohmni PCB Guide / `@ohmni-pcb-guide`
 - Agent address: `agent1qvzucpk72r48d4gys9npx2an8jjj5mqpzwfjz4yt6a7mnqyag5gzqm5dc32`
 - Shared ASI:One conversation: [public demo chat URL with synthetic/public inputs]
-- Runtime requirements: [SDK versions, native tools, hosting and credential names only]
-- Known limits: [what does not work or was not tested]
+- Runtime requirements: Python 3.13; uagents 0.26.1; uagents-core 0.4.12; KiCad 10.0.5 and libraries; Anthropic API key; stable agent seed; HTTPS endpoint and persistent storage. Follow the setup guide for exact environment variable names.
+- Known limits: supported ESP32 USB-powered families only; USB-C power only; no generated firmware, assembly or physical testing. Budget and some electrical/thermal claims remain unknown. See the acceptance report for actual checks.
 
 For Fetch, follow the current [event hackpack](https://www.fetch.ai/events/hackathons/la-hacks-ai-hackathon-2026/hackpack),
 including its agent README tags. Do not publish secret seeds, tokens or customer
@@ -58,16 +58,30 @@ data in any artifact or shared chat.
 
 ## Technical explanation
 
-**Workflow:** [request → clarification → confirmed brief → actual tool execution
-→ report and explanation, as demonstrated]
+**Workflow:** In ASI:One, describe an idea, answer necessary questions, review the
+plan and send its exact confirmation code. Ohmni executes native generation and
+checks, reports results and unknowns, and returns a downloadable ZIP. A supported
+revision repeats review and confirmation in the same chat; the website is optional.
 
-**Fetch contribution:** [registration, ACP, ASI:One use and meaningful execution]
+**Fetch contribution:** One Agentverse-registered Python uAgents agent implements
+ACP and connects ASI messages to planning, persisted revisions, job monitoring and
+artifact downloads. Native KiCad work is executed by Ohmni. Multi-agent behavior,
+Payment Protocol and Interactive Cards are not claimed.
 
-**Engineering boundary:** [which deterministic checks ran; how warnings and unknowns remain visible]
+**Engineering boundary:** The three live acceptance builds passed routing and
+native DRC with zero violations and zero unrouted connections. ERC warnings and
+UNKNOWN requirements remain in the report. No physical performance is established.
 
-**Architecture:** [one short paragraph; separate model proposals from tool verdicts]
+**Architecture:** ASI supplies the user conversation and routes ACP messages to
+Ohmni. Anthropic proposes supported plans and explanations. The host validates
+plans and requires exact confirmation before saving/building. Deterministic
+engineering tools produce the verification results and fingerprinted artifacts.
 
-**Challenges and lessons:** [one concrete failure and how it was resolved]
+**Challenges and lessons:** A short “Yes” to a clarification was mistaken for an
+unconfirmed build request. We restored the persisted question and proposed
+alternative across restarts and routed short answers to the planner, while
+retaining the separate exact-confirmation gate. Live ASI recovery and downloads
+were verified; see [acceptance evidence](ASI_TRACK_ACCEPTANCE.md).
 
 ## Three-to-five-minute video
 
@@ -92,9 +106,9 @@ whole-board simulation unless separately demonstrated.
 - [ ] Organizer questions about reuse, track selection and cutoff resolved.
 - [ ] Starting commit and weekend features disclosed accurately.
 - [ ] Public repo setup verified from another teammate's checkout.
-- [ ] Actual selected primary workflow completed inside ASI:One.
-- [ ] Agent running and discoverable; profile/address recorded.
-- [ ] Agentverse agent README has Innovation Lab and hackathon tags; repository README mirrors them.
+- [x] Actual selected primary workflow completed inside ASI:One. (Verified 2026-10-17.)
+- [x] Agent running and discoverable; profile/address recorded. (Verified 2026-10-17.)
+- [x] Agentverse agent README has Innovation Lab and hackathon tags; repository README mirrors them. (Verified 2026-10-17.)
 - [ ] Agent profile, shared ASI chat, project, video and setup links included even if the submission form labels some fields optional.
 - [ ] All URLs opened signed out or in a separate browser profile.
 - [ ] Video duration and access checked.

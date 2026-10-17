@@ -2,7 +2,7 @@
 
 Date: 2026-10-17. This is evidence and a readiness checklist, not a submitted entry
 or a guarantee of prize eligibility. No custom Ohmni frontend was used to complete
-the initial fresh production build below.
+all three production runs below.
 
 ## Primary workflow tested
 
@@ -45,8 +45,48 @@ of artifact downloads remains theirs.
 - Clarification during revision editing now says the existing project is unchanged,
   rather than incorrectly claiming that no project has ever been saved.
 
-Production revalidation of these changes will be recorded before this handoff is
-marked verified. Automated tests alone do not establish live ASI acceptance.
+## Post-deployment revalidation
+
+The tested implementation `676662cf160ceda46c20be06b95d6c7abfd1ecd6` was deployed
+to `ohmni-agent` on 2026-10-17. Fly reported a healthy machine. Image digest:
+`sha256:bc5b3d9b88e9bd29c64b5054dc0bdee03c8fcb05ea13da0ff05c7a8455f24950`.
+
+| Live ASI case | Observed result |
+| --- | --- |
+| Resize existing sensor board to 50 × 50 mm | Proposed only the two dimension changes, with no unnecessary question; exact confirmation built job `5803310fb83c`, revision 2 `6b52b554d34a472e` of project `16ca7bbfe5d24ffa` |
+| Repeat that exact confirmation | Returned the same completed job `5803310fb83c`; no replacement build |
+| Unsupported voice diary request | Explained missing audio capability and offered a button/light controller, with a question before generation |
+| Restart service, then reply “Yes” | Recovered the persisted question and offered alternative; produced a new reviewable controller plan without starting a build |
+| Explicitly confirm the alternative | Built job `ae5aa211194a`, revision 1 `c1e98e722c7d4a15` of project `89833e1eeb234fa3`; one button and one LED, no claim of audio recording |
+| Download both new packages from ASI | Each ZIP contained 20 entries; all nine fabrication hashes and sizes matched its manifest; receipt fingerprints matched |
+
+Both post-deployment builds had zero native DRC violations and zero unrouted
+connections. Sensor revision: 16 MET / 0 VIOLATED / 13 UNKNOWN. Controller:
+14 MET / 0 VIOLATED / 14 UNKNOWN. ERC warnings, assembly limitations and unverified
+bench performance remain visible. These results cover supported designs and an
+explicitly accepted fallback; they do not establish arbitrary PCB generation.
+
+Downloaded ZIP SHA-256 values:
+
+- Sensor revision: `130b69eb21af95dcb927356216383987d5a5f1f82c1a1b1cfb2309fa154e1262`
+- Controller: `77135f0515a8c102217a560e7ce455c4c989e9a3bcc0770eff62a98a8eaab8a0`
+
+The initial downloaded ZIP was rechecked and retained its original hash and
+100 × 70 mm brief. No raw session export or bearer URL is committed.
+
+## Automated verification
+
+- `python scripts/verify.py fast`: **2,782 passed**, 101 skipped, 70 deselected.
+- Focused bridge/workspace/conversation/assistant/agent tests: **70 passed**.
+- Workflow gate: **12 passed**; changed Python lint and diff whitespace checks passed.
+- One initial full run exposed a workflow allowlist mismatch (fixed) and an
+  intermittent gateway test failure that did not recur in focused or final full
+  tests. Its root cause was not established; gateway diagnostics now log the
+  exception class without exposing sensitive exception text and avoid falsely
+  asserting that an operation made no changes.
+
+See [commit-bound verification](../../.ai/verification/ASI-T01.yaml). Independent
+review remains pending; the task is VERIFIED, not formally COMPLETE.
 
 ## Requirement mapping
 
