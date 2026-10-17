@@ -32,7 +32,7 @@ from .service import supported_options_reply
 
 LIMITATIONS = (
     "These are design files for human engineering/manufacturing review, not a physically tested device. "
-    "Firmware is not included. USB-C supplies power only. Costs and catalog evidence have limitations."
+    "Recorder projects include firmware source and digital simulation; other families do not. USB-C supplies power only. Costs and catalog evidence have limitations."
 )
 
 
@@ -49,15 +49,17 @@ def review_plan(plan: dict) -> str:
     spi = ', '.join(x['part_id'] for x in brief['spi_devices']) or 'none'
     lines = [f"Proposed board: {brief['project_name']}", brief['description'],
              f"USB-C {brief['input_voltage_v']} V power; {brief['mcu_part_id']}; {brief['logic_voltage_v']} V logic.",
-             f"Sensors: {sensors}. SPI devices: {spi}.",
+             f"Additional sensors: {sensors}. Additional SPI devices: {spi}.",
              (f"Buttons: {brief['button_count']}; indicator LEDs: {brief['status_led_count']}; "
              f"programming header: {'included' if brief['include_programming_header'] else 'omitted'}."),
              f"Board: {brief['board_width_mm']} × {brief['board_height_mm']} mm, up to {brief['max_board_layers']} layers.",
              f"Hand soldering preferred: {'yes' if brief['hand_solderable_preferred'] else 'no'}; budget target: {brief['budget_usd']} USD (actual total unknown)."]
+    if brief['archetype'] == 'a4_usb_voice_recorder':
+        lines += [f"Included: SPH0645 microphone and microSD module; mono 16-bit WAV at {brief['recorder_sample_rate_hz']} Hz, maximum {brief['recorder_max_seconds']} seconds per file. Firmware source and digital simulation included; physical testing pending."]
     if plan['stated']:
         lines += ['Your stated choices:'] + [f"- {x['field'].replace('_', ' ')}: {x['quote']}" for x in plan['stated']]
     lines += plan.get('design_notes', [])
-    lines += ['AI/default choices to review: ' + ', '.join(field.replace('_', ' ') for field in plan['assumed_fields']), LIMITATIONS]
+    lines += ['AI/default choices to review: ' + ', '.join(field.replace('_', ' ') for field in plan['assumed_fields'] if not field.startswith('recorder_') or brief['archetype'] == 'a4_usb_voice_recorder'), LIMITATIONS]
     if not plan['ready'] and not plan['questions']:
         lines += ['There are no actionable changes to confirm. Describe a specific change, or reply STATUS.']
     elif plan['questions']:
@@ -228,9 +230,33 @@ class ChatBridge:
         if command in {'help', 'options', 'supported options'}:
             return supported_options_reply(text).replace(
                 'This first connectivity release lists options only: it has not saved a plan or started a build. Planning, explicit confirmation and build tools are the next integration step.',
-                'Describe your idea to prepare a plan. Review it, answer questions, then use its exact CONFIRM code to save and build. STATUS and FINDINGS inspect your latest build without model charges. OPEN opens that board in Ohmni’s 3D workspace and component tutor.')
+                'Describe your idea to prepare a plan. Review it, answer questions, then use its exact CONFIRM code to save and build. STATUS and FINDINGS inspect your latest build without model charges. OPEN opens that board in Ohmni’s 3D workspace and component tutor. TEACH followed by a component reference and question (for example, TEACH MIC1 How does it capture sound?) uses the same saved component tutor. For saved recorders, SIMULATE runs a digital scenario; SIMULATE help lists the scenarios.')
         if command in {'status', 'findings', 'files', 'download', 'open', 'view', 'workspace'}:
             return self.result(owner)
+        if command == 'teach' or command.startswith('teach '):
+            match=re.fullmatch(r'teach\s+([A-Za-z][A-Za-z0-9]{0,15})\s+(.+)',text,flags=re.IGNORECASE|re.DOTALL)
+            if not match: return 'Use TEACH followed by the component reference and your question, for example: TEACH MIC1 How does this microphone capture sound?'
+            if not state.get('job_id'): return 'Generate the saved revision first, then ask about a component on that board.'
+            ref,question=match[1].upper(),match[2]
+            answer=self.board_workspace.teach(None,ref,question,project_revision=(state['project_id'],state['revision_id']))
+            self.connected.record(state['project_id'],state['revision_id'],'component:'+ref,{'message':question,'answer':answer})
+            return (answer['explanation'] + '\n\nStill unknown: ' + '; '.join(answer['unknowns'])
+                    + '\n\nSources: ' + ', '.join(source['label'] for source in answer['sources'])
+                    + '\n' + answer['notice'] + '\nThis component conversation is saved in Ohmni too. Reply OPEN to inspect it in 3D.')
+        if command == 'simulate' or command.startswith('simulate '):
+            from ohmni.application.recorder import SCENARIOS, simulate_recorder
+            revision = self.projects.revision(state.get('project_id'), state.get('revision_id')) if state.get('project_id') else None
+            if not revision or revision['brief']['archetype'] != 'a4_usb_voice_recorder':
+                return 'Save a voice recorder project first. SIMULATE models that saved revision without rebuilding it.'
+            scenario = command.removeprefix('simulate').strip().replace(' ', '_') or 'normal'
+            if scenario not in SCENARIOS:
+                return 'Choose SIMULATE followed by: ' + ', '.join(SCENARIOS)
+            result, _ = simulate_recorder(SynthesisBrief.model_validate(revision['brief']), scenario)
+            return (f"Digital simulation for revision {revision['number']}: {scenario}. "
+                    f"Outcome: {result['outcome']}; error: {result['error'] or 'none'}. "
+                    f"{result['sample_rate_hz']} Hz mono WAV; {result['duration_seconds']:.2f} modeled seconds saved. "
+                    f"Queue peak {result['queue_peak_bytes']} / {result['queue_capacity_bytes']} bytes. "
+                    + ' '.join(result['limitations']) + ' Reply OPEN to explore the board, or describe changes to review a new revision.')
         if command == 'retry':
             if not state.get('job_id') or self.jobs.get(state['job_id'])['status'] != 'failed':
                 return 'There is no failed build in this conversation to retry. Reply STATUS.'
@@ -314,7 +340,7 @@ class ChatBridge:
         with self.budget.admit('generation'):
             job_id = self.jobs.start_revision(state['project_id'], state['revision_id'])
         state['job_id'] = job_id
-        return f"Confirmed the reviewed plan. Build {job_id} is queued/running. I will send the result here; reply STATUS at any time. No firmware or physical testing is included."
+        return f"Confirmed the reviewed plan. Build {job_id} is queued/running. I will send the result here; reply STATUS at any time. Recorder firmware source is included for recorder projects. Physical testing is not included."
 
     def latest_job(self, owner):
         with self.db() as db:

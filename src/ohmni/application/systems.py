@@ -253,6 +253,7 @@ def group_components(
 def build_systems(groupings: list[ComponentGrouping]) -> list[FunctionalSystem]:
     systems: list[FunctionalSystem] = []
     categories = {item.category for item in groupings if item.anchor}
+    recorder = any(item.part_id == "ADAFRUIT_3421" for item in groupings)
     for system in SystemId:
         members = [g for g in groupings if g.system is system]
         if not members:
@@ -269,7 +270,7 @@ def build_systems(groupings: list[ComponentGrouping]) -> list[FunctionalSystem]:
             if ComponentCategory.MEMORY in categories:
                 tasks.append("read and write memory")
             if tasks:
-                summary = "A program on the processor can " + ", ".join(tasks) + ". Firmware is still required."
+                summary = ("Included recorder firmware captures microphone audio and writes WAV files to microSD. Build and flash it before use; physical operation remains untested." if recorder else "A program on the processor can " + ", ".join(tasks) + ". Firmware is still required.")
         elif system is SystemId.SENSE:
             member_categories = {item.category for item in members if item.anchor}
             if ComponentCategory.MEMORY in member_categories:

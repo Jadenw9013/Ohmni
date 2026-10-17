@@ -3,6 +3,8 @@ import { VISUAL_SOURCE_HASH } from './visual-version.js';
 const cache = new WeakMap();
 export function packageBinding(component) {
     const id = component.part_id, packageName = component.package ?? '';
+    if (id === 'ADAFRUIT_3421') return 'i2s_microphone';
+    if (id === 'ADAFRUIT_4682_SDHC') return 'microsd_module';
     if (id === 'ESP32-WROOM-32E') return 'esp32_module';
     if (id === 'USB_C_RECEPTACLE_16P') return 'usb_c';
     if (id === 'HEADER_1X6_254') return 'pin_header';
@@ -30,7 +32,7 @@ export function actualSceneManifest(board) {
             if (pad.drill) holes.push({ x, y, width: pad.drill.width_mm, depth: pad.drill.height_mm,
                 shape: pad.drill.shape, rotation: component.rotation_deg, owner: component.ref });
         }
-        const height = { esp32_module: 3.1, usb_c: 3.2, pin_header: 6.2, switch: 4.5,
+        const height = { i2s_microphone: 8.4, microsd_module: 8.4, esp32_module: 3.1, usb_c: 3.2, pin_header: 6.2, switch: 4.5,
             sensor: 0.9, regulator: 1.1, ceramic_chip: 0.85, chip_resistor: 0.5, led: 0.8 }[family] ?? 1;
         instances.push({ id: component.ref, sourceComponentId: component.ref, sourceFootprintId: component.footprint_id,
             modelAssetId: `ohmni-procedural/${family}@reference-packages-v1`, visualProvenance: 'PACKAGE_APPROXIMATION',

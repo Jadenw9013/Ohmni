@@ -21,7 +21,7 @@ def project_requirement_results(brief,compiled,circuit,semantic,board,catalog):
     rules={result.rule_id:result for result in semantic.results}
     sensors=[part for part in circuit.components if part.selected_i2c_address is not None]
     memories=[part for part in circuit.components if Interface.SPI in part.selected_interfaces
-              and catalog.require(part.part_id).category is ComponentCategory.MEMORY]
+              and catalog.require(part.part_id).category is ComponentCategory.MEMORY and part.part_id != "ADAFRUIT_4682_SDHC"]
     leds=[part for part in circuit.components if catalog.require(part.part_id).category is ComponentCategory.LED]
     buttons=[part for part in circuit.components if catalog.require(part.part_id).category is ComponentCategory.SWITCH]
     headers=[part for part in circuit.components if part.part_id=="HEADER_1X6_254"]
@@ -55,6 +55,8 @@ def project_requirement_results(brief,compiled,circuit,semantic,board,catalog):
             if not voltage.contains(Quantity.volts(value)):
                 return "VIOLATED",f"The modeled {name} source range does not include the requested voltage.",["PB-PWR-001"]
             return checked(("PB-PWR-001",),f"The modeled {name} source range includes {value:g} V; no voltage has been measured.")
+        if field in {"recorder_sample_rate_hz", "recorder_max_seconds"}:
+            return "MET", "The saved value is used to generate the revision-bound firmware configuration. Actual recording performance requires hardware testing.", []
         if field=="mcu_part_id":
             parts=[part for part in circuit.components if catalog.require(part.part_id).category
                    in {ComponentCategory.MCU,ComponentCategory.MCU_MODULE}]

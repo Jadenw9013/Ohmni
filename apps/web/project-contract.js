@@ -6,7 +6,7 @@ const object = (value) => value !== null && typeof value === "object" && !Array.
 const text = (value) => typeof value === "string" && value.length > 0;
 const id = (value) => typeof value === "string" && /^[0-9a-f]{16}$/.test(value);
 export const briefAddress = (brief) => brief.sensors[0]?.address ?? 118; // Legacy single-sensor callers.
-export const FAMILY_IDS = ["a1_usb_i2c_sensor", "a2_usb_gpio_controller", "a3_usb_spi_peripheral"];
+export const FAMILY_IDS = ["a1_usb_i2c_sensor", "a2_usb_gpio_controller", "a3_usb_spi_peripheral", "a4_usb_voice_recorder"];
 const integer = (value) => Number.isInteger(value) && value >= 0;
 const finite = (value) => typeof value === "number" && Number.isFinite(value);
 
@@ -33,6 +33,9 @@ export function supportedBrief(brief) {
         && finite(brief.input_voltage_v) && brief.input_voltage_v >= 4.75 && brief.input_voltage_v <= 5.25
         && finite(brief.logic_voltage_v) && Math.abs(brief.logic_voltage_v - 3.3) <= 1e-9
         && brief.mcu_part_id === "ESP32-WROOM-32E" && brief.max_board_layers === 2
+        && (brief.recorder_sample_rate_hz === undefined || [32000, 48000].includes(brief.recorder_sample_rate_hz))
+        && (brief.recorder_max_seconds === undefined || integer(brief.recorder_max_seconds) && brief.recorder_max_seconds >= 1 && brief.recorder_max_seconds <= 3600)
+        && (brief.archetype === "a4_usb_voice_recorder" || (brief.recorder_sample_rate_hz ?? 32000) === 32000 && (brief.recorder_max_seconds ?? 300) === 300)
         && integer(brief.status_led_count) && integer(brief.button_count ?? 0)
         && ["board_width_mm", "board_height_mm"].every((field) => brief[field] === undefined
             || finite(brief[field]) && brief[field] > 0)
@@ -52,8 +55,8 @@ export function parseProjectOptions(payload, identity) {
     const range = (value) => object(value) && integer(value.min) && integer(value.max)
         && value.max >= value.min && value.max <= 16;
     if (!object(options) || options.schema_version !== 1 || !Array.isArray(options.families)
-        || options.families.length !== FAMILY_IDS.length
-        || new Set(options.families.map((family) => family?.id)).size !== FAMILY_IDS.length
+        || ![3, 4].includes(options.families.length)
+        || new Set(options.families.map((family) => family?.id)).size !== options.families.length
         || !options.families.every((family) => object(family) && FAMILY_IDS.includes(family.id)
             && text(family.title) && text(family.description)
             && ["sensor_count", "status_led_count", "button_count", "spi_count"].every((field) => range(family[field]))
@@ -135,6 +138,7 @@ export function sameBrief(a, b) {
         : object(value) ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, ordered(value[key])])) : value;
     const normalized = (brief) => ({ ...brief, button_count: brief.button_count ?? 0,
         board_width_mm: brief.board_width_mm ?? 100, board_height_mm: brief.board_height_mm ?? 70,
+        recorder_sample_rate_hz: brief.recorder_sample_rate_hz ?? 32000, recorder_max_seconds: brief.recorder_max_seconds ?? 300,
         spi_devices: brief.spi_devices ?? [], sensors: brief.sensors.map((sensor) => ({ ...sensor, address: sensor.address ?? null })) });
     return Boolean(a && b) && JSON.stringify(ordered(normalized(a))) === JSON.stringify(ordered(normalized(b)));
 }
@@ -153,7 +157,10 @@ export function briefChanges(previous, current) {
     if (sensors(previous) !== sensors(current)) changes.push(`Sensors: ${sensors(current)}`);
     const memories = (brief) => (brief.spi_devices || []).map((device) => device.part_id).join(", ") || "none";
     if (memories(previous) !== memories(current)) changes.push(`Memory devices: ${memories(current)}`);
-    const visible = ["project_name", "archetype", "status_led_count", "button_count", "include_programming_header", "sensors", "spi_devices", "board_width_mm", "board_height_mm"];
+    for(const [field,label] of [["recorder_sample_rate_hz","Recording sample rate"],["recorder_max_seconds","Maximum recording duration"]]) {
+        if(previous[field] !== current[field] && current.archetype === "a4_usb_voice_recorder") changes.push(`${label}: ${current[field]}`);
+    }
+    const visible = ["recorder_sample_rate_hz", "recorder_max_seconds", "project_name", "archetype", "status_led_count", "button_count", "include_programming_header", "sensors", "spi_devices", "board_width_mm", "board_height_mm"];
     const remaining = { ...previous };
     for (const field of visible) remaining[field] = current[field];
     if (!sameBrief(remaining, current)) changes.push("Updated additional saved requirements");

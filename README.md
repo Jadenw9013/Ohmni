@@ -148,3 +148,5 @@ Ohmni is released under the [MIT License](LICENSE). Bundled third-party files ke
 their own licenses, for example `apps/web/vendor/THREE-LICENSE.txt`,
 `apps/web/vendor/SENTRY-LICENSE.txt`, and the KiCad library footprints copied
 under `fixtures/` and `examples/`, which remain under the KiCad libraries' license.
+
+For the integrated USB voice-recorder family, firmware, simulation and physical-test boundaries, see [Voice recorder](docs/recorder/README.md).

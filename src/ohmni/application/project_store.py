@@ -103,11 +103,17 @@ class ProjectStore:
 
     @staticmethod
     def _revision(row: sqlite3.Row) -> dict:
+        # Read compatibility for projects saved before recorder settings existed.
+        # Defaults do not enter legacy non-recorder fingerprints or rewrite disk.
+        brief = json.loads(row["brief"])
+        if brief.get("archetype") in {"a1_usb_i2c_sensor", "a2_usb_gpio_controller", "a3_usb_spi_peripheral", "a4_usb_voice_recorder"}:
+            brief.setdefault("recorder_sample_rate_hz", 32000)
+            brief.setdefault("recorder_max_seconds", 300)
         return {
             "revision_id": row["revision_id"],
             "number": row["number"],
             "created_at": row["created_at"],
-            "brief": json.loads(row["brief"]),
+            "brief": brief,
             "brief_fingerprint": row["brief_fingerprint"],
             "preview": json.loads(row["preview"]),
             "job_id": row["job_id"],

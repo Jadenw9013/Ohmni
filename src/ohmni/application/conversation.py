@@ -120,7 +120,11 @@ class ConversationPlanner:
                     "the conversation and disclose which functions the alternative cannot perform. "
                     "Each stated entry names a root brief field and an EXACT quote from a message "
                     "that supports the proposed value. All other fields are shown as AI choices. No evidence, verified "
-                    "status or engineering verdicts. Do not promise firmware, USB data or unsupported hardware functions."),
+                    "status or engineering verdicts. The a4_usb_voice_recorder family includes mono WAV recording firmware source and digital behavioral simulation. "
+                    "Use it for voice/audio recording requests, with its fixed included microphone and microSD module; leave sensors and spi_devices empty. "
+                    "Its recording settings are recorder_sample_rate_hz (32000 or 48000) and recorder_max_seconds (1–3600). "
+                    "It has no speaker playback, transcription, Wi-Fi upload or battery. Hardware testing is pending. "
+                    "Do not promise firmware for other families, USB data or unsupported hardware functions."),
                 data={"messages": transcript, "project_options": project_options(),
                       "previous_questions": parent.result["questions"] if parent else [],
                       "previous_proposal": parent.result["brief"] if parent else None},

@@ -36,7 +36,7 @@ def classify_assembly(bom:Bom,catalog:PartCatalog|None=None)->AssemblyReport:
     risks=[];hand_solderable=[]
     for line in bom.lines:
         name=line.identity.package.upper();under=any(x in name for x in ("LGA","QFN","DFN","BGA"))
-        if "THT" in name or "2.54" in name:d=AssemblyDifficulty.EASY
+        if "THT" in name or "2.54" in name or name in {"I2S-SPH0645-BREAKOUT","MICROSD-SDIO-BREAKOUT"}:d=AssemblyDifficulty.EASY
         elif "BGA" in name:d=AssemblyDifficulty.UNSUPPORTED_FOR_HAND_ASSEMBLY
         elif under:d=AssemblyDifficulty.REFLOW_RECOMMENDED
         elif any(x in name for x in ("0805","SOT","MODULE","USB-C")):d=AssemblyDifficulty.MODERATE
@@ -72,7 +72,7 @@ def classify_assembly(bom:Bom,catalog:PartCatalog|None=None)->AssemblyReport:
                     detail="The exact catalog package is marked not hand-solderable; review the assembly method and equipment."
                 if package.notes:
                     detail+=f" {package.notes}"
-        orientation=line.identity.part_id in {"GENERIC_LED_GREEN","USB_C_RECEPTACLE_16P"}
+        orientation=line.identity.part_id in {"GENERIC_LED_GREEN","USB_C_RECEPTACLE_16P","ADAFRUIT_3421","ADAFRUIT_4682_SDHC"}
         hand_solderable.append(decision)
         risks.append(AssemblyRisk(references=line.references,package=line.identity.package,difficulty=d,exposed_or_underside_pads=under,orientation_sensitive=orientation,detail=detail))
     satisfied=bool(hand_solderable) and all(value is True for value in hand_solderable)

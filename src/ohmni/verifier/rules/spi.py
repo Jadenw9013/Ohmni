@@ -51,7 +51,7 @@ def _error(out: ResultBuilder, title: str, description: str, refs=(), nets=()) -
 
 def _inactive_select(ctx: VerificationContext, pin: ResolvedPin, out: ResultBuilder) -> None:
     assert pin.pin is not None and pin.spec is not None and pin.net is not None
-    if pin.spec.part_id != "25LC256-I/SN":
+    if pin.spec.part_id not in {"25LC256-I/SN", "ADAFRUIT_4682_SDHC"}:
         out.missing(f"{pin.ref.component}: SPI chip-select inactive polarity is not modeled")
         return
     domain = ctx.logic_domain(pin)
@@ -62,7 +62,7 @@ def _inactive_select(ctx: VerificationContext, pin: ResolvedPin, out: ResultBuil
     if not pulls:
         _error(
             out, f"{pin.ref.component} chip select has no inactive pull-up",
-            "The supported 25LC256 chip select is active low. A GPIO connection alone "
+            "The supported peripheral chip select is active low. A GPIO connection alone "
             "does not hold it inactive while the controller resets; add a resistor "
             "from chip select to the peripheral's logic supply.",
             [pin.ref.component], [pin.net.name],

@@ -4,7 +4,7 @@
 
 export const VERTEX_STRIDE = 12;
 export const DISPLAY_HEIGHTS = Object.freeze({ module: 2.8, usb: 3.4, header: 5.5,
-    sensor: 1.1, capacitor: 0.65, resistor: 0.48, led: 0.8, chip: 1.15, button: 3.8 });
+    sensor: 1.1, capacitor: 0.65, resistor: 0.48, led: 0.8, chip: 1.15, button: 3.8, microphone: 8.4, microsd: 8.4 });
 
 const MAT = Object.freeze({
     // RGB, roughness, metal (0/1), finish (plain/brushed/mask/lens/laminate).
@@ -24,6 +24,8 @@ const MAT = Object.freeze({
 export function displayPackageKind(part) {
     const id = String(part.partId || "").toUpperCase();
     const specification = `${part.package || ""} ${part.footprintId || ""}`.toUpperCase();
+    if (id === "ADAFRUIT_3421") return "microphone";
+    if (id === "ADAFRUIT_4682_SDHC") return "microsd";
     if (/BUTTON|MOMENTARY/.test(id) || /SW_PUSH|TACTILE/.test(specification)) return "button";
     if (/WROOM|MODULE/.test(id) || /MODULE-SMD|RF_MODULE/.test(specification)) return "module";
     if (/USB.*RECEPTACLE|USB.*CONNECTOR/.test(id) || /USB.*RECEPTACLE|USB-C/.test(specification)) return "usb";
@@ -322,6 +324,20 @@ function packageGeometry(buffer, part, pads, materialFor) {
         b([0.045, 0.04, 0.955, 0.76], 0.6, h - 0.10, "silver", { bevel: 0.2, corner: 0.2 });
         b([0.057, 0.052, 0.943, 0.748], h - 0.15, h, "rim", { bevel: 0.04, corner: 0.12, topMaterial: m("silver") });
         b([0.075, 0.795, 0.925, 0.96], 0.45, 0.52, "module", { bevel: 0.015 });
+    } else if (kind === "microphone" || kind === "microsd") {
+        b([0.03,0.03,0.97,0.97],5,6.6,"module",{bevel:0.1});
+        for (const pad of pads.filter(p=>p.number !== "")) {
+            const centre=pad.points.reduce((c,p)=>({x:c.x+p.x/4,y:c.y+p.y/4,z:c.z+p.z/4}),{x:0,y:0,z:0});
+            const pin={...part,points:pad.points.map(p=>({x:centre.x+(p.x-centre.x)*.35,y:centre.y+(p.y-centre.y)*.35,z:p.z})),centre};
+            beveledBox(buffer,pin,[0,0,1,1],0,8,m("gold"),{bevel:.04});
+        }
+        if(kind === "microsd") {
+            b([.22,.08,.78,.70],6.6,8.3,"silver",{bevel:.1});
+            b([.28,0,.72,.55],7,7.8,"black");
+        } else {
+            b([.39,.25,.61,.48],4,5,"silver");
+            b([.47,.33,.53,.40],6.6,6.65,"black");
+        }
     } else if (kind === "usb") {
         // Open shell, an inset dark cavity and a tongue make the connector read
         // spatially. These are display abstractions, not a STEP model.

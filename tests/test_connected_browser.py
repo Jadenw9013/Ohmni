@@ -127,7 +127,10 @@ def test_main_ui_claim_saved_board_component_chat_and_edit(tmp_path):
             page.locator('#sidebar-new-project').click()
             page.locator('#free-text-request').fill('Build a USB-powered ESP32 sensor board')
             page.locator('#start-free-text').click()
-            page.locator('#conversation-confirm:not([disabled])').wait_for(timeout=20000)
+            try: page.locator('#conversation-confirm:not([disabled])').wait_for(timeout=20000)
+            except Exception:
+                print('PLANNING PAGE', errors, page.locator('body').inner_text()[-14000:])
+                raise
             assert page.locator('#conversation-plan').is_visible()
             assert not errors, errors
             browser.close()

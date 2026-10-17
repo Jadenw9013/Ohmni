@@ -150,3 +150,22 @@ def test_projection_fingerprint_mismatch_is_not_displayed(tmp_path):
             bridge.board_workspace.read(token)
     finally:
         bridge.close()
+
+
+def test_fetch_component_teaching_shares_main_ui_history_and_checks_build(tmp_path):
+    bridge,_,jobs,_,state,token=prepared(tmp_path)
+    try:
+        teacher=Teacher();bridge.board_workspace.provider=teacher
+        with bridge.db() as db:owner=db.execute('SELECT owner FROM sessions').fetchone()[0]
+        ref=bridge.board_workspace.read(token)['experience']['components'][0]['ref']
+        reply=bridge._operate(owner,state,'TEACH '+ref+' Explain its purpose')
+        assert 'recorded role' in reply and 'saved in Ohmni' in reply
+        history=bridge.connected.history(state['project_id'],state['revision_id'],'component:'+ref)['messages']
+        assert history[-1]['message']=='Explain its purpose'
+        answer=bridge.board_workspace.teach(None,ref,'What else should I check?',project_revision=(state['project_id'],state['revision_id']))
+        assert teacher.requests[-1].data['history'][0]['text']=='Explain its purpose'
+        assert answer['job_id']==state['job_id']
+        jobs.items[state['job_id']]['report']['pcb']['current']=False
+        with pytest.raises(WorkspaceUnavailable):bridge._operate(owner,state,'TEACH '+ref+' Explain stale board')
+        assert len(teacher.requests)==2
+    finally:bridge.close()

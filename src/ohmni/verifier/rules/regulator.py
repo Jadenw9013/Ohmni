@@ -151,7 +151,7 @@ def regulator_input_and_dropout(ctx: VerificationContext, out: ResultBuilder) ->
     "PB-REG-002",
     "Regulator can supply the load on its output",
     RuleCategory.ELECTRICAL,
-    "Sums only published figures, and says so when parts publish nothing.",
+    "Sums recorded current figures and identifies missing or assumed loads.",
 )
 def regulator_current_capacity(ctx: VerificationContext, out: ResultBuilder) -> None:
     regulators = ctx.instances_of_category(*REGULATOR_CATEGORIES)
@@ -240,8 +240,13 @@ def regulator_current_capacity(ctx: VerificationContext, out: ResultBuilder) -> 
                 lesson_topic="regulator-sizing",
             )
 
+    assumed = [instance.ref for instance in ctx.circuit.components
+               if (part := ctx.spec_of(instance.ref)) is not None
+               and any(e.kind.value == "assumption" for rail in part.supply_rails for e in rail.evidence)]
+    if assumed:
+        out.limitation("Current capacity is conditional on authored current allocations for "
+                       + ", ".join(assumed) + "; these are not vendor-guaranteed maxima. Measure actual peaks before qualifying the supply.")
     out.limitation(
-        "Load is summed from published maxima, which are worst-case figures that rarely occur "
-        "simultaneously. This is deliberately conservative and is not a thermal analysis: "
+        "Load is summed from recorded maxima or explicitly labeled allocations, and is not a thermal analysis: "
         "package power dissipation and rise above ambient are NOT_VERIFIED."
     )

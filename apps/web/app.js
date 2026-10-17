@@ -1,3 +1,4 @@
+import {mountRecorderPanel} from "./recorder-panel.js";
 // Ohmni product experience.
 //
 // This file owns journey state, rendering and disclosure. It owns no
@@ -755,8 +756,15 @@ function renderResult(report, jobId) {
     renderSystems(exp.systems);
     renderFlows(exp.flows);
     renderRepair(exp.repair);
-    renderScope(report.simulation);
+    renderScope(report.project?.recorder ? undefined : report.simulation);
     renderDesignBehavior(report, jobId);
+    let recorderPanel = $("#recorder-panel");
+    if (!recorderPanel) {
+        recorderPanel = document.createElement("div"); recorderPanel.id = "recorder-panel";
+        $("#choices-checked")?.after(recorderPanel);
+    }
+    mountRecorderPanel(recorderPanel, report.project?.recorder);
+    $("#tab-checks").textContent = report.project?.recorder ? "Checks & simulation" : "Checks & evidence";
     renderTour(exp.tour);
     renderChecks(exp.check_sections);
     const requirements = requirementResultsHtml(report.requirements);
@@ -792,7 +800,7 @@ function renderOutcomeGuidance(report) {
     const title = unmet.length ? "Your design needs a decision" : ready ? "Your files are ready for review" : "This design needs more review";
     root.innerHTML = `<h2>${escapeHtml(title)}</h2><p>${unmet.length ? `${unmet.length} saved choice${unmet.length===1 ? " is" : "s are"} not met. Finishing the PCB does not resolve these choices.` : "A completed PCB is one step toward a working device."}</p>
         ${unmet.length ? `<ul>${unmet.map(row=>`<li><strong>${escapeHtml(row.label || row.field.replaceAll("_"," "))}</strong>: ${escapeHtml(row.field === "hand_solderable_preferred" ? "Some selected parts need assembly methods beyond a soldering iron. Discuss assembly help or a supported change to the design before building." : row.detail)}</li>`).join("")}</ul>` : ""}
-        <p>${valid ? `${unknown.length} choices or limits still need proof. ` : "Per-choice results are unavailable. "}Firmware, assembly and physical testing still need separate work.</p>
+        <p>${valid ? `${unknown.length} choices or limits still need proof. ` : "Per-choice results are unavailable. "}${report.project?.recorder ? "Flashing, assembly and physical testing" : "Firmware, assembly and physical testing"} still need separate work.</p>
         <div class="outcome-actions"><button type="button" class="secondary" data-guide-chat>${unmet.length ? "Help me resolve this" : "Help me understand the next steps"}</button><button type="button" class="ghost" data-guide-checks>Review all choice checks</button></div><p class="fineprint">Chat can propose changes and ask questions. You review each change before saving and running fresh checks.</p>`;
     root.querySelector("[data-guide-chat]")?.addEventListener("click",async()=>{
         selectResultPanel("board");

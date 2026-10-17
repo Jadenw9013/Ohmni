@@ -104,3 +104,18 @@ def test_artifact_projection_checks_original_binding_and_compiler(monkeypatch):
     monkeypatch.setattr(pcb_compiler, "PCB_COMPILER_VERSION", "changed")
     with pytest.raises(ValueError, match="compiler policy changed"):
         pcb_artifact_policy(artifact)
+
+
+def test_additive_recorder_inventory_preserves_existing_builds_but_not_changed_geometry(tmp_path,monkeypatch):
+    store,job_id,_,_,_=_personal_package(tmp_path)
+    ids=set(footprints.FOOTPRINTS)-{'Ohmni:I2S-SPH0645-BREAKOUT','Ohmni:MICROSD-SDIO-BREAKOUT'}
+    report=store.jobs[job_id]['report']
+    report['project']['archetype']='a1_usb_i2c_sensor'
+    report['pcb']['footprint_geometry_fingerprint']=footprints.footprint_geometry_fingerprint(ids)
+    store.project_store.save_job(store.jobs[job_id])
+    assert store.get(job_id)['status']=='complete'
+    assert store.read_build_package(job_id)[0]=='current'
+    identifier=min(ids);updated=footprints.FOOTPRINTS[identifier].model_copy(deep=True)
+    updated.width_mm+=.01
+    monkeypatch.setitem(footprints.FOOTPRINTS,identifier,updated)
+    assert store.get(job_id)['status']=='failed'

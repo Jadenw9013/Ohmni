@@ -134,6 +134,9 @@ class BoardWorkspace:
                 'verification': job['report'].get('verification_ladder', []), 'limitations': job['report'].get('limitations', [])}},
             'brief': {'label': 'Confirmed design choices', 'value': revision['brief']},
         }
+        recorder = job['report'].get('project', {}).get('recorder')
+        if recorder:
+            sources['recorder'] = {'label':'Revision-bound firmware GPIO map and digital simulation', 'value':recorder}
         circuit_reader = getattr(self.bridge.jobs, 'read_circuit', None)
         circuit = circuit_reader(row[0]) if circuit_reader else None
         if circuit is not None:

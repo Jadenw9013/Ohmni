@@ -10,6 +10,7 @@ const labels = {
     spi_devices: "Memory", include_programming_header: "Programming header", max_board_layers: "Board layers",
     board_width_mm: "Width (mm)", board_height_mm: "Height (mm)", hand_solderable_preferred: "Prefer hand soldering",
     budget_usd: "Budget (USD)", safety_domains: "Special operating conditions",
+    recorder_sample_rate_hz: "Recording sample rate (Hz)", recorder_max_seconds: "Maximum recording duration (seconds)",
 };
 const text = x => typeof x === "string" && x.length > 0;
 const object = x => x !== null && typeof x === "object" && !Array.isArray(x);
@@ -23,20 +24,20 @@ export function parsePlan(payload, identity) {
         || !Array.isArray(p.stated) || !p.stated.every(s => object(s) && Object.hasOwn(labels, s.field) && text(s.quote) && p.messages.some(m => m.includes(s.quote)))
         || !Array.isArray(p.assumed_fields) || !p.assumed_fields.every(f => Object.hasOwn(labels, f))) throw new Error("This plan cannot be read safely. Try again.");
     const fields = [...p.stated.map(s => s.field), ...p.assumed_fields];
-    if (new Set(fields).size !== fields.length || Object.keys(labels).some(f => !fields.includes(f) || !Object.hasOwn(p.brief, f))
+    if (new Set(fields).size !== fields.length || Object.keys(labels).filter(f => !f.startsWith("recorder_") || p.brief.archetype === "a4_usb_voice_recorder" || Object.hasOwn(p.brief,f)).some(f => !fields.includes(f) || !Object.hasOwn(p.brief, f))
         || p.ready && (!supportedBrief(p.brief) || !object(p.preview))) throw new Error("This plan is incomplete. Try again.");
     return p;
 }
 function value(field, item) {
     if (item === null) return "Not specified";
     if (typeof item === "boolean") return item ? "Yes" : "No";
-    if (field === "archetype") return ({a1_usb_i2c_sensor: "Sensor station", a2_usb_gpio_controller: "Buttons and lights", a3_usb_spi_peripheral: "Memory board"})[item] || item;
+    if (field === "archetype") return ({a1_usb_i2c_sensor: "Sensor station", a2_usb_gpio_controller: "Buttons and lights", a3_usb_spi_peripheral: "Memory board", a4_usb_voice_recorder: "Voice recorder"})[item] || item;
     if (field === "input_power" && item === "usb_c_5v") return "USB-C power only";
     if (Array.isArray(item)) return item.length ? item.map(v => typeof v === "object" ? `${v.part_id}${v.address == null ? "" : ` (address ${v.address})`}` : v).join(", ") : "None";
     return String(item);
 }
 export function planHtml(plan, {includeSummary = true} = {}) {
-    const rows = fields => fields.map(field => `<div><dt>${e(labels[field])}</dt><dd>${e(value(field, plan.brief[field]))}</dd></div>`).join("");
+    const rows = fields => fields.filter(f=>!f.startsWith("recorder_") || plan.brief.archetype === "a4_usb_voice_recorder").map(field => `<div><dt>${e(labels[field])}</dt><dd>${e(value(field, plan.brief[field]))}</dd></div>`).join("");
     return `${includeSummary ? planSummaryHtml(plan.brief, {requested:plan.stated.map(s=>s.field)}) : ""}
       <details class="plan-details"><summary>Parts, assumptions and technical settings</summary><p>Engineering checks have not run. These are proposed choices.</p><h3>From your words</h3><dl class="plan-choices">${rows(plan.stated.map(s=>s.field))}</dl>${plan.stated.map(s=>`<p>${e(labels[s.field])}: “${e(s.quote)}”</p>`).join("")}<h3>Suggested choices</h3><dl class="plan-choices">${rows(plan.assumed_fields)}</dl></details>
       <details><summary>Your conversation (${plan.messages.length})</summary>${plan.messages.map(m=>`<p class="conversation-message">${e(m)}</p>`).join("")}</details>`;

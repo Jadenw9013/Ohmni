@@ -8,6 +8,7 @@ const e = escapeHtml;
 const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const hasText = (value) => typeof value === "string" && value.length > 0;
 const familyCopy = {
+    a4_usb_voice_recorder: { title: "Record voice", outcome: "Build a WAV recorder", icon: "M12 4h6v14h-6zM8 13v3a7 7 0 0 0 14 0v-3M15 23v5M10 28h10" },
     a1_usb_i2c_sensor: { title: "Measure your space", outcome: "Build a sensor station", icon: "M11 5a3 3 0 0 1 6 0v10a5 5 0 1 1-6 0ZM14 8v11M21 6h3m-3 5h3" },
     a2_usb_gpio_controller: { title: "Buttons & lights", outcome: "Build a controller", icon: "M3 14h10v9H3zM5 11h6v3M18 8a4 4 0 1 1 8 0v5h-8ZM20 13v7m4-7v7M17 3l-2-2m12 2 2-2" },
     a3_usb_spi_peripheral: { title: "Store data", outcome: "Build a memory board", icon: "M7 6h16v18H7zM11 10h8v10h-8zM3 9h4m-4 6h4m-4 6h4m16-12h4m-4 6h4m-4 6h4" },
@@ -20,7 +21,7 @@ export function switchFamilyDraft(current, familyId, options, previousDrafts = n
     const previousDefault = options.families.find((family) => family.id === current.archetype)?.defaults;
     const targetDefault = defaultProjectBrief(options, familyId);
     const target = structuredClone(previousDrafts.get(familyId) || targetDefault);
-    const specific = new Set(["archetype", "sensors", "spi_devices", "button_count", "status_led_count", "include_programming_header"]);
+    const specific = new Set(["archetype", "sensors", "spi_devices", "button_count", "status_led_count", "include_programming_header", "recorder_sample_rate_hz", "recorder_max_seconds"]);
     for (const [key, value] of Object.entries(current)) if (!specific.has(key)) target[key] = structuredClone(value);
     if (current.project_name === previousDefault?.project_name) target.project_name = targetDefault.project_name;
     if (current.description === previousDefault?.description) target.description = targetDefault.description;
@@ -121,6 +122,7 @@ export function mountProjectWorkbench(root, {
               <div class="project-circuit-strip" aria-label="USB-C power, regulated supply, ESP32 processor and your chosen features"><span>USB-C<small>5 V power</small></span><i aria-hidden="true"></i><span>3.3 V<small>Regulated supply</small></span><i aria-hidden="true"></i><span>ESP32<small>Your processor</small></span></div>
               <p class="project-envelope">${e(family?.description || "Your server provides the supported combinations.")}</p>
               ${family ? memoryControls(family) + sensorControls(family) : ""}
+              ${draft.archetype === "a4_usb_voice_recorder" ? `<fieldset class="project-choice"><legend>Voice recording</legend><p>Includes a microphone module and removable microSD module. One button starts/stops recording; the light shows recording or an error. Play WAV files on a computer.</p><label>Sample rate<select id="project-recorder-rate"><option value="32000" ${draft.recorder_sample_rate_hz === 32000 ? "selected" : ""}>32 kHz</option><option value="48000" ${draft.recorder_sample_rate_hz === 48000 ? "selected" : ""}>48 kHz</option></select></label><label>Maximum seconds per recording<input id="project-recorder-seconds" type="number" min="1" max="3600" value="${draft.recorder_max_seconds ?? 300}"></label><p>Firmware and digital simulation are included. A FAT32 SDHC card and external 3.3 V serial programming adapter are needed. Physical audio and power tests are pending.</p></fieldset>` : ""}
               ${options?.board_dimensions ? `<fieldset class="project-choice"><legend>Make space for your circuit</legend><p>A smaller board brings the parts closer. The placement and routing checks determine whether your choices fit.</p><div class="board-dimensions">${[["board_width_mm", "Width"], ["board_height_mm", "Height"]].map(([field, label]) => {
                   const size = options.board_dimensions[field];
                   return `<label for="project-${field}">${label} (mm)<input id="project-${field}" type="number" min="${size.min}" max="${size.max}" step="any" required value="${draft[field] ?? size.default}"></label>`;
@@ -129,7 +131,7 @@ export function mountProjectWorkbench(root, {
               ${family ? `<fieldset class="project-choice"><legend>A signal you can see</legend><p>A light can show what your program is doing. Each selected LED comes with its current-limiting resistor.</p>${countSelect("led", "Status lights", draft.status_led_count, family.status_led_count)}</fieldset>` : ""}
               <fieldset class="project-choice"><legend>How you will program it</legend><p>USB-C supplies power. Programming needs a separate 3.3 V USB-to-serial adapter.</p><div class="project-choice-options">
                 <label><input type="radio" name="header" value="yes" ${draft.include_programming_header ? "checked" : ""}><span><strong>Include the programming header</strong><small>A connection for your external adapter</small></span></label>
-                <label><input type="radio" name="header" value="no" ${!draft.include_programming_header ? "checked" : ""}><span><strong>Leave the header out</strong><small>You will need to provide programming access</small></span></label>
+                <label><input type="radio" name="header" value="no" ${draft.archetype === "a4_usb_voice_recorder" ? "disabled" : ""} ${!draft.include_programming_header ? "checked" : ""}><span><strong>Leave the header out</strong><small>You will need to provide programming access</small></span></label>
               </div></fieldset>
               <details class="saved-details"><summary>Additional saved requirements</summary><p>These stay with your revision when you edit the features above.</p><label for="project-description">What this project is for<textarea id="project-description" rows="3" maxlength="1000">${e(draft.description)}</textarea></label><dl><div><dt>Input supply</dt><dd>${e(draft.input_voltage_v)} V</dd></div><div><dt>Logic supply</dt><dd>${e(draft.logic_voltage_v)} V</dd></div><div><dt>Board layers</dt><dd>${e(draft.max_board_layers)}</dd></div><div><dt>Budget preference</dt><dd>${draft.budget_usd == null ? "Not specified" : `$${e(draft.budget_usd)} (total cost is unknown)`}</dd></div><div><dt>Hand soldering preferred</dt><dd>${draft.hand_solderable_preferred ? "Yes" : "No"}</dd></div></dl></details>
             </section>
@@ -200,7 +202,7 @@ export function mountProjectWorkbench(root, {
                 : `Revision ${revision.number} is confirmed. Its engineering checks begin when you generate the board.`;
         $("#project-load-retry").hidden = !pendingProjectId || !options || busy;
         root.querySelectorAll("[data-load-options], [data-load-project]").forEach((button) => { button.disabled = busy; });
-        root.querySelectorAll("#project-form input, #project-form select, #project-form textarea, #project-revision").forEach((input) => { input.disabled = busy || assistantApplying || !options || !!pendingProjectId; });
+        root.querySelectorAll("#project-form input, #project-form select, #project-form textarea, #project-revision").forEach((input) => { input.disabled = busy || assistantApplying || !options || !!pendingProjectId || (draft.archetype === "a4_usb_voice_recorder" && input.name === "header" && input.value === "no"); });
     }
 
     function renderHistory() {
@@ -407,6 +409,8 @@ export function mountProjectWorkbench(root, {
             redraw = true;
         } else if (target.id === "project-name") next.project_name = target.value;
         else if (target.id === "project-description") next.description = target.value;
+        else if (target.id === "project-recorder-rate") next.recorder_sample_rate_hz = Number(target.value);
+        else if (target.id === "project-recorder-seconds") next.recorder_max_seconds = Number(target.value);
         else if (target.id === "project-led") next.status_led_count = Number(target.value);
         else if (target.id === "project-button-count") next.button_count = Number(target.value);
         else if (target.id === "project-board_width_mm") next.board_width_mm = Number(target.value);

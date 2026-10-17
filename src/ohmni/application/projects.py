@@ -21,6 +21,7 @@ from ..generation.models import (
 )
 from ..physical.placement import PlacementFailure, generate_placement
 from ..synthesis import ArchetypeId, SpiPeripheralSlot, SynthesisBrief, synthesize
+from ..synthesis.a4 import RECORDER_LIMITATIONS, recorder_brief
 from ..synthesis.models import RefusalCode, SynthesisRefusal
 from ..synthesis.peripherals import SUPPORTED_I2C_PARTS
 from ..verifier import verify
@@ -35,6 +36,7 @@ class ProjectRefusalError(ValueError):
 
 
 FAMILY_COPY = {
+    ArchetypeId.A4_USB_VOICE_RECORDER: ("Voice recorder", "Record mono WAV audio to removable microSD using an I2S microphone, record/stop button and status LED. Includes firmware and behavioral simulation."),
     ArchetypeId.A1_USB_I2C_SENSOR: ("Sensor station", "Read temperature and environmental sensors over a shared I2C bus."),
     ArchetypeId.A2_USB_GPIO_CONTROLLER: ("Sensor & controls", "Connect buttons, indicator LEDs and an optional environmental sensor to an ESP32."),
     ArchetypeId.A3_USB_SPI_PERIPHERAL: ("Memory & data", "Connect SPI EEPROM memory, with an optional environmental sensor."),
@@ -53,7 +55,8 @@ def project_options() -> dict:
         sensors=(),button_count=1,hand_solderable_preferred=False),SynthesisBrief(archetype=ArchetypeId.A3_USB_SPI_PERIPHERAL,
         project_name="SPI memory board",description="USB-C powered ESP32 with SPI EEPROM memory.",
         sensors=(),spi_devices=(SpiPeripheralSlot(part_id="25LC256-I/SN"),),hand_solderable_preferred=False)]
-    bounds=[((1,3),(0,1),(0,0),(0,0)),((0,1),(1,4),(1,2),(0,0)),((0,1),(0,1),(0,0),(1,2))]
+    defaults.append(recorder_brief())
+    bounds=[((1,3),(0,1),(0,0),(0,0)),((0,1),(1,4),(1,2),(0,0)),((0,1),(0,1),(0,0),(1,2)),((0,0),(1,1),(1,1),(0,0))]
     families=[]
     for brief,limits in zip(defaults,bounds,strict=True):
         title,description=FAMILY_COPY[brief.archetype]
@@ -79,7 +82,7 @@ def project_options() -> dict:
                  "logic_voltage_v":3.3,"mcu_part_id":"ESP32-WROOM-32E","max_board_layers":2,
                  "safety_domains":[]},
         "limitations":["USB-C supplies power only; programming needs an external 3.3 V serial adapter.",
-                       "Firmware, simulation, and hardware measurements are not included.",
+                       "Voice recorder includes firmware source and digital behavioral simulation; other families do not. Physical measurements are not included.",
                        "Catalog evidence and synthetic prices have explicit limitations; total build cost is unknown.",
                        "Address collisions and unsupported combinations are refused before a revision is saved."]}
 
@@ -116,6 +119,11 @@ def _prepare_project(brief: SynthesisBrief, catalog=None):
         f"Placement is generated on a {brief.board_width_mm:g} x {brief.board_height_mm:g} mm, two-layer board from circuit blocks, capacitor ownership, and geometric constraints.",
         "Placement policies and antenna exclusion require hardware review; generated geometry does not establish RF performance.",
     ]
+    if brief.archetype is ArchetypeId.A4_USB_VOICE_RECORDER:
+        choices.extend([("recorder_sample_rate_hz", str(brief.recorder_sample_rate_hz)),
+                        ("recorder_max_seconds", str(brief.recorder_max_seconds))])
+        assumptions = [a for a in assumptions if not a.startswith("Firmware is not included")]
+        assumptions.extend(RECORDER_LIMITATIONS)
     for part in result.circuit.components:
         spec=catalog.require(part.part_id);package=spec.package(part.package)
         if package is not None and not package.hand_solderable:
@@ -268,6 +276,27 @@ class ProjectPipeline(DemoPipeline):
                                "placement_request_fingerprint": placement.request_fingerprint,
                                "archetype":brief.archetype.value,
                                "supported_fixture":FAMILY_COPY[brief.archetype][0]})
+        if brief.archetype is ArchetypeId.A4_USB_VOICE_RECORDER:
+            from .recorder import write_recorder_artifacts
+            report.project["recorder"] = write_recorder_artifacts(destination, brief, circuit.content_hash)
+            report.limitations = [x for x in report.limitations if not x.startswith(("Firmware is not included", "Not simulation verified"))]
+            report.limitations.extend(RECORDER_LIMITATIONS)
+            for line in report.experience.confidence.not_verified:
+                if line.label == "Simulation":
+                    line.status = "PARTIALLY_VERIFIED"
+                    line.detail = "Digital recording scenarios were simulated. Acoustics, electrical timing and physical hardware remain unverified."
+            report.verification_ladder.append({"stage":"Recorder digital simulation", "status":"SIMULATED",
+                "detail":"Six synthetic workload/fault scenarios; not analog simulation, firmware emulation or physical measurement."})
+            for group in [*report.experience.checks, *(g for section in report.experience.check_sections for g in section.groups)]:
+                if group.group == "simulation":
+                    group.label = "Analog circuit simulation"
+                    group.question = "Analog behavior was not simulated. Separate recorder digital scenarios are available above."
+            for step in report.experience.tour.steps:
+                step.facts = ["digital simulation INCLUDED; analog and physical behavior UNVERIFIED" if fact == "simulation UNSUPPORTED" else fact for fact in step.facts]
+            from .product import BringUpStep
+            report.experience.bring_up.extend([
+                BringUpStep(action="Build and flash the exact exported firmware using firmware/README.md. Record speech and a known tone, then play the WAV file on a computer.", prediction=None, basis="Firmware source is included; physical recording has not been tested."),
+                BringUpStep(action="Measure microphone clock/data alignment, both 3.3 V rails, SD write-current spikes, USB current and regulator temperature; test full/slow/removed cards and power interruption.", prediction=None, basis="Digital simulation cannot establish these electrical, acoustic or storage properties.")])
         if hasattr(catalog, "snapshot_hash"):
             report.project.update({
                 "catalog_snapshot_sha256": catalog.snapshot_hash,
