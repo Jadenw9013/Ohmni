@@ -165,6 +165,12 @@ override a verdict or imply physical testing.
 
 ## Agentverse onboarding and deployment
 
+The first read-only connectivity milestone is implemented. See
+[Fetch agent setup and verified limits](FETCH_AGENT_SETUP.md) for deployment,
+onboarding troubleshooting, and the live ASI:One receipt. Planning and builds
+through ACP remain unimplemented.
+
+
 The current [external uAgent onboarding guide](https://docs.agentverse.ai/documentation/launch-agents/agentverse-sdk/u-agents)
 uses a running ACP-compatible agent and a reachable endpoint. The sponsor also
 documents a mailbox route for locally running agents. Test that alternative

@@ -402,6 +402,15 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/REPO-CLEANUP-1.yaml",
       "review_policy": "self review allowed for behavior-preserving maintenance"
+    },
+    {
+      "id": "FETCH-AI-1",
+      "title": "Fetch hackathon conversation bridge",
+      "type": "hackathon_integration",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/FETCH-AI-1.yaml",
+      "review_policy": "self_review_allowed; independent review not claimed"
     }
   ],
   "tasks": [
@@ -4034,6 +4043,36 @@
           "workflow"
         ],
         "record": ".ai/verification/REPO-CLEANUP-01.yaml"
+      }
+    },
+    {
+      "id": "FETCH-T01",
+      "scope": "FETCH-AI-1",
+      "title": "Connect a bounded Ohmni agent to ASI:One",
+      "priority": 100,
+      "status": "IN_PROGRESS",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Real ASI:One request receives authoritative supported options before substantial orchestration work.",
+        "Preserve private identity, bounded messages and exact package pins.",
+        "Record live proof honestly; no mocked transport is called ASI:One acceptance."
+      ],
+      "implementation": {
+        "started_at_commit": "3c71bb42",
+        "approval_evidence": ".ai/approvals/FETCH-AI-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "verification": {
+        "required": [
+          "focused",
+          "live_asi_round_trip"
+        ],
+        "record": ".ai/verification/FETCH-T01.yaml"
       }
     }
   ]

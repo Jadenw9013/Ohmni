@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "FETCH-T01",
+  "task": "FETCH-T01",
+  "scope": "FETCH-AI-1",
+  "status": "PASSED",
+  "commands": [
+    {
+      "command": "python -m pytest -q tests/test_ai_workflow.py tests/test_fetch_agent.py",
+      "result": "PASS",
+      "passed": 16
+    },
+    {
+      "command": "ruff check src/ohmni/integrations tests/test_fetch_agent.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "live_acceptance": {
+    "date": "2026-10-17",
+    "endpoint": "https://ohmni-agent.fly.dev/submit",
+    "handle": "@ohmni-pcb-guide",
+    "address": "agent1qvzucpk72r48d4gys9npx2an8jjj5mqpzwfjz4yt6a7mnqyag5gzqm5dc32",
+    "asi_chat": "https://asi1.ai/chat/5107b168-e423-4e83-9610-f4255fca3913?from=profile&handle=ohmni-pcb-guide",
+    "request": "What board options does Ohmni support? Can it identify smells?",
+    "result": "Real ASI:One reply listed three real application families, refused smell identification, and disclosed no plan or build was started.",
+    "local_screenshot": "build/fetch-asi-round-trip.png",
+    "logs": "build/fetch-agent-live.log"
+  },
+  "limitations": [
+    "This milestone is read-only; ASI planning, confirmation, build and download integration remains unimplemented.",
+    "Key deleted in Agentverse UI and local file removed; post-deletion token still accepted HTTP 200. Immediate revocation not verified; key expires one hour after creation.",
+    "Full fast suite running; initial failure was scope allowlist omission, corrected and rerun in focused workflow suite."
+  ],
+  "review": "Self-review only; independent review not claimed."
+}
