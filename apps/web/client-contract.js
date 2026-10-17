@@ -110,6 +110,7 @@ export const requestBody = (identity, request) => JSON.stringify({
     ui_version: identity.ui_version,
 });
 export const pollHeaders = (identity) => ({
+    ...(globalThis.OHMNI_CONNECTED ? {"X-Ohmni-Client":"main-ui"} : {}),
     "X-Ohmni-Server-Instance": identity.server_instance_id,
     "X-Ohmni-API-Version": String(API_VERSION),
     "X-Ohmni-UI-Version": identity.ui_version,

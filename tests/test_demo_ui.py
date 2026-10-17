@@ -134,7 +134,7 @@ def test_every_executable_asset_is_served_by_the_demo_server():
         assert name in server.STATIC_ASSETS, f"unserved browser module: {name}"
         imported.add(name)
         source = _read(name)
-        dependencies = set(re.findall(r'(?:from\s*|import\s*)[\'"]\./([A-Za-z0-9._-]+\.js)[\'"]', source))
+        dependencies = set(re.findall(r'(?:from\s*|import\s*(?:\(\s*)?)[\'"]\./([A-Za-z0-9._-]+\.js)[\'"]', source))
         pending.update(dependencies - imported)
         referenced_data.update(re.findall(r'[\'"](?:/|\./)([A-Za-z0-9._-]+\.json)[\'"]', source))
     assert {"board-view.js", "schematic-view.js"} <= imported

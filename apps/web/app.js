@@ -14,6 +14,7 @@ import { initializeHome } from "./home.js";
 import { mountBoardControls } from "./board-controls.js";
 import { mountCircuitLessons } from "./circuit-lessons.js";
 import { mountConversation } from "./conversation.js";
+import { mountComponentTutor } from "./component-tutor.js";
 import { mountProjectAssistant } from "./project-assistant.js";
 import { mountProjectWorkbench } from "./project-workbench.js";
 import { scopeHtml } from "./scope-view.js";
@@ -218,7 +219,7 @@ export async function retryLastAction() { return state.retryAction?.(); }
 
 function setConnection(status) {
     state.connection = status;
-    setText("#connection-status", { connected: "Connected", disconnected: "Connection lost", changed: "Server changed", unchecked: "Local workspace" }[status]);
+    setText("#connection-status", { connected: "Connected", disconnected: "Connection lost", changed: "Server changed", unchecked: globalThis.OHMNI_CONNECTED ? "Private workspace" : "Local workspace" }[status]);
     setHidden("#connection-banner", status === "connected" || status === "unchecked");
     setText("#connection-message", status === "changed"
         ? "This result is from an earlier server. You can keep exploring it. Downloads are paused; start a new example to create current files."
@@ -891,6 +892,8 @@ export function renderSelection(ref) {
     const box = $("#selection");
     const exp = state.experience;
     state.selected = ref;
+    state.componentTutor?.dispose();
+    state.componentTutor = mountComponentTutor($("#component-tutor"), {context:state.revisionContext, component:ref});
     state.boardLessons?.select(ref);
     $$("#schematic-holder .sym").forEach((symbol) => {
         const selected = symbol.dataset.ref === ref;
@@ -1305,7 +1308,7 @@ function renderParts(components) {
 function renderFiles(report, jobId) {
     const economics = report.economics;
     const download = (name, label, section) => {
-        const url = `/api/artifacts/${escapeHtml(jobId)}/${name}`;
+        const url = `${API_BASE}/api/artifacts/${escapeHtml(jobId)}/${name}`;
         const current = section?.current ?? report.release.current;
         return `<a href="${url}" data-artifact-download data-download-url="${url}" data-current="${current === true}">${label}<span aria-hidden="true"> ↗</span></a>`;
     };
@@ -1455,7 +1458,11 @@ function attach() {
     };
     $("#schematic-holder")?.addEventListener("click", activateSchematic);
     $("#schematic-holder")?.addEventListener("keydown", activateSchematic);
-    $("#start-supported")?.addEventListener("click", () => void openBrief());
+    if (globalThis.OHMNI_CONNECTED) $("#start-supported").textContent = "Customize a new sensor project";
+    $("#start-supported")?.addEventListener("click", () => {
+        if (globalThis.OHMNI_CONNECTED) void state.workbench?.openStarter("a1_usb_i2c_sensor", QUICK_STARTS.a1_usb_i2c_sensor);
+        else void openBrief();
+    });
     $("#start-free-text")?.addEventListener("click", () => {
         const request = $("#free-text-request")?.value ?? "";
         void (state.conversation ? state.conversation.begin(request) : openBrief({ request }));
@@ -1532,4 +1539,17 @@ if (typeof document !== "undefined" && document.getElementById("start-supported"
     // and loads nothing; enabled, the app starts without waiting for the bundle.
     startTelemetry();
     attach();
+}
+
+export async function openConnectedProject(projectId) {
+    await state.workbench?.openProject(projectId);
+    const response = await projectRequest(`/api/projects/${projectId}`);
+    const project = parseProjectEnvelope(response.payload,response.identity), revision=project.revisions.at(-1);
+    if (!revision.job_id) return;
+    invalidateProjectResult();
+    state.customProject=true;state.projectName=revision.brief.project_name;
+    state.revisionContext={projectId,revisionId:revision.revision_id,preview:revision.preview};
+    state.identity=response.identity;state.brief=revision.preview;state.jobId=revision.job_id;
+    state.runStatus='running';show('design');
+    await poll(revision.job_id,response.identity);
 }

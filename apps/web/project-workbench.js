@@ -293,7 +293,7 @@ export function mountProjectWorkbench(root, {
             const path = project ? `/api/projects/${project.project_id}/revisions` : "/api/projects";
             // The saved brief must match the editor's draft before the request
             // counts as a success, so the check runs inside the request.
-            const { parsed: next } = await projectRequest(path, { fetcher, method: "POST", data: { brief: draft },
+            const { parsed: next } = await projectRequest(path, { fetcher, method: "POST", data: { brief: draft, ...(globalThis.OHMNI_CONNECTED && project ? {base_revision_id:revision.revision_id} : {}) },
                 parse: (payload, identity) => {
                     const parsed = parseProjectEnvelope(payload, identity);
                     if (project && parsed.project_id !== project.project_id) throw new Error("Project identity mismatch");

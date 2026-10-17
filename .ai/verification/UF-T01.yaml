@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "id": "UF-T01",
+  "task": "UF-T01",
+  "scope": "UNIFIED-FETCH-1",
+  "status": "PASSED",
+  "commit": "ebb35e6b940e3d1375e793f014216ea27e3ee506",
+  "merged_main": "b60985a3",
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "passed": 2780,
+      "skipped": 101,
+      "deselected": 70,
+      "seconds": 359.98,
+      "note": "Merged application source at 9a8593ef. Subsequent ebb35e6b changes only browser-check startup waits, verified by the full browser gate below."
+    },
+    {
+      "command": "pytest connected workspace/browser, conversation, workflow, frontend module behavior",
+      "result": "PASS",
+      "passed": 36,
+      "frontend_tests": 1147
+    },
+    {
+      "command": "python scripts/run_browser_acceptance.py --output build/browser-unified-merged",
+      "result": "PASS",
+      "saved_demo_steps": 188,
+      "telemetry_checks": 58,
+      "browser_regressions": 14
+    },
+    {
+      "command": "ruff changed Python files; git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "native": {
+    "result": "PASS",
+    "planner_and_tutor": "deterministic test providers; no claim of live model evaluation for the edit",
+    "engineering": "Actual local KiCad generation",
+    "original_job": "88f194fa3c57",
+    "edited_job": "398475c14d41",
+    "change": "Reviewed and saved a second indicator LED through main board chat; explicit Generate created a new immutable revision",
+    "components_before": 16,
+    "components_after": 18,
+    "release_results": [
+      "READY_FOR_MANUFACTURING_REVIEW",
+      "READY_FOR_MANUFACTURING_REVIEW"
+    ],
+    "download": {
+      "job_id": "398475c14d41",
+      "files": 20,
+      "sha256": "509128a4d463ec1b026b2b9783563048c0804edd71ab4360bfe59bbd86a12175"
+    }
+  },
+  "production": {
+    "project": "Button and light controller",
+    "original_job": "389a3fda1924",
+    "revision": 1,
+    "parts": 16,
+    "site": "https://ohmni-yvnd.vercel.app",
+    "agent_version": "0.4.0",
+    "backend_image": "registry.fly.io/ohmni-agent:deployment-01M55XXG3QH96R556W4X5HZHQB",
+    "frontend_deployment": "dpl_4kNJADrJ7ukN9dJhPUzeFJmioc22",
+    "observed": [
+      "ASI OPEN returned one-use main-site link",
+      "Link fragment removed before main app initialization",
+      "Project present in private Recent projects after reload",
+      "Original exact 16-part board loaded",
+      "Main settings expose buttons, LEDs, dimensions and programming header",
+      "Earlier component conversations migrated once",
+      "Live SW1 tutor question answered and persisted across reload and backend deployment",
+      "Live board assistant returned saved name and one button/LED",
+      "Source merged PR93 planning-recovery changes",
+      "Screenshot shows saved project, original 3D board, selected SW1 and board chat",
+      "Live board-level answer selected saved name, one button and one indicator LED after final deployment",
+      "Main UI downloaded a 20-file ZIP whose project-revision.json identifies original job389a3fda1924"
+    ],
+    "screenshot": "/Users/jadenwong/Dev/Ohmni-unified-fetch/build/live-unified-main.png",
+    "original_design_modified": false
+  },
+  "production_download": {
+    "path": "/Users/jadenwong/Downloads/build-package (7).zip",
+    "sha256": "58293e2a61b75dfbbff4696ea05286befba67f9a8a5f19dff8b31e48355f8ed9",
+    "files": 20,
+    "revision": {
+      "attempt": 1,
+      "board_constraints_hash": "f5895247ff1fc4854b8c73ed5d5f4cbbde51039f56f77511f9e8616dd4d273c4",
+      "brief_fingerprint": "5592c5376afd374862f14effac1862445a3799c744e5834e8270458b26a44490",
+      "circuit_fingerprint": "666c509ce88eeaf5ca91ed92c9625e6c9135a35c61861665afafac99a79fdb82",
+      "created_at": "2026-10-17T20:24:04.318206+00:00",
+      "footprint_geometry_fingerprint": "5c5aedda8119ae5dcac36b52ab0abbcb3684488ba9f210ec6d7ecf55987659f4",
+      "job_id": "389a3fda1924",
+      "number": 1,
+      "package_fingerprint": "95997a0b0c58f6c6f627a08422a0b251b2ea9009e1760d574d33d87b7de2541d",
+      "pcb_compiler_version": "0.3.0",
+      "placement_algorithm": "functional-groups-v1",
+      "placement_documents": {
+        "placement-request.json": "554ebe86364472189b5cee10571b5a6b74a0f662b1052413dd36f64b9792ced1",
+        "placement.json": "aac45678a5889b7afd399cf0760779fdd2e619be07b1657c0b84fd65dbd6ba9f"
+      },
+      "placement_request_fingerprint": "45e774e8cab2930ebdefb0b0b556e7b51d0ed4a8da300db550bdff2823fca036",
+      "project_id": "527e591f6ef24c1d",
+      "revision_id": "27e8c10f4065444b"
+    }
+  },
+  "security_checks": [
+    "Single-use claims with same-session lost-response retry, expiry and durable session reopening",
+    "Cross-owner project, build, planning parent, confirmation and history isolation",
+    "CSRF custom header and origin rejection",
+    "Old read-only viewer tokens cannot claim edit access",
+    "Stale direct saves rejected; old proposals not silently re-applied",
+    "Fetch follows latest UI-saved revision",
+    "Actual planning, follow-up, confirmation and diagnostic exercise routes pass through private gateway"
+  ],
+  "review": {
+    "status": "UNAVAILABLE",
+    "independent": false,
+    "pr": "https://github.com/Jadenw9013/Ohmni/pull/94"
+  },
+  "limitations": [
+    "Independent review remains pending; VERIFIED rather than formal COMPLETE.",
+    "Workspace access is a persistent private browser session, not an account/password login; another browser reconnects Fetch projects with OPEN.",
+    "Unavailable historical planning assistant replies are not invented; saved requests and new exchanges are retained. AI reads bounded recent context while older messages remain paginated.",
+    "Editing covers supported families/configuration; arbitrary CAD editing, firmware and physical testing are not implemented by this scope.",
+    "Component shapes are illustrative and live AI explanations can be wrong; neither establishes hardware behavior."
+  ],
+  "ci_note": "GitHub checks were rerunning when this record was committed. Earlier failures exposed asynchronous startup races in telemetry and saved-demo navigation; explicit bootstrap readiness preserves all existing assertions."
+}

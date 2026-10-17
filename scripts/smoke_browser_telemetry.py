@@ -213,6 +213,11 @@ def _drive(context, hosting, mode, page_origin, api_origin) -> dict:
     page.on("console", lambda message: console_errors.append(message.type) if message.type == "error" else None)
     started = time.monotonic()
     page.goto(f"{page_origin}/?q={CANARY}", wait_until="load")
+    # The main entry point now connects the workspace before importing app.js.
+    # The load event does not await that asynchronous bootstrap. Wait for the
+    # real entry point, so disabled telemetry cannot race unwired controls and
+    # enabled telemetry starts at the same point as it does for a user.
+    page.evaluate("import('/main.js').then((m) => m.ready)")
     state = page.evaluate("import('/telemetry.js').then(async (m) => { await m.startTelemetry(); return m.telemetryState(); })")
     outcome = {"telemetry_state": state}
 

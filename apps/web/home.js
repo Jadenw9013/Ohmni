@@ -5,7 +5,7 @@ export const HOME_GUIDES = Object.freeze({
         ['Choose a project', 'Start with a USB-powered ESP32 sensor, button controller or memory board. Pick its features and give it a name.'],
         ['Save, then inspect', 'Save a revision before generating your board. Explore its components, connections and recorded engineering checks.'],
         ['Learn as you go', 'Open Learn or select a callout to meet a component. Try a temporary layout to practice arranging parts; it does not edit a saved PCB.'],
-        ['Keep your work', 'Project revisions are saved on this local server, with no cloud sync. Unsaved changes are lost on reload.']
+        ['Keep your work', 'Saved revisions stay in your workspace. In the hosted app, Fetch projects and chats are saved online and this browser remembers access. Unsaved changes are lost on reload.']
     ] },
     checks: { title: 'Know what was actually checked', sections: [
         ['Evidence before confidence', 'A model can propose a design. Deterministic checks evaluate the circuit, and source evidence supports component facts.'],
@@ -15,7 +15,7 @@ export const HOME_GUIDES = Object.freeze({
     limits: { title: 'A focused local prototype', sections: [
         ['Supported projects', 'USB-powered ESP32 sensor, button-and-light and memory boards. This is not a general-purpose PCB editor.'],
         ['Models and real data', 'The landing board is an authored controller concept with named components and recorded circuit and geometry checks. Explore demo opens the separate saved engineering example. Neither has been hardware-tested.'],
-        ['Your files and revisions', 'Projects are stored on this server, not synced to the cloud. Save before reloading. Available files and release eligibility depend on the actual engineering results.']
+        ['Your files and revisions', 'The hosted app saves your projects and conversations online. Keep this browser’s workspace access, or reconnect a Fetch project using OPEN. Save edits before reloading. File availability depends on the engineering results.']
     ] }
 });
 

@@ -65,6 +65,9 @@ class BoardWorkspace:
             row = db.execute('SELECT job,owner,project,revision,expires FROM workspaces WHERE digest=?', (digest,)).fetchone()
         if not row or row[4] <= self.bridge.clock():
             raise WorkspaceUnavailable('This workspace link expired or was replaced. Ask Ohmni in Fetch chat for OPEN.')
+        return self._resolve_row(digest, row)
+
+    def _resolve_row(self, digest, row):
         job = self.bridge.jobs.get(row[0])
         revision = self.bridge.projects.revision(row[2], row[3])
         if not job or job['status'] != 'complete' or not revision or revision.get('job_id') != row[0]:
@@ -102,12 +105,18 @@ class BoardWorkspace:
             raise WorkspaceUnavailable('Downloads are withheld because the release checks are not current.')
         return data
 
-    def teach(self, token, component, question):
+    def resolve_revision(self, project, revision):
+        saved = self.bridge.projects.revision(project, revision)
+        if not saved or not saved.get('job_id'):
+            raise WorkspaceUnavailable('Generate this revision before asking about its components.')
+        return self._resolve_row(f'{project}:{revision}', (saved['job_id'], '', project, revision, float('inf')))
+
+    def teach(self, token, component, question, *, project_revision=None):
         if not isinstance(question, str) or not 1 <= len(question.strip()) <= 2000:
             raise ValueError('Enter a question in 1–2,000 characters.')
         if not isinstance(component, str) or len(component) > 64:
             raise ValueError('Choose a component from this board.')
-        digest, row, job, revision = self.resolve(token)
+        digest, row, job, revision = self.resolve_revision(*project_revision) if project_revision else self.resolve(token)
         exp = job['report']['experience']
         card = next((x for x in exp['components'] if x['ref'] == component), None)
         placed = next((x for x in exp['board']['components'] if x['ref'] == component), None)
@@ -155,7 +164,7 @@ class BoardWorkspace:
             'say the GPIO mapping must be checked; use net names when explaining firmware concepts. '
             'Correct any conflicting pin/GPIO claim in conversation history rather than repeating it. '
             'Do not say a board works because checks passed. Do not change the design or claim changes were made. '
-            'For change requests explain conceptual effects and tell the user to return to Fetch chat for a reviewed plan. '
+            'For change requests explain conceptual effects and tell the user to use Board chat or the project settings to review and save a new revision. '
             'Give a useful explanation, a short list of unknowns, and up to three follow-up questions.'),
             data={'job_id': row[0], 'component': component, 'sources': sources,
                   'history': messages[-8:], 'question': question.strip()})
@@ -163,7 +172,10 @@ class BoardWorkspace:
             answer = TeachingAnswer.model_validate(self.provider.generate_structured(request, TeachingAnswer))
         if not set(answer.source_ids) <= sources.keys() or len(set(answer.source_ids)) != len(answer.source_ids):
             raise ValueError('The teaching response did not reference this board correctly. Please try again.')
-        self.resolve(token)  # Reject responses if the capability/artifacts changed during the call.
+        if project_revision:
+            self.resolve_revision(*project_revision)
+        else:
+            self.resolve(token)  # Reject changed capabilities/artifacts.
         messages = [*messages[-6:], {'role': 'user', 'text': question.strip()},
                     {'role': 'assistant', 'text': answer.explanation}]
         with self.bridge.db() as db:

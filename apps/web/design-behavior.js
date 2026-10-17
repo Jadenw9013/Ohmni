@@ -146,7 +146,7 @@ export function mountDesignBehaviorPanel(container, { jobId, identity, circuitHa
             const saved = await source.json();
             if (!sameIdentity(saved, identity) || saved.circuit_hash !== circuitHash) throw new Error('circuit');
             posted = true;
-            const run = await request(`${API_BASE}/api/behavior/design/run`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            const run = await request(`${API_BASE}/api/behavior/design/run`, { method: 'POST', headers: { ...pollHeaders(identity), 'Content-Type': 'application/json' },
                 body: JSON.stringify({ api_version: identity.api_version, server_instance_id: identity.server_instance_id, ui_version: identity.ui_version,
                     design: { circuit: saved.circuit, analysis: 'op' } }) });
             if (run.status === 409) {
