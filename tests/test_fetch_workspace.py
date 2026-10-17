@@ -103,6 +103,7 @@ def test_links_survive_status_and_restart_and_remain_job_bound(tmp_path):
 
 
 def test_gateway_workspace_requires_capability_and_blocks_project_enumeration(tmp_path):
+    pytest.importorskip('aiohttp')
     async def run():
         from aiohttp import ClientSession
 

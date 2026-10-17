@@ -8,6 +8,7 @@ from test_fetch_workspace import Teacher, prepared
 
 
 def test_generated_board_selection_teaching_and_expired_link_in_browser(tmp_path):
+    pytest.importorskip('aiohttp')
     playwright = pytest.importorskip('playwright.sync_api')
     from ohmni.integrations.fetch_ai.http import start_gateway
 
