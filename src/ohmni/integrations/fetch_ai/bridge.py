@@ -214,7 +214,7 @@ class ChatBridge:
         if command in {'help', 'options', 'supported options'}:
             return supported_options_reply(text).replace(
                 'This first connectivity release lists options only: it has not saved a plan or started a build. Planning, explicit confirmation and build tools are the next integration step.',
-                'Describe your idea to prepare a plan. Review it, answer questions, then use its exact CONFIRM code to save and build. STATUS and FINDINGS inspect your latest build without model charges.')
+                'Describe your idea to prepare a plan. Review it, answer questions, then use its exact CONFIRM code to save and build. STATUS and FINDINGS inspect your latest build without model charges. OPEN opens that board in Ohmni’s 3D workspace and component tutor.')
         if command in {'status', 'findings', 'files', 'download', 'open', 'view', 'workspace'}:
             return self.result(owner)
         if command == 'retry':
