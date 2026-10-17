@@ -162,8 +162,15 @@ def _wait_original(page):
 
 
 def _site_entry(context, origin: str, step):
+    def main_ready(page):
+        # Dynamic workspace bootstrap can continue after the document load and
+        # the first idle gap. Do not navigate away while its modules are loading.
+        page.evaluate("import('/main.js').then((m) => m.ready)")
+        page.wait_for_load_state("networkidle")
+
     main_page = context.new_page()
     main_page.goto(origin + "/#workspace", wait_until="networkidle")
+    main_ready(main_page)
     main_page.locator(".app-layout").wait_for(state="visible")
     request = main_page.locator("#free-text-request")
     draft = "Unsaved browser acceptance draft: an ESP32 button board."
@@ -185,12 +192,14 @@ def _site_entry(context, origin: str, step):
          and page.evaluate("window.opener === null"))
 
     page.get_by_role("link", name="Back to Ohmni", exact=True).click()
+    main_ready(page)
     page.locator("#home").wait_for(state="visible")
     page.wait_for_load_state("networkidle")
     step("demo return link opens the home page", urlsplit(page.url).fragment == "home")
     page.go_back(wait_until="networkidle")
     _wait_original(page)
     page.get_by_role("link", name="Start your own board", exact=True).click()
+    main_ready(page)
     page.locator(".app-layout").wait_for(state="visible")
     page.wait_for_load_state("networkidle")
     step("demo build link opens the workspace", urlsplit(page.url).fragment == "workspace")
