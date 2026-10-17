@@ -43,12 +43,64 @@ test("unresolved questions disable confirmation and short answers reference thei
     await controller.begin(p.messages[0]);
     await controller.confirm();
     assert.equal(ui.node("#conversation-confirm").disabled,true);
-    assert.match(ui.node("#conversation-confirm-hint").textContent,/Generation is paused: answer/);
+    assert.match(ui.node("#conversation-confirm-hint").textContent,/Generation is paused: send your reply/);
+    assert.equal(ui.node("#conversation-confirm").hidden,true);
+    assert.equal(ui.node("#conversation-edit").hidden,false);
+    assert.equal(ui.node("#conversation-reply-form").hidden,false);
+    assert.ok(ui.root.innerHTML.indexOf('id="conversation-reply-form"') < ui.root.innerHTML.indexOf('id="conversation-summary"'));
+    assert.match(ui.node("#conversation-summary").innerHTML,/<details class="conversation-draft"><summary>View tentative hardware choices/);
+    assert.doesNotMatch(ui.node("#conversation-summary").innerHTML, /<h2>.*temperature.*<\/h2>/);
     assert.equal(ui.node("#conversation-reply").focused,true);
     await controller.propose("Yes");
     assert.equal(calls.at(-1).body.parent_id,p.plan_id);
     assert.equal(calls.at(-1).body.message,"Yes");
     assert.equal(calls.some(c=>c.url.endsWith("/confirm")),false);
+});
+test("accepting an alternative reveals the reviewed plan and enables its exact confirmation",async()=>{
+    const blocked=plan({ready:false,questions:["Audio recording is unsupported. Build a button-and-light controller instead?"]});
+    blocked.brief.project_name="Voice diary recorder";
+    const ready=plan({plan_id:"1".repeat(16),messages:[...blocked.messages,"Yes, build the controller instead."]});
+    ready.brief.project_name="Button and light controller";
+    const ui=dom(),calls=[],saved=[];let proposals=0;
+    const base=transport(ready,calls);
+    const controller=mountConversation(ui.root,{onOpen(){},onSaved:p=>saved.push(p),fetcher:async(url,options)=>{
+        if(url==="/api/project-plans") {calls.push({url,body:JSON.parse(options.body)});return response({plan:proposals++?ready:blocked});}
+        return base(url,options);
+    }});
+    await controller.begin(blocked.messages[0]);
+    assert.doesNotMatch(ui.node("#conversation-summary").innerHTML,/Voice diary recorder/);
+    await controller.propose(ready.messages[1]);
+    assert.equal(calls.filter(c=>c.url==="/api/project-plans")[1].body.parent_id,blocked.plan_id);
+    assert.equal(ui.node("#conversation-confirm").hidden,false);
+    assert.equal(ui.node("#conversation-confirm").disabled,false);
+    assert.equal(ui.node("#conversation-edit").hidden,true);
+    assert.equal(ui.node("#conversation-summary").focused,true);
+    assert.match(ui.node("#conversation-summary").innerHTML,/Button and light controller/);
+    await controller.confirm();
+    assert.equal(saved[0].revisions[0].brief.project_name,ready.brief.project_name);
+});
+test("retrying a failed clarification resends the reply with its parent, not the initial idea",async()=>{
+    const p=plan({ready:false,questions:["Use a controller instead?"]}),ui=dom(),calls=[];let proposals=0;
+    const base=transport(p,calls);
+    const controller=mountConversation(ui.root,{onOpen(){},fetcher:async(url,options)=>{
+        if(url==="/api/project-plans" && proposals++===1) {calls.push({url,body:JSON.parse(options.body)});return response({error:"plan_unavailable"},503);}
+        return base(url,options);
+    }});
+    await controller.begin(p.messages[0]);
+    await controller.propose("Yes, use the controller instead.");
+    assert.match(ui.node("#conversation-preserved").textContent,/Your latest reply: Yes, use the controller instead\./);
+    ui.node("#conversation-retry").click();await new Promise(setImmediate);
+    assert.equal(calls.at(-1).body.message,"Yes, use the controller instead.");
+    assert.equal(calls.at(-1).body.parent_id,p.plan_id);
+});
+test("ready plans can be edited without searching below the technical details",async()=>{
+    const ui=dom();const controller=mountConversation(ui.root,{fetcher:transport(plan(),[]),onOpen(){}});
+    await controller.begin("A temperature board");
+    assert.equal(ui.node("#conversation-edit").hidden,true);
+    ui.node("#conversation-change").click();
+    assert.equal(ui.node("#conversation-edit").hidden,false);
+    assert.equal(ui.node("#conversation-reply").focused,true);
+    assert.equal(ui.node("#conversation-reply-form button").textContent,"Update my plan");
 });
 test("a mismatched saved brief never reaches generation",async()=>{
     const p=plan(),calls=[],ui=dom(), changed=project(p);

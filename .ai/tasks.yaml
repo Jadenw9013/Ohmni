@@ -422,6 +422,15 @@
       "review_policy": "self_review_allowed; independent review not claimed"
     },
     {
+      "id": "PLAN-RECOVERY-1",
+      "title": "Resolve blocked planning replies in the product UI",
+      "type": "post_milestone_regression",
+      "status": "COMPLETE",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/PLAN-RECOVERY-1.yaml",
+      "review_policy": "Self review permitted; no independent review claimed."
+    },
+    {
       "id": "FETCH-VISUAL-TUTOR-1",
       "title": "Fetch-generated boards in the interactive Ohmni learning workspace",
       "type": "product_feature",
@@ -4169,6 +4178,42 @@
         "status": "PASSED",
         "record": ".ai/verification/PPA-T01.yaml",
         "commit": "7ecc2444aa0b7dfa58d8f8ef6814183e4aeb2148"
+      }
+    },
+    {
+      "id": "PR-T01",
+      "scope": "PLAN-RECOVERY-1",
+      "title": "Make clarification actionable and verify an accepted alternative through download",
+      "priority": 100,
+      "status": "COMPLETE",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Required replies are visible beside clarification and draft hardware is not presented as fulfilling an unsupported idea.",
+        "Explicit acceptance resolves the proposed alternative; refusal retains the unsupported requirement.",
+        "Real paid conversation reaches native board generation and a validated production download; release gates remain intact."
+      ],
+      "implementation": {
+        "started_at_commit": "9fe3f197",
+        "approval_evidence": ".ai/approvals/PLAN-RECOVERY-1.yaml",
+        "completed_at_commit": "50038ffd2b52787fc0e5ca293d136b6b77cb885a"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PASSED",
+        "commit": "50038ffd2b52787fc0e5ca293d136b6b77cb885a",
+        "notes": "Self-review only; no independent review claimed."
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "browser",
+          "live_recovery"
+        ],
+        "record": ".ai/verification/PR-T01.yaml",
+        "status": "PASSED",
+        "commit": "50038ffd2b52787fc0e5ca293d136b6b77cb885a"
       }
     },
     {

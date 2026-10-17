@@ -123,6 +123,12 @@ def test_main_ui_claim_saved_board_component_chat_and_edit(tmp_path):
             page.wait_for_function("document.querySelector('#design').dataset.buildState === 'running'")
             assert jobs.starts==2
             assert bridge.projects.get(state['project_id'])['revisions'][0]['job_id']==state['job_id']
+            # New projects use the same connected gateway and merged planning UI.
+            page.locator('#sidebar-new-project').click()
+            page.locator('#free-text-request').fill('Build a USB-powered ESP32 sensor board')
+            page.locator('#start-free-text').click()
+            page.locator('#conversation-confirm:not([disabled])').wait_for(timeout=20000)
+            assert page.locator('#conversation-plan').is_visible()
             assert not errors, errors
             browser.close()
     finally:

@@ -116,3 +116,38 @@ Production follow-up (same code):
    does not store readings until software performs acquisition and writes.
 4. Keep showing UNKNOWN results for unverified budget, RF, thermal and physical
    behavior; manufacturing readiness is not proof that every user goal is met.
+
+## Clarification recovery regression (PR-T01)
+
+The voice-diary screenshot exposed a gap in the original audit: rejecting an
+unsupported idea correctly is not enough if the user cannot find the answer box.
+The required composer was below a tall hardware summary and a disabled Generate
+button. The draft also used the unsupported device's name, and a failed reply's
+Retry action resent the initial idea instead of the reply.
+
+Required replies now sit directly below the question, with a Send reply button
+and elapsed loading feedback. Unresolved hardware is a collapsed draft; it does
+not display the unsupported device name as a finished proposal. A resolved plan
+receives focus and exposes Generate and Change my plan. Retry preserves the
+latest reply and its parent plan. The planner is instructed to interpret explicit
+acceptance in context and name an alternative only for the hardware it provides.
+
+Rehearse the recovery, not just a supported first prompt:
+
+1. Request a USB-C voice-activated diary recorder with a button, status light,
+   and noise filtering. Expect an honest audio limitation and a visible reply box.
+2. Decline the proposed button/light alternative. Generation must stay blocked.
+3. Explicitly accept the controller instead, acknowledging that it cannot record
+   audio. Expect a controller-named plan with no repeated consent question.
+4. Generate, open Build & export, and download the complete package. Verify the
+   saved brief, native DRC, unrouted count and every fabrication manifest hash.
+
+The paid local browser rehearsal completed these steps with job `a9946d76197f`:
+20 files, nine matching fabrication hashes, zero DRC violations and unrouted
+connections, zero violated requirements, and 14 UNKNOWN results retained.
+The production website also completed the flow with the short reply “Yes, let’s
+do that.” and job `da657c15c223`; its actual browser download passed the same
+20-file, nine-hash and native-check assertions. Exact source/deployment identities
+are recorded in
+`.ai/verification/PR-T01.yaml`. This recovery does not add microphone, audio
+recording, voice activation, or noise-filtering support.

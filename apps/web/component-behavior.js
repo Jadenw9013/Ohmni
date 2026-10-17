@@ -107,7 +107,7 @@ export function mountBehaviorPanel(container, entryId) {
                 const output=container.querySelector('[data-behavior-results]');output.replaceChildren();
                 const status=container.querySelector('[data-behavior-run-status]');status.textContent='Running the reference circuit…';
                 try {
-                    const run=await fetcher(`${API_BASE}/api/behavior/${encodeURIComponent(entryId)}/run`,{method:'POST',headers:{'Content-Type':'application/json'},
+                    const run=await fetcher(`${API_BASE}/api/behavior/${encodeURIComponent(entryId)}/run`,{method:'POST',headers:{...pollHeaders(identity),'Content-Type':'application/json'},
                         body:JSON.stringify({api_version:identity.api_version,server_instance_id:identity.server_instance_id,ui_version:identity.ui_version})});
                     if (!run.ok) throw new Error('not_run');
                     const payload=await run.json();

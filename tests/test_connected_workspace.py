@@ -49,7 +49,8 @@ def test_main_ui_http_projects_edits_history_and_cross_owner_boundaries(tmp_path
         from aiohttp import ClientSession, CookieJar
 
         from ohmni.integrations.fetch_ai.http import start_gateway
-        bridge, _provider, jobs, _ = setup(tmp_path)
+        bridge, _provider, jobs, clock = setup(tmp_path)
+        bridge.budget.monotonic = lambda: clock[0]
         jobs.output_root = tmp_path
         jobs.set_diagnostic = lambda _callback: None
         owner, state, chat = project(bridge)
@@ -114,7 +115,29 @@ def test_main_ui_http_projects_edits_history_and_cross_owner_boundaries(tmp_path
                 assert bridge.connected.history(state['project_id'],rev['revision_id'],'board')['messages'][-1]['turn']['facts'][0]['value']=='Edited in main Ohmni'
                 async with a.get(base+'/api/projects/'+other_state['project_id']+'/revisions/'+other_state['revision_id']+'/history',headers=poll) as r:
                     assert r.status == 403
-                async with a.post(base+'/api/plans/0000000000000000/confirm',json=identity,headers=headers) as r:
+                async with a.post(base+'/api/project-plans/0000000000000000/confirm',json=identity,headers=headers) as r:
+                    assert r.status == 403
+                # Exercise the actual main UI planning routes, including a follow-up,
+                # ownership isolation and confirmation into the same private shelf.
+                clock[0] += 61  # separate user actions, rather than a scripted burst
+                async with a.post(base+'/api/exercises/sensor-rail',json={**identity,'choice':'move_both'},headers=headers) as r:
+                    assert r.status == 200, await r.text()
+                async with a.post(base+'/api/project-plans',json={**identity,'message':'Build a USB sensor board','parent_id':None},headers=headers) as r:
+                    assert r.status == 200, await r.text()
+                    draft = (await r.json())['plan']
+                for endpoint, body in [('/api/project-plans',{'message':'Keep those choices','parent_id':draft['plan_id']}),
+                                       ('/api/project-plans/'+draft['plan_id']+'/confirm',{})]:
+                    async with b.post(base+endpoint,json={**identity,**body},headers=headers) as r:
+                        assert r.status == 403
+                async with a.post(base+'/api/project-plans',json={**identity,'message':'Keep those choices','parent_id':draft['plan_id']},headers=headers) as r:
+                    assert r.status == 200, await r.text()
+                    draft = (await r.json())['plan']
+                async with a.post(base+'/api/project-plans/'+draft['plan_id']+'/confirm',json=identity,headers=headers) as r:
+                    assert r.status == 201, await r.text()
+                    created = (await r.json())['project']['project_id']
+                async with a.get(base+'/api/projects',headers=poll) as r:
+                    assert created in {p['project_id'] for p in (await r.json())['projects']}
+                async with b.get(base+'/api/projects/'+created,headers=poll) as r:
                     assert r.status == 403
         finally:
             await runner.cleanup()

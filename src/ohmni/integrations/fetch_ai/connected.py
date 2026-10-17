@@ -171,12 +171,12 @@ class ConnectedWorkspace:
             return
         if method == 'POST' and path == '/api/projects':
             return
-        if method == 'POST' and path == '/api/plans':
+        if method == 'POST' and path == '/api/project-plans':
             parent = payload.get('parent_id')
             if parent:
                 self.owns_plan(session, parent)
             return
-        match = re.fullmatch(rf'/api/plans/({ID})/confirm', path)
+        match = re.fullmatch(rf'/api/project-plans/({ID})/confirm', path)
         if method == 'POST' and match:
             self.owns_plan(session, match[1])
             return
@@ -195,7 +195,7 @@ class ConnectedWorkspace:
             self.owns(session, lineage['project_id'])
             return
         if (method == 'GET' and re.fullmatch(r'/api/behavior/OHM-[0-9]{3}', path)) or (
-            method == 'POST' and (re.fullmatch(r'/api/behavior/OHM-[0-9]{3}/run', path) or path in {'/api/behavior/design/run', '/api/exercises/sensor-rail/answer'})):
+            method == 'POST' and (re.fullmatch(r'/api/behavior/OHM-[0-9]{3}/run', path) or path in {'/api/behavior/design/run', '/api/exercises/sensor-rail'})):
             return
         raise AccessDenied('This operation is not available in the connected workspace.')
 

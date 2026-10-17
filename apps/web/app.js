@@ -1458,7 +1458,11 @@ function attach() {
     };
     $("#schematic-holder")?.addEventListener("click", activateSchematic);
     $("#schematic-holder")?.addEventListener("keydown", activateSchematic);
-    $("#start-supported")?.addEventListener("click", () => void openBrief());
+    if (globalThis.OHMNI_CONNECTED) $("#start-supported").textContent = "Customize a new sensor project";
+    $("#start-supported")?.addEventListener("click", () => {
+        if (globalThis.OHMNI_CONNECTED) void state.workbench?.openStarter("a1_usb_i2c_sensor", QUICK_STARTS.a1_usb_i2c_sensor);
+        else void openBrief();
+    });
     $("#start-free-text")?.addEventListener("click", () => {
         const request = $("#free-text-request")?.value ?? "";
         void (state.conversation ? state.conversation.begin(request) : openBrief({ request }));
