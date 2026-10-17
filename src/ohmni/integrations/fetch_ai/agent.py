@@ -1,4 +1,4 @@
-"""Run the opt-in, read-only ACP connectivity milestone. No model or EDA calls."""
+"""Run the ACP board-generation adapter and private Ohmni learning workspace."""
 from __future__ import annotations
 
 import asyncio
@@ -61,9 +61,9 @@ def build_agent(seed: str, endpoint: str, port: int = 8080, *, bridge=None):
 
     agent = Agent(name="Ohmni PCB Guide", seed=seed, port=port, endpoint=endpoint,
                   registration_policy=AlmanacApiRegistrationPolicy(),
-                  description="Discover supported USB-powered ESP32 board options with Ohmni.",
+                  description="Build supported USB-powered ESP32 boards, explore them in 3D, and learn about their components with Ohmni.",
                   store_message_history=False, report_events=False,
-                  metadata={"scope": "confirmed_board_generation" if bridge else "read_only_connectivity", "software_version": "0.2.0"})
+                  metadata={"scope": "confirmed_board_generation" if bridge else "read_only_connectivity", "software_version": "0.3.0"})
     protocol = Protocol(spec=chat_protocol_spec)
     window = MessageWindow()
     monitors = set()

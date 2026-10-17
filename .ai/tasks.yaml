@@ -420,6 +420,14 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/PCB-PRODUCT-AUDIT-1.yaml",
       "review_policy": "self_review_allowed; independent review not claimed"
+    },
+    {
+      "id": "FETCH-VISUAL-TUTOR-1",
+      "title": "Fetch-generated boards in the interactive Ohmni learning workspace",
+      "type": "product_feature",
+      "status": "VERIFIED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/FETCH-VISUAL-TUTOR-1.yaml"
     }
   ],
   "tasks": [
@@ -4153,6 +4161,42 @@
         "status": "PASSED",
         "record": ".ai/verification/PPA-T01.yaml",
         "commit": "7ecc2444aa0b7dfa58d8f8ef6814183e4aeb2148"
+      }
+    },
+    {
+      "id": "FVT-T01",
+      "scope": "FETCH-VISUAL-TUTOR-1",
+      "title": "Connect exact Fetch builds to 3D component exploration and a grounded tutor",
+      "priority": 100,
+      "status": "VERIFIED",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Fetch returns a private link opening its exact generated revision in the shared Ohmni 3D renderer.",
+        "Components can be selected in the rendered board and accessible list; teaching uses selected component and actual build records.",
+        "Private access, expiration, stale artifacts, shared AI quotas and source validation fail closed.",
+        "Native generated board, real browser and live LLM are validated end to end."
+      ],
+      "implementation": {
+        "started_at_commit": "7ecc2444",
+        "approval_evidence": ".ai/approvals/FETCH-VISUAL-TUTOR-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": false,
+        "status": "UNAVAILABLE",
+        "notes": "Self-review only; independent review remains pending on PR92."
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "browser",
+          "native",
+          "live_tutor"
+        ],
+        "status": "PASSED",
+        "record": ".ai/verification/FVT-T01.yaml",
+        "commit": "e0683a50579fc79c5f1b1f23e3cef96cb6184a5a"
       }
     }
   ]

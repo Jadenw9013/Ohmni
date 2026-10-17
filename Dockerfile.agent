@@ -7,6 +7,7 @@ WORKDIR /app
 COPY pyproject.toml ./
 COPY src/ ./src/
 COPY scripts/ ./scripts/
+COPY apps/web/ ./apps/web/
 RUN pip install --no-cache-dir ".[fetch,telemetry]"
 COPY scripts/fetch-entrypoint.sh /app/scripts/fetch-entrypoint.sh
 ENV PYTHONUNBUFFERED=1 PORT=8080 OHMNI_FETCH_OUTPUT_DIR=/data/fetch-jobs
