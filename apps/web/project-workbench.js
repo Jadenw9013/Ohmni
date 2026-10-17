@@ -71,6 +71,7 @@ export function mountProjectWorkbench(root, {
     let editorVersion = 0;
     let draft = defaultProjectBrief();
     let busy = false;
+    let busyAction = "";
     let options = null;
     let optionsPromise = null;
     const familyDrafts = new Map();
@@ -184,13 +185,16 @@ export function mountProjectWorkbench(root, {
         if ($("#project-assistant")) $("#project-assistant").hidden = !revision;
         if ($("#project-assistant-panel")) $("#project-assistant-panel").hidden = !revision;
         assistant?.setContext(project && revision ? {projectId:project.project_id,revision,dirty:dirty || busy || !!pendingProjectId} : null);
-        $("#project-summary").innerHTML = planSummaryHtml(draft, {saved:!dirty});
-        $("#project-save-state").textContent = busy ? "Working…" : pendingProjectId ? "Saved project unavailable" : !options ? "Choices unavailable" : dirty ? "Unsaved changes" : `Revision ${revision.number} saved`;
-        $("#project-save").textContent = busy ? "Working…" : "Save without generating";
+        $("#project-form").setAttribute("aria-busy", String(busy));
+        $("#project-summary").innerHTML = pendingProjectId
+            ? `<div class="conversation-activity" role="status">${busy ? '<span class="conversation-spinner" aria-hidden="true"></span>' : ""}<span>${busy ? "Opening your saved project… Fetching its exact choices." : "This saved project could not be opened. Your saved choices have not been replaced."}</span></div>`
+            : planSummaryHtml(draft, {saved:!dirty});
+        $("#project-save-state").textContent = busy && pendingProjectId ? "Opening saved project…" : busy ? busyAction === "saving" ? "Saving your choices…" : "Opening this revision’s run…" : pendingProjectId ? "Saved project unavailable" : !options ? "Choices unavailable" : dirty ? "Unsaved changes" : `Revision ${revision.number} saved`;
+        $("#project-save").textContent = busyAction === "saving" ? "Saving your choices…" : "Save without generating";
         $("#project-save").disabled = busy || assistantApplying || !options || !!pendingProjectId || !dirty;
         $("#project-run").disabled = busy || assistantApplying || !options || !!pendingProjectId ;
-        $("#project-run").textContent = !dirty && revision?.job_id ? "Open this revision's run" : "Generate my board";
-        $("#project-action-note").textContent = pendingProjectId ? "Reopen this saved project to recover it." : dirty ? "Generate saves this plan and starts its engineering checks." : "Your saved choices will be used. Assembly, firmware and physical testing come later.";
+        $("#project-run").textContent = pendingProjectId ? busy ? "Opening saved project…" : "Generation unavailable" : busy ? busyAction === "saving" ? "Saving your plan…" : revision?.job_id ? "Opening this run…" : "Starting your board…" : !dirty && revision?.job_id ? "Open this revision's run" : "Generate my board";
+        $("#project-action-note").textContent = pendingProjectId ? busy ? "Fetching this revision’s saved choices. No new build has been requested." : "Choose this project again in Recent projects, or retry opening it under Parts and technical settings." : busy ? "Your request is in progress. Please wait; no need to click Generate again." : dirty ? "Generate saves this plan and starts its engineering checks." : revision?.job_id ? `Revision ${revision.number} has a saved run. Open it to review its actual results.` : `Revision ${revision.number} saved. Generate my board will run fresh checks for these choices.`;
         $("#project-preview-note").textContent = !revision ? "Save your choices to see what the server will build."
             : dirty ? `These are revision ${revision.number}'s saved choices. Save your changes to confirm a new brief.`
                 : `Revision ${revision.number} is confirmed. Its engineering checks begin when you generate the board.`;
@@ -252,7 +256,7 @@ export function mountProjectWorkbench(root, {
         if (busy) return;
         editorVersion += 1;
         pendingNewSeed = null;
-        busy = true;
+        busy = true; busyAction = "opening";
         pendingProjectId = projectId;
         resetExercise();
         project = null; revision = null; draft = defaultProjectBrief();
@@ -266,9 +270,9 @@ export function mountProjectWorkbench(root, {
             project = next; revision = next.revisions.at(-1); draft = structuredClone(revision.brief);
             pendingProjectId = null;
             familyDrafts.clear(); sensorDrafts.clear(); memoryDrafts.clear();
-            render(); onOpen(draft.project_name);
+            render(); onOpen(draft.project_name); void refreshShelf();
         } catch (error) { showError(error); }
-        finally { busy = false; sync(); }
+        finally { busy = false; busyAction = ""; sync(); }
     }
 
     async function save() {
@@ -284,7 +288,7 @@ export function mountProjectWorkbench(root, {
         }
         if (!supportedBrief(draft)) return showError(new ProjectRequestError("Some saved requirements cannot be read by this editor. Reload after updating the app and server together."));
         if (!briefFitsOptions(draft, options)) return showError(new ProjectRequestError("Some saved choices are not offered by this server. Review the parts and counts before saving."));
-        busy = true; sync(); $("#project-error").hidden = true;
+        busy = true; busyAction = "saving"; sync(); $("#project-error").hidden = true;
         try {
             const path = project ? `/api/projects/${project.project_id}/revisions` : "/api/projects";
             // The saved brief must match the editor's draft before the request
@@ -300,7 +304,7 @@ export function mountProjectWorkbench(root, {
             project = next; revision = saved; draft = structuredClone(saved.brief);
             renderHistory(); onOpen(draft.project_name); void refreshShelf(); return true;
         } catch (error) { showError(error); }
-        finally { busy = false; sync(); }
+        finally { busy = false; busyAction = ""; sync(); }
     }
 
     async function generate() {
@@ -313,7 +317,7 @@ export function mountProjectWorkbench(root, {
         if (busy || assistantApplying || !options || !revision || !sameBrief(draft, revision.brief)) return;
         const projectId = project.project_id;
         const revisionId = revision.revision_id;
-        busy = true; sync(); $("#project-error").hidden = true;
+        busy = true; busyAction = "starting"; sync(); $("#project-error").hidden = true;
         try {
             const identity = await fetchHealth(fetcher);
             await onRun({ projectId, revisionId, identity, preview: revision.preview, fetcher });
@@ -328,7 +332,7 @@ export function mountProjectWorkbench(root, {
             revision = selected;
             renderHistory();
         } catch (error) { showError(error); }
-        finally { busy = false; sync(); }
+        finally { busy = false; busyAction = ""; sync(); }
     }
 
     function renderExercise() {

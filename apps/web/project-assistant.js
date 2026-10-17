@@ -56,8 +56,10 @@ function factValue(fact) {
 
 export function turnHtml(t) {
     const facts = t.facts.length ? `<p>From revision ${t.revision_number}. AI selected these records; they may not fully answer your question.</p><dl class="assistant-facts">${t.facts.map(f=>`<div><dt>${e(label(f.label))}</dt><dd>${factValue(f)}<small>${e(f.source)} · ${e(f.basis.replaceAll("_"," "))}</small></dd></div>`).join("")}</dl>` : "";
-    const changes = t.kind === "change" ? `<h3>Review your changes</h3>${t.changes.length ? `<dl class="assistant-diff">${t.changes.map(c=>`<div><dt>${e(label(c.field))}</dt><dd><span>Before: ${e(display(c.before))}</span><strong>After: ${e(display(c.after))}</strong></dd></div>`).join("")}</dl>` : "<p>No changes were proposed.</p>"}<p>${e(t.invalidation)}</p>` : "";
-    return `${t.kind === "change" && t.questions.length ? "<p>Let’s settle the next choice together. Nothing has changed yet.</p>" : t.kind === "answer" ? "<p>Here is what the saved records establish. Unverified items still need separate work.</p>" : ""}${facts}${t.kind === "unavailable" ? "<p>The saved project records do not provide an answer to this question. No engineering claim has been inferred.</p>" : ""}${changes}${t.questions.length ? `<h3>Clarify the request</h3><p>These are AI questions or support-policy limits, not verified engineering results.</p><ul>${t.questions.map(q=>`<li>${e(q)}</li>`).join("")}</ul>` : ""}<details><summary>This conversation (${t.messages.length})</summary>${t.messages.map(m=>`<p class="conversation-message">${e(m)}</p>`).join("")}</details>`;
+    const changes = t.kind === "change" && t.changes.length ? `<h3>Review your changes</h3><dl class="assistant-diff">${t.changes.map(c=>`<div><dt>${e(label(c.field))}</dt><dd><span>Before: ${e(display(c.before))}</span><strong>After: ${e(display(c.after))}</strong></dd></div>`).join("")}</dl><p>${e(t.invalidation)}</p>` : "";
+    const questions = t.questions.length ? `<h3>Let’s choose the next step</h3><p>These are proposed choices, not verified engineering results.</p><ul>${t.questions.map(q=>`<li>${e(q)}</li>`).join("")}</ul>` : "";
+    const records = facts && t.questions.length ? `<details><summary>See the saved records behind these questions</summary>${facts}</details>` : facts;
+    return `${t.kind === "change" && t.questions.length ? "<p>Let’s settle the next choice together. Nothing has changed yet.</p>" : t.kind === "answer" ? "<p>Here is what the saved records establish. Unverified items still need separate work.</p>" : ""}${questions}${changes}${records}${t.kind === "unavailable" ? "<p>The saved project records do not provide an answer to this question. No engineering claim has been inferred.</p>" : ""}<details><summary>This conversation (${t.messages.length})</summary>${t.messages.map(m=>`<p class="conversation-message">${e(m)}</p>`).join("")}</details>`;
 }
 
 /** The applied project, only if its new revision is exactly the reviewed proposal. */
@@ -106,7 +108,7 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
     }
     async function apply() {
         if(busy||!turn?.ready||!context||context.dirty)return;
-        const current=++version, selected=structuredClone(context), proposed=turn;busy=true;$("#assistant-error").hidden=true;sync();onApplying(true);
+        const current=++version, selected=structuredClone(context), proposed=turn;busy=true;$("#assistant-error").hidden=true;$("#assistant-status").textContent="Saving your reviewed changes as a new revision…";$("#assistant-apply").textContent="Saving revision…";sync();onApplying(true);
         try {
             // The applied revision must match the proposal before the request counts as a success.
             const response=await projectRequest(`/api/projects/${selected.projectId}/revisions/${selected.revision.revision_id}/assistant/${proposed.turn_id}/apply`,{fetcher,identity,method:"POST",parse:(payload,current)=>appliedProject(parseProjectEnvelope(payload,current),selected,proposed)});
@@ -114,7 +116,7 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
             const project=response.parsed, revision=project.revisions.at(-1);
             turn=null;onApplying(false);await onApplied(project,revision);
         }catch(err){if(version===current)error(err);}
-        finally{onApplying(false);if(version===current){busy=false;sync();}}
+        finally{onApplying(false);if(version===current){busy=false;$("#assistant-apply").textContent="Save changes as a new revision";sync();}}
     }
     const prepare = message => {if(busy || !context || context.dirty)return;$("#assistant-message").value=message;$("#assistant-message").focus();};
     $("#assistant-help").addEventListener("click",()=>prepare(recovery

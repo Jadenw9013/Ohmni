@@ -73,7 +73,16 @@ node --test apps/web/tests/*.test.mjs
 ```
 
 Failed-build UI is exercised with controlled job responses locally; do not break
-production tools to test an error. Paid production acceptance must also check
-that a conversational clarification preserves the goal, a new revision needs a
-fresh run, and its downloaded files match that run's report. Never interpret
-UNKNOWN as a defect automatically cured by another PCB build.
+production tools to test an error. The paid live follow-up asked about the assembly
+conflict, then accepted reflow assembly while retaining temperature and humidity
+sensing. The reviewed diff changed only `hand_solderable_preferred`. Revision 2
+ran fresh checks and its downloaded 20-entry ZIP passed CRC and all nine
+manufacturing hashes. Its report contained zero VIOLATED choices and retained
+13 UNKNOWN choices/limits. UNKNOWN was not treated as a defect automatically
+cured by another PCB build.
+
+The live walkthrough also prompted small presentation fixes: opening a saved
+project shows a loading state instead of an unrelated default plan; saving and
+starting a run name the active operation; the revision count refreshes after
+opening a project; chat puts clarification questions before collapsed supporting
+records. These changes do not alter the engineering or release gates.

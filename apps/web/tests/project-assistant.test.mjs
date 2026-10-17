@@ -85,3 +85,12 @@ test("requirement facts stay readable and distinguish unmet from unverified",()=
     assert.match(html,/Violated/);assert.match(html,/Unknown/);assert.match(html,/Needs reflow &lt;tool&gt;/);
     assert.doesNotMatch(html,/<tool>/);
 });
+
+test("a clarification leads with the decision and keeps supporting records collapsed",()=>{
+    const html=turnHtml({...change(),changes:[],ready:false,questions:["Would you accept reflow assembly?"],facts:[
+        {id:"run.status",label:"Run",source:"Run record",basis:"run_state",value:"complete"},
+    ]});
+    assert.ok(html.indexOf("Would you accept reflow assembly?") < html.indexOf("See the saved records"));
+    assert.doesNotMatch(html,/Review your changes|No changes were proposed/);
+    assert.match(html,/<details><summary>See the saved records/);
+});

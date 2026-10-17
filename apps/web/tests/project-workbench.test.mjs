@@ -687,3 +687,34 @@ test("technical settings stay open when changing sensor count redraws the editor
     formInput(dom,{id:"project-sensor-count",value:"2"});
     assert.equal(dom.node("#project-details").open,true);c.dispose();
 });
+
+test("opening a saved project shows loading rather than an unrelated default plan",async()=>{
+    const dom=workbenchDom();let deliver;
+    const fetcher=async path=>path==="/api/health"?response(200,{...identity,status:"ready",fixture_id:"esp32-bme280-environmental-logger"})
+        : path==="/api/project-options"?response(200,{...identity,options})
+        : path===`/api/projects/${project.project_id}`?new Promise(resolve=>{deliver=resolve;})
+        : response(200,{...identity,projects:[]});
+    const controller=mountProjectWorkbench(dom.root,{fetcher});await controller.openNew();
+    const pending=controller.openProject(project.project_id);await tick();
+    assert.match(dom.node("#project-summary").innerHTML,/Opening your saved project/);
+    assert.doesNotMatch(dom.node("#project-summary").innerHTML,/Suggested setup/);
+    assert.doesNotMatch(dom.node("#project-action-note").textContent,/recover/);
+    assert.equal(dom.node("#project-run").textContent,"Opening saved project…");
+    deliver(response(200,envelope()));await pending;
+    assert.match(dom.node("#project-summary").innerHTML,/Your saved setup/);controller.dispose();
+});
+
+test("a pending saved-revision run gives immediate starting feedback",async()=>{
+    const dom=workbenchDom();let finish;
+    const fetcher=async path=>path==="/api/health"?response(200,{...identity,status:"ready",fixture_id:"esp32-bme280-environmental-logger"})
+        : path==="/api/project-options"?response(200,{...identity,options})
+        : path===`/api/projects/${project.project_id}`?response(200,envelope())
+        : response(200,{...identity,projects:[]});
+    const controller=mountProjectWorkbench(dom.root,{fetcher,onRun:()=>new Promise(resolve=>{finish=resolve;})});
+    await controller.openProject(project.project_id);
+    workbenchClick(dom,"#project-run");await tick();
+    assert.equal(dom.node("#project-run").textContent,"Starting your board…");
+    assert.equal(dom.node("#project-run").disabled,true);
+    assert.match(dom.node("#project-action-note").textContent,/request is in progress/);
+    finish();await tick();controller.dispose();
+});
