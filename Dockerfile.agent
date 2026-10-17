@@ -1,0 +1,14 @@
+# Reuse the deployed, qualified KiCad 10.0.5/ngspice 42 engine. Rebuild the main
+# Dockerfile first and override this ARG to refresh the underlying tool image.
+ARG OHMNI_ENGINE_IMAGE=registry.fly.io/ohmni-demo@sha256:dcc77484c7e7d4613a9bde3adbfbed41c0f55bbefb2bed309a98dd0f47d77ada
+FROM ${OHMNI_ENGINE_IMAGE}
+USER root
+WORKDIR /app
+COPY pyproject.toml ./
+COPY src/ ./src/
+COPY scripts/ ./scripts/
+RUN pip install --no-cache-dir ".[fetch,telemetry]"
+COPY scripts/fetch-entrypoint.sh /app/scripts/fetch-entrypoint.sh
+ENV PYTHONUNBUFFERED=1 PORT=8080 OHMNI_FETCH_OUTPUT_DIR=/data/fetch-jobs
+EXPOSE 8080
+ENTRYPOINT ["/bin/sh", "/app/scripts/fetch-entrypoint.sh"]

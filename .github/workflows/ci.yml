@@ -20,6 +20,19 @@ jobs:
       - run: python scripts/setup_hackathon.py --skip-browser
       - run: .venv/bin/python -m pytest tests/test_hackathon_setup.py
 
+  fetch-adapter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install -e ".[dev,fetch]"
+      # Real pinned SDK construction and loopback gateway tests; no model,
+      # account credentials, Agentverse registration or native EDA invocation.
+      - run: python -m pytest -q tests/test_fetch_agent.py tests/test_fetch_bridge.py
+
   fast:
     runs-on: ubuntu-latest
     steps:

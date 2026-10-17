@@ -402,6 +402,15 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/REPO-CLEANUP-1.yaml",
       "review_policy": "self review allowed for behavior-preserving maintenance"
+    },
+    {
+      "id": "FETCH-AI-1",
+      "title": "Fetch hackathon conversation bridge",
+      "type": "hackathon_integration",
+      "status": "COMPLETE",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/FETCH-AI-1.yaml",
+      "review_policy": "self_review_allowed; independent review not claimed"
     }
   ],
   "tasks": [
@@ -4034,6 +4043,71 @@
           "workflow"
         ],
         "record": ".ai/verification/REPO-CLEANUP-01.yaml"
+      }
+    },
+    {
+      "id": "FETCH-T01",
+      "scope": "FETCH-AI-1",
+      "title": "Connect a bounded Ohmni agent to ASI:One",
+      "priority": 100,
+      "status": "COMPLETE",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Real ASI:One request receives authoritative supported options before substantial orchestration work.",
+        "Preserve private identity, bounded messages and exact package pins.",
+        "Record live proof honestly; no mocked transport is called ASI:One acceptance."
+      ],
+      "implementation": {
+        "started_at_commit": "3c71bb42",
+        "approval_evidence": ".ai/approvals/FETCH-AI-1.yaml",
+        "completed_at_commit": "11decf5f"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "verification": {
+        "required": [
+          "focused",
+          "live_asi_round_trip"
+        ],
+        "record": ".ai/verification/FETCH-T01.yaml"
+      }
+    },
+    {
+      "id": "FETCH-T02",
+      "scope": "FETCH-AI-1",
+      "title": "ASI idea to confirmed board and private downloads",
+      "priority": 100,
+      "status": "COMPLETE",
+      "dependencies": [
+        "FETCH-T01"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Real ASI idea, clarification/review, exact confirmation, fresh board and downloaded validated files.",
+        "Sender/session ownership, persistent idempotency, bounded model admission and one worker; no implicit builds.",
+        "Actual requirements, unknowns and failures remain visible; expired drafts/downloads and restart recovery fail closed."
+      ],
+      "implementation": {
+        "started_at_commit": "1549d586",
+        "approval_evidence": ".ai/approvals/FETCH-AI-1.yaml",
+        "completed_at_commit": "53a0589b"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "verification": {
+        "required": [
+          "focused",
+          "fast",
+          "live_asi_full_flow"
+        ],
+        "record": ".ai/verification/FETCH-T02.yaml"
       }
     }
   ]

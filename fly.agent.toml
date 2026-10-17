@@ -1,0 +1,35 @@
+app = "ohmni-agent"
+primary_region = "sjc"
+
+[build]
+  dockerfile = "Dockerfile.agent"
+
+[env]
+  FETCH_AGENT_ENDPOINT = "https://ohmni-agent.fly.dev/submit"
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_start_machines = true
+  auto_stop_machines = false
+  min_machines_running = 1
+
+[[vm]]
+  memory = "2gb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[checks.health]
+  type = "http"
+  port = 8080
+  method = "GET"
+  path = "/health"
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "20s"
+
+[[mounts]]
+  source = "ohmni_agent_data"
+  destination = "/data"
+  initial_size = "1gb"
