@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "id": "FVT-T01",
+  "task": "FVT-T01",
+  "scope": "FETCH-VISUAL-TUTOR-1",
+  "status": "PASSED",
+  "commit": "e0683a50579fc79c5f1b1f23e3cef96cb6184a5a",
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "passed": 2776,
+      "skipped": 101,
+      "deselected": 70,
+      "seconds": 277.93,
+      "note": "Full run started before installed-runtime asset root correction; that correction covered by subsequent focused gateway/browser tests. Later pin/GPIO prompt-only correction covered by six focused tests and live retest."
+    },
+    {
+      "command": "npm --prefix apps/web test",
+      "result": "PASS",
+      "passed": 1144
+    },
+    {
+      "command": "pytest tests/test_fetch_workspace.py tests/test_fetch_workspace_browser.py",
+      "result": "PASS",
+      "passed": 6,
+      "commit": "e0683a50579fc79c5f1b1f23e3cef96cb6184a5a"
+    },
+    {
+      "command": "Focused Fetch gateway/provider/workflow checks",
+      "result": "PASS"
+    },
+    {
+      "command": "ruff changed Python files; git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "GitHub CI at e0683a50579fc79c5f1b1f23e3cef96cb6184a5a",
+      "result": "PASS",
+      "checks": [
+        "fast",
+        "browser-acceptance",
+        "fetch-adapter",
+        "frontend",
+        "corpus",
+        "hackathon-setup",
+        "kicad-gate"
+      ]
+    }
+  ],
+  "native": {
+    "job_id": "8732ec3c2131",
+    "result": "PASS",
+    "checks": [
+      "Actual KiCad build",
+      "Exact revision 3D projection",
+      "Programming header",
+      "Browser mesh selection",
+      "Checked release ZIP",
+      "Mobile layout",
+      "Real Anthropic teaching"
+    ]
+  },
+  "production": {
+    "agent": "https://ohmni-agent.fly.dev",
+    "version": "0.3.0",
+    "image": "registry.fly.io/ohmni-agent:deployment-01M55TD220EXRDS03R9NKJBWM6",
+    "job_id": "389a3fda1924",
+    "revision": 1,
+    "components": 16,
+    "checks": [
+      "ASI OPEN returned private workspace for original job without rebuilding",
+      "Live shared 3D renderer loaded",
+      "Clicking J2 mesh selected programming header",
+      "Live SW1 tutor answered with actual circuit records",
+      "Pin/GPIO naming confusion reproduced, prompt corrected and deployed; subsequent answer explicitly corrected original claim",
+      "Fly machine source confirms final prompt; health ready and machine check passing"
+    ],
+    "deployment_note": "Final redeploy succeeded; machine health and DNS checks passed. Earlier transient CLI DNS/auth monitoring failure resolved."
+  },
+  "limitations": [
+    "Independent review not performed; task VERIFIED, awaiting review in PR92.",
+    "Component bodies are illustrative; geometry belongs to exact build.",
+    "Teaching is AI explanation, not simulation or hardware verification; firmware is absent.",
+    "Real-model test is a bounded example, not a guarantee against all incorrect explanations."
+  ],
+  "review": "Self-review only; existing engineering verdicts and download gates preserved."
+}
