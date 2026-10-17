@@ -445,6 +445,14 @@
       "status": "VERIFIED",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/UNIFIED-FETCH-1.yaml"
+    },
+    {
+      "id": "ASI-ACCEPTANCE-1",
+      "title": "ASI-only acceptance and Fetch submission readiness",
+      "type": "product_feature",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/ASI-ACCEPTANCE-1.yaml"
     }
   ],
   "tasks": [
@@ -4285,6 +4293,37 @@
         "status": "PASSED",
         "record": ".ai/verification/UF-T01.yaml",
         "commit": "ebb35e6b940e3d1375e793f014216ea27e3ee506"
+      }
+    },
+    {
+      "id": "ASI-T01",
+      "scope": "ASI-ACCEPTANCE-1",
+      "title": "Verify ASI generation, repair recovery and document submission requirements",
+      "priority": 100,
+      "status": "IN_PROGRESS",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Fresh ordinary idea reaches confirmed native build and actual ZIP download using ASI only.",
+        "Exercise in-chat revision and clarification recovery; fix reproducible failures without bypassing confirmation or engineering gates.",
+        "Public README includes agent identity, setup and sponsor tags; submission docs distinguish demonstrated requirements from outstanding human deliverables."
+      ],
+      "implementation": {
+        "started_at_commit": "27567182854cb572905592d99780f5581d09e6b2",
+        "approval_evidence": ".ai/approvals/ASI-ACCEPTANCE-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": false,
+        "status": "UNAVAILABLE"
+      },
+      "verification": {
+        "required": [
+          "workflow",
+          "fast",
+          "live"
+        ],
+        "status": "PENDING"
       }
     }
   ]
