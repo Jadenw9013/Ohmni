@@ -130,15 +130,20 @@ def _constraints(request):
 
 
 def generate_placement(circuit: CircuitIR, request: PlacementRequest, catalog: PartCatalog) -> GeneratedPlacement:
-    """Place one bounded request or raise a specific, non-successful refusal.
+    """Preserve accepted layouts; reserve constrained support space on greedy failure."""
+    try:
+        return _generate_placement(circuit, request, catalog)
+    except PlacementFailure as error:
+        if error.code != PlacementFailureCode.NO_FEASIBLE_POSITION:
+            raise
+    result = _generate_placement(circuit, request, catalog, reserve_proximity=True)
+    return result.model_copy(update={"algorithm": PLACEMENT_VERSION + "-proximity-reservation"})
 
-    A one-millimetre search grid keeps candidate enumeration bounded. Pin-near
-    positions are additionally enumerated relative to exact target-pad centres.
-    No per-reference or per-fixture coordinate table participates in placement.
-    """
+
+def _generate_placement(circuit, request, catalog, *, reserve_proximity=False):
     try:
         request = PlacementRequest.model_validate(request.model_dump())
-        return _generate_placement(circuit, request, catalog)
+        return _place_components(circuit, request, catalog, reserve_proximity=reserve_proximity)
     except PlacementFailure:
         raise
     except (ValueError, KeyError) as error:
@@ -146,7 +151,7 @@ def generate_placement(circuit: CircuitIR, request: PlacementRequest, catalog: P
                                f"Placement intent or physical binding is invalid: {error}") from error
 
 
-def _generate_placement(circuit, request, catalog):
+def _place_components(circuit, request, catalog, *, reserve_proximity=False):
     if circuit.content_hash != request.circuit_content_hash:
         raise PlacementFailure(PlacementFailureCode.STALE_INTENT, "Placement intent belongs to a different circuit")
     if request.allowed_rotations_deg != (0,):
@@ -315,9 +320,25 @@ def _generate_placement(circuit, request, catalog):
                                    f"No position satisfies the board, spacing and requested constraints for {ref}", ref)
         _, positions[ref], boxes[ref] = best
 
+    pending = [ref for group in groups for ref in group.member_refs if ref != group.anchor_ref]
     for group in groups:
         place(group.anchor_ref, preferred_anchor(group))
-    pending = [ref for group in groups for ref in group.member_refs if ref != group.anchor_ref]
+        if reserve_proximity:
+            # A later button/connector anchor must not consume the only space
+            # available for a processor's mandatory close decoupling capacitor.
+            while True:
+                ready = [ref for ref in pending if owners[ref].anchor_ref in positions
+                         and any(rule.kind == Kind.NEAR_COMPONENT and rule.maximum_distance_mm is not None
+                                 for rule in rules_by_ref[ref])
+                         and all(rule.target_ref in positions for rule in rules_by_ref[ref]
+                                 if rule.kind == Kind.NEAR_COMPONENT and rule.target_ref)]
+                if not ready:
+                    break
+                ref = min(ready, key=lambda item: (min(rule.maximum_distance_mm for rule in rules_by_ref[item]
+                    if rule.kind == Kind.NEAR_COMPONENT and rule.maximum_distance_mm is not None), item))
+                anchor = positions[owners[ref].anchor_ref]
+                place(ref, (anchor.x_mm, anchor.y_mm))
+                pending.remove(ref)
     # Hard pad-proximity requirements get space before unconstrained passives.
     pending.sort(key=lambda ref: (min((rule.maximum_distance_mm for rule in rules_by_ref[ref]
                                      if rule.kind == Kind.NEAR_COMPONENT and rule.maximum_distance_mm is not None),

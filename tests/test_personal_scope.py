@@ -3,6 +3,7 @@
 import pytest
 
 from ohmni.application.projects import (
+    ProjectRefusalError,
     prepare_project,
     preview_project,
 )
@@ -28,7 +29,14 @@ def test_supported_compiler_configurations_reach_the_same_generic_editor(brief):
     circuit,requirements=prepare_project(brief)
     assert circuit.content_hash==expected.circuit.content_hash
     assert requirements.requirements.project_name==brief.project_name
-    assert preview_project(brief).asked_for
+    if any(slot.part_id == "TMP102AIDRLR" for slot in brief.sensors):
+        # Catalog/schematic support is preserved, but the current manufacturing
+        # policy must refuse this package before confirming another build.
+        with pytest.raises(ProjectRefusalError) as failure:
+            preview_project(brief)
+        assert failure.value.refusal.code.value == "package_clearance_unavailable"
+    else:
+        assert preview_project(brief).asked_for
 
 
 @pytest.mark.parametrize("address", [0x76, 0x77])

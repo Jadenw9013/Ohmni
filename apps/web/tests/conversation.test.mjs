@@ -132,3 +132,14 @@ test("saving and starting display separate states without duplicate confirmation
     assert.equal(ui.node("#conversation-confirm").textContent,"Starting your board…");
     start();await pending;assert.equal(ui.node("#conversation-activity").hidden,true);
 });
+
+test("assembly guidance is shown before confirmation and server text is escaped",async()=>{
+    const p=plan({design_notes:["Assembly service needed <script>unsafe</script>"]}),ui=dom();
+    const controller=mountConversation(ui.root,{fetcher:transport(p,[]),onOpen(){},onSaved(){}});
+    await controller.begin(p.messages[0]);
+    assert.match(ui.node("#conversation-summary").innerHTML,/Before you order or assemble/);
+    assert.match(ui.node("#conversation-summary").innerHTML,/&lt;script&gt;/);
+    assert.doesNotMatch(ui.node("#conversation-summary").innerHTML,/<script>/);
+    assert.equal(ui.node("#conversation-confirm").disabled,false);
+    assert.throws(()=>parsePlan({...identity,plan:plan({design_notes:[42]})},identity));
+});

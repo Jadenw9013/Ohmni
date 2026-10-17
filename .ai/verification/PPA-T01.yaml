@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "id": "PPA-T01",
+  "task": "PPA-T01",
+  "scope": "PCB-PRODUCT-AUDIT-1",
+  "status": "PASSED",
+  "commit": "7ecc2444aa0b7dfa58d8f8ef6814183e4aeb2148",
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "passed": 2770,
+      "skipped": 101,
+      "deselected": 70,
+      "seconds": 256.95
+    },
+    {
+      "command": "npm --prefix apps/web test",
+      "result": "PASS",
+      "passed": 1142
+    },
+    {
+      "command": "python -m pytest -q -m integration tests/test_product_audit_native.py",
+      "result": "PASS",
+      "passed": 4
+    },
+    {
+      "command": "ruff check changed Python files",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "passed": 12
+    },
+    {
+      "command": "Compare deployed index.html, conversation.js and plan-summary.js to local bytes",
+      "result": "PASS"
+    }
+  ],
+  "paid_local_audit": {
+    "ordinary_prompts": 6,
+    "supported_ready_and_downloaded": 4,
+    "unsupported_clarification": 2,
+    "fabrication_hashes_validated": 36,
+    "evidence": "build/product-audit/planned-builds.json"
+  },
+  "production": {
+    "date": "2026-10-17",
+    "website": {
+      "job_id": "1bc1950ead9e",
+      "prompt": "I want to save temperature readings to memory on a USB-powered board.",
+      "files": 20,
+      "zip_sha256": "2848854562a4cfe7f09076bdd1c826d8f65039e26e343cfcc75af6c9be9cbb16",
+      "pcb": {
+        "drc_status": "PASS",
+        "violations": 0,
+        "unrouted": 0
+      },
+      "fabrication_hashes_validated": 9,
+      "requirements_unknown": 15,
+      "requirements_violated": 0
+    },
+    "asi": {
+      "job_id": "b75876b30cf5",
+      "files": 20,
+      "zip_sha256": "ac0200b0de369aa54ca9bada1dab2014c079b9c5c0f76713ba9cb20a7f2d3154",
+      "pcb": {
+        "drc_status": "PASS",
+        "violations": 0,
+        "unrouted": 0
+      },
+      "fabrication_hashes_validated": 9,
+      "requirements_unknown": 14,
+      "requirements_violated": 0
+    },
+    "web_image": "registry.fly.io/ohmni-demo:deployment-01M55RQQBKPFQD76RZSGA9ZCPP",
+    "agent_image": "registry.fly.io/ohmni-agent:deployment-01M55RT8356NCGGBC6NSH8CZ93",
+    "frontend": "https://ohmni-yvnd.vercel.app",
+    "backend": "https://ohmni-demo.fly.dev",
+    "agent": "https://ohmni-agent.fly.dev",
+    "ui_version": "af7e7c898f9d08e51b431cf70c902ed17589cfaa7fca8c63b3ed5961aa1e79fd",
+    "unsupported_probes": "Smell identification and explicit TMP102 stopped before building with a useful supported alternative."
+  },
+  "limitations": [
+    "These examples do not establish arbitrary PCB generation or all selectable combinations.",
+    "TMP102 is blocked before confirmation under current clearance policy; catalog/editor entry remains inspectable with warning.",
+    "Manufacturing profile is generic/synthetic; native ERC warnings, UNKNOWN requirements, assembly, firmware and physical testing remain disclosed.",
+    "ASI was refreshed to view the latest persisted result; automatic live chat rendering was not verified.",
+    "Independent review not performed; self-review only."
+  ],
+  "review": "Self-review passed; regression and native release gates unchanged."
+}
