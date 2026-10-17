@@ -38,6 +38,11 @@ and [submission template](docs/hackathon/SUBMISSION_TEMPLATE.md) during the even
 Once tools are installed, run `python scripts/rehearse_hackathon.py` from the venv
 for one fresh local demo readiness report, including board and browser checks.
 
+For the physical companion, use the [Stack-chan developer handoff](docs/hackathon/STACKCHAN_HANDOFF.md):
+hardware setup, team ownership, a versioned USB connector contract, a Claude
+assignment and full-flow acceptance checks. This is an implementation handoff;
+robot and speech connectors are not yet shipped.
+
 ## Five-minute saved demo
 
 Install Git and Python 3.12 or newer (3.13 is used by CI), then:
