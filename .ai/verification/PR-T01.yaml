@@ -125,5 +125,37 @@
     "14 UNKNOWN requirement results remain; no physical build, firmware or bench testing claimed.",
     "This turn tested the website conversation end to end. The shared ASI planner was deployed and health/source checked; no fresh ASI chat flow is claimed.",
     "Browser layout verified at 1280x720; no general mobile/accessibility conformance claim."
-  ]
+  ],
+  "main_integration": {
+    "commit": "bccec06767b8c3c0c273161f752fc6262faab168",
+    "main_commit": "5f8bea93",
+    "reason": "Owner reported PR93 conflicts after PR92 merged.",
+    "resolution": "Preserved both scope/task records, incoming state summary, both checkpoint histories and both workflow scope allowlists. Product code merged without conflicts.",
+    "commands": [
+      {
+        "command": "python scripts/ai_state.py validate",
+        "result": "PASS"
+      },
+      {
+        "command": "python scripts/verify.py workflow",
+        "result": "PASS",
+        "passed": 12
+      },
+      {
+        "command": "python -m pytest tests/test_conversation.py tests/test_conversation_api.py tests/test_fetch_bridge.py tests/test_fetch_agent.py tests/test_fetch_workspace.py -q -o addopts=\"-ra --strict-markers\"",
+        "result": "PASS",
+        "passed": 46
+      },
+      {
+        "command": "npm --prefix apps/web test",
+        "result": "PASS",
+        "passed": 1147
+      },
+      {
+        "command": "git diff --check --cached",
+        "result": "PASS"
+      }
+    ],
+    "deployment": "Not redeployed during conflict resolution; previous live results remain bound to their original source commits."
+  }
 }
