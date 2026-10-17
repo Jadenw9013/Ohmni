@@ -17,6 +17,11 @@
     {
       "command": "python scripts/ai_state.py validate",
       "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "2751 passed, 101 skipped, 66 deselected; one initial workflow allowlist failure fixed and rerun successfully in 16-test focused suite",
+      "seconds": 214.08
     }
   ],
   "live_acceptance": {
@@ -32,8 +37,8 @@
   },
   "limitations": [
     "This milestone is read-only; ASI planning, confirmation, build and download integration remains unimplemented.",
-    "Key deleted in Agentverse UI and local file removed; post-deletion token still accepted HTTP 200. Immediate revocation not verified; key expires one hour after creation.",
-    "Full fast suite running; initial failure was scope allowlist omission, corrected and rerun in focused workflow suite."
+    "Key deleted in Agentverse UI and local file removed; post-deletion token still accepted HTTP 200. Immediate revocation not verified; key expires one hour after creation."
   ],
-  "review": "Self-review only; independent review not claimed."
+  "review": "Self-review only; independent review not claimed.",
+  "commit": "11decf5f"
 }
