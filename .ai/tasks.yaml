@@ -4075,6 +4075,39 @@
         ],
         "record": ".ai/verification/FETCH-T01.yaml"
       }
+    },
+    {
+      "id": "FETCH-T02",
+      "scope": "FETCH-AI-1",
+      "title": "ASI idea to confirmed board and private downloads",
+      "priority": 100,
+      "status": "IN_PROGRESS",
+      "dependencies": [
+        "FETCH-T01"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Real ASI idea, clarification/review, exact confirmation, fresh board and downloaded validated files.",
+        "Sender/session ownership, persistent idempotency, bounded model admission and one worker; no implicit builds.",
+        "Actual requirements, unknowns and failures remain visible; expired drafts/downloads and restart recovery fail closed."
+      ],
+      "implementation": {
+        "started_at_commit": "1549d586",
+        "approval_evidence": ".ai/approvals/FETCH-AI-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "verification": {
+        "required": [
+          "focused",
+          "fast",
+          "live_asi_full_flow"
+        ],
+        "record": ".ai/verification/FETCH-T02.yaml"
+      }
     }
   ]
 }

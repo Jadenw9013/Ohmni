@@ -245,6 +245,7 @@ class AnthropicProvider:
         max_tokens: int = DEFAULT_MAX_TOKENS,
         max_attempts: int = DEFAULT_MAX_ATTEMPTS,
         client: Any | None = None,
+        timeout_seconds: float | None = None,
     ) -> None:
         """Resolve credentials and build the vendor client.
 
@@ -258,6 +259,8 @@ class AnthropicProvider:
             raise ValueError("max_tokens must be positive")
         if max_attempts < 1:
             raise ValueError("max_attempts must be at least 1")
+        if timeout_seconds is not None and (type(timeout_seconds) not in (int, float) or not 1 <= timeout_seconds <= 120):
+            raise ValueError("timeout_seconds must be between 1 and 120")
         self.model = model or os.environ.get(MODEL_ENV_VAR) or DEFAULT_MODEL
         self.max_tokens = max_tokens
         self.max_attempts = max_attempts
@@ -275,7 +278,8 @@ class AnthropicProvider:
         except ImportError as exc:  # pragma: no cover - depends on the install
             raise RuntimeError(MISSING_SDK_MESSAGE) from exc
         # The key is handed to the client and deliberately not kept on self.
-        self._client = anthropic.Anthropic(api_key=key)
+        self._client = anthropic.Anthropic(api_key=key, **(
+            {"timeout": timeout_seconds, "max_retries": 0} if timeout_seconds is not None else {}))
 
     def __repr__(self) -> str:
         return f"{type(self).__name__}(model={self.model!r})"

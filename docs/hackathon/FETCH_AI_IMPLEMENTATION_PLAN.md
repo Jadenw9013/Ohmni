@@ -12,7 +12,9 @@ Choose **Agentverse / Fetch.ai** for the new weekend functionality. Use
 Build one agent that gathers a supported ESP32 brief, asks for confirmation,
 executes Ohmni tools, and returns engineering findings in the conversation.
 
-This is an implementation plan, not a working Fetch integration. Pre-event
+The bounded Fetch conversation flow is now implemented; see
+[run instructions and verified limits](FETCH_AGENT_SETUP.md). The remaining text
+records the original plan and acceptance criteria. Pre-event
 setup tooling, the pinned dependency extra and templates are implemented under
 the owner's preparation request. Fetch runtime implementation, accounts and
 deployment are not activated by this file. Follow [the development workflow](../AI_WORKFLOW.md)
@@ -126,8 +128,9 @@ agent. Keep the demo HTTP server private; expose only the intended ACP receiver.
 
 ## Implementation sequence
 
-Proposed new package: `src/ohmni/integrations/fetch_ai/`. These paths and operation
-names are design targets, not installed modules or existing commands.
+Implemented package: `src/ohmni/integrations/fetch_ai/`. The operation names below
+describe adapter responsibilities; the installed chat commands and launch entry
+point are documented in FETCH_AGENT_SETUP.md.
 
 | Order | Deliverable | Acceptance |
 |---|---|---|
@@ -165,10 +168,9 @@ override a verdict or imply physical testing.
 
 ## Agentverse onboarding and deployment
 
-The first read-only connectivity milestone is implemented. See
-[Fetch agent setup and verified limits](FETCH_AGENT_SETUP.md) for deployment,
-onboarding troubleshooting, and the live ASI:One receipt. Planning and builds
-through ACP remain unimplemented.
+Planning, exact confirmation, board generation, grounded follow-ups and private
+downloads are implemented. See [Fetch agent setup and verified limits](FETCH_AGENT_SETUP.md)
+for deployment, onboarding troubleshooting and live ASI:One acceptance.
 
 
 The current [external uAgent onboarding guide](https://docs.agentverse.ai/documentation/launch-agents/agentverse-sdk/u-agents)
@@ -193,8 +195,8 @@ Do not invent a handle until Agentverse confirms it is available.
 
 The implementation PR must supply a copyable agent launch command, exact SDK
 pin, supported configuration keys, port/endpoint configuration, shutdown steps,
-and a no-network smoke test. There is no agent launch command today; do not tell
-teammates that running the existing demo server registers an agent.
+and a no-network smoke test. The agent launch command is documented in FETCH_AGENT_SETUP.md. Running the
+existing demo server alone does not register or start the Fetch agent.
 
 ## Weekend schedule and reduction gates
 

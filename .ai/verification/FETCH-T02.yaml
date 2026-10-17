@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "id": "FETCH-T02",
+  "task": "FETCH-T02",
+  "scope": "FETCH-AI-1",
+  "status": "PASSED",
+  "commands": [
+    {
+      "command": "python -m pytest -q tests/test_fetch_agent.py tests/test_fetch_bridge.py tests/test_anthropic_provider.py tests/test_ai_workflow.py",
+      "result": "PASS",
+      "passed": 67
+    },
+    {
+      "command": "ruff check src/ohmni/integrations tests/test_fetch_bridge.py tests/test_fetch_agent.py src/ohmni/adapters/anthropic_provider.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "passed": 2764,
+      "skipped": 101,
+      "deselected": 66,
+      "seconds": 274.1
+    }
+  ],
+  "live_acceptance": {
+    "date": "2026-10-17",
+    "chat": "https://asi1.ai/chat/bdeeb059-d30e-42ca-919b-7a2e03dd0730?from=profile&handle=ohmni-pcb-guide",
+    "flow": [
+      "Unsupported smell-detection idea prompted clarification, no build.",
+      "Explicitly chose supported one-button/one-LED ESP32, no sensors/header, default board, reflow allowed.",
+      "Reviewed brief, exact CONFIRM; real KiCad generation and automatic result in ASI.",
+      "Downloaded ZIP using the visible ASI link; validated hashes and exact brief/revision.",
+      "Restarted service, asked a readable grounded follow-up; firmware/physical tests correctly absent.",
+      "Repeated CONFIRM returned same job. Production database confirms exactly one project job.",
+      "Downloaded fresh post-restart link; all 20 archive entries byte-identical."
+    ],
+    "receipt": {
+      "job_id": "ade4b4faf792",
+      "zip_sha256": "1efad54ec8451af308dd3276617b65955c14b99b8244da9fa283d40033af46b2",
+      "entries": 20,
+      "project": {
+        "archetype": "a2_usb_gpio_controller",
+        "brief_fingerprint": "08393473021bfca0e14ece0e0d9bd41c33b1f50fbb3a60f139e0a7b1c0580238",
+        "circuit_hash": "00be27a464f1d3a226cd4503abc374ddd1abf880b47434d65b8e8a9aaa5698f9",
+        "name": "Button and light controller",
+        "placement_request_fingerprint": "a234ce601b46151b6141072871c4dca8e0ca07985b04a6a78fc280a933e3bd6f",
+        "request": "Simple USB-C 5V ESP32 board with one momentary pushbutton and one indicator LED, no sensors and no programming header.",
+        "status": "READY_FOR_MANUFACTURING_REVIEW",
+        "supported_fixture": "Sensor & controls"
+      },
+      "requirements": {
+        "MET": 14,
+        "VIOLATED": 0,
+        "UNKNOWN": 14
+      },
+      "confirmed_brief_and_revision_match": true,
+      "board_and_schematic_hashes_match": true,
+      "fabrication_hashes_matched": 10,
+      "drc_violations": 0,
+      "unrouted": 0,
+      "post_restart_download_all_files_identical": true,
+      "repeat_confirmation_job_count": 1,
+      "grounded_followup_readable": true
+    },
+    "screenshot": "build/fetch-asi-full-flow.png",
+    "downloads": [
+      "/Users/jadenwong/Downloads/ohmni-build-package.zip",
+      "/Users/jadenwong/Downloads/ohmni-build-package (1).zip"
+    ]
+  },
+  "resolved_findings": [
+    "Normalize only our leading ASI mention before command matching; prevents confirmation becoming another paid proposal.",
+    "Separate report collections into selectable readable facts; no raw JSON explanation.",
+    "Invalidate ephemeral assistant proposal IDs across restart; base drafts and confirmed job ownership remain durable.",
+    "Isolate pinned SDK manifest smoke in subprocess; SDK gRPC fork hooks no longer contaminate native-process stderr tests."
+  ],
+  "review": "SELF_REVIEW_PASSED; independent review not claimed",
+  "limitations": [
+    "No firmware or physical testing; 14 UNKNOWN requirements, ERC warnings and unsupported checks remain visible.",
+    "One worker and persistent workspace; no horizontally shared writer support.",
+    "Download possession grants one-hour access. Do not post bearer URLs publicly.",
+    "CI has not run on GitHub yet."
+  ]
+}
