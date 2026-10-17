@@ -18,10 +18,18 @@ provides a private ZIP link when the existing release checks allow it.
    after 30 minutes.
 5. Watch the acknowledgement and automatic progress/result messages. `STATUS`
    checks the latest run without another model call or rebuild.
-6. Download the ZIP from the result. It includes KiCad schematic and board,
+6. Open **Open your board in Ohmni — 3D view and component tutor** in the result.
+   It loads that exact generated revision in Ohmni’s interactive 3D viewer. Click
+   a component (or choose it from the searchable list), then ask the tutor about
+   its role, connections, or general electronics concepts. Each component keeps
+   its own conversation. Answers are labeled AI explanations, never new checks.
+   The link is private, lasts 24 hours, and grants viewing and shared-quota tutor
+   access to anyone who possesses it. Send `OPEN` in the original Fetch conversation
+   for a fresh link; `VIEW` and `WORKSPACE` also work.
+7. Download the ZIP from the result or the workspace. It includes KiCad schematic and board,
    fabrication files, BOM, confirmed brief, revision receipt, report, and assembly
    guide. Link possession grants download access for one hour; share deliberately.
-7. Ask a follow-up question to select grounded facts from the actual run, or ask
+8. Ask a follow-up question to select grounded facts from the actual run, or ask
    for a change. A changed revision always needs a fresh reviewed confirmation.
 
 `HELP`/`OPTIONS` lists supported choices; `FINDINGS`, `FILES` or `DOWNLOAD` reads
@@ -74,7 +82,17 @@ engine requires rebuilding the main Dockerfile and overriding
 Keep one process and one writer to its workspace. Configure private Fly secrets
 for the agent seed and planner key. Keep automatic stop disabled during judging.
 The gateway listens on `PORT` (8080); the SDK listens on internal port 8081.
-Expose only the gateway. `/connect`, `/disconnect`, `/messages`, demo API routes
+Expose only the gateway. The gateway also serves `/workspace/`, a fixed allowlist
+of frontend assets, and three capability-authenticated workspace operations:
+read the pinned board, ask its component tutor, and download its checked package.
+The browser sends its fragment token in an Authorization header; tokens are
+stored hashed, never logged, and private responses are not cached. No arbitrary
+project listing, mutation or rebuild API is exposed. The existing board renderer
+is reused; its component bodies are illustrative and not a simulation. Teaching
+uses the deployed Anthropic provider and the same durable request budget as chat.
+A stale board or mismatched geometry blocks the workspace instead of substituting
+a demo. A stale manufacturing package blocks download.
+ `/connect`, `/disconnect`, `/messages`, demo API routes
 and arbitrary paths are blocked; forwarding loopback requests must never make
 SDK inspector administration public. `/health` reports readiness and mode;
 `/agent_info` exposes public identity and protocol metadata only.
@@ -123,7 +141,7 @@ sensors to recover a demo. Do not share private links in public submission text.
 ## Verification
 
 ```sh
-python -m pytest -q tests/test_fetch_agent.py tests/test_fetch_bridge.py tests/test_anthropic_provider.py
+python -m pytest -q tests/test_fetch_agent.py tests/test_fetch_bridge.py tests/test_fetch_workspace.py tests/test_anthropic_provider.py
 python -m ruff check src/ohmni/integrations tests/test_fetch_agent.py tests/test_fetch_bridge.py
 python scripts/verify.py fast
 ```
