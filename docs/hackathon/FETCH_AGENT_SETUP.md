@@ -18,14 +18,15 @@ provides a private ZIP link when the existing release checks allow it.
    after 30 minutes.
 5. Watch the acknowledgement and automatic progress/result messages. `STATUS`
    checks the latest run without another model call or rebuild.
-6. Open **Open your board in Ohmni — 3D view and component tutor** in the result.
-   It loads that exact generated revision in Ohmni’s interactive 3D viewer. Click
-   a component (or choose it from the searchable list), then ask the tutor about
-   its role, connections, or general electronics concepts. Each component keeps
-   its own conversation. Answers are labeled AI explanations, never new checks.
-   The link is private, lasts 24 hours, and grants viewing and shared-quota tutor
-   access to anyone who possesses it. Send `OPEN` in the original Fetch conversation
-   for a fresh link; `VIEW` and `WORKSPACE` also work.
+6. Open **Open your board in Ohmni — saved project, 3D and chat** in the result.
+   It connects the existing project to the main Ohmni UI: saved projects, 3D,
+   component tutoring, board chat and revision editing. The private connection
+   link is one-use and expires in 30 minutes. It grants editing access; keep it
+   private. This browser remembers workspace access for 180 days. Projects and
+   chats remain stored online beyond a link's expiry. Send `OPEN` for a fresh
+   link when reconnecting, including from another browser.
+   See [the unified workspace](UNIFIED_FETCH_WORKSPACE.md) for persistence,
+   supported editing and access details.
 7. Download the ZIP from the result or the workspace. It includes KiCad schematic and board,
    fabrication files, BOM, confirmed brief, revision receipt, report, and assembly
    guide. Link possession grants download access for one hour; share deliberately.

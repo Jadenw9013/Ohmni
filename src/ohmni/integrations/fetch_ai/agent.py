@@ -63,7 +63,7 @@ def build_agent(seed: str, endpoint: str, port: int = 8080, *, bridge=None):
                   registration_policy=AlmanacApiRegistrationPolicy(),
                   description="Build supported USB-powered ESP32 boards, explore them in 3D, and learn about their components with Ohmni.",
                   store_message_history=False, report_events=False,
-                  metadata={"scope": "confirmed_board_generation" if bridge else "read_only_connectivity", "software_version": "0.3.0"})
+                  metadata={"scope": "confirmed_board_generation" if bridge else "read_only_connectivity", "software_version": "0.4.0"})
     protocol = Protocol(spec=chat_protocol_spec)
     window = MessageWindow()
     monitors = set()

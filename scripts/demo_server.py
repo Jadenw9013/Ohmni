@@ -89,7 +89,7 @@ OPTIONAL_STATIC_ASSETS=frozenset({"vendor/sentry-telemetry.js"})
 JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
 JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid","server_restarted","routing_incomplete","eda_tool_failed"}
-STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-view.js",
+STATIC_ASSETS=("index.html","app.js","main.js","connected-session.js","component-tutor.js","view-model.js","board-model.js","board-view.js",
                "hackathon-demo.html","hackathon-demo.js","hackathon-demo-model.js","hackathon-demo.css",
                "hackathon-demo/demo.json","hackathon-demo/saved-run/golden.kicad_pcb",
                "hackathon-demo/saved-run/fault/diagnostic-fault.kicad_pcb","hackathon-demo/ohmni-demo-fabrication.zip",
@@ -936,8 +936,9 @@ def _build_guide(report):
 
 
 class DemoHTTPServer(ThreadingHTTPServer):
-    def __init__(self,server_address,handler_class,*,store=None,web_root=WEB_ROOT,ai_budget=None):
+    def __init__(self,server_address,handler_class,*,store=None,web_root=WEB_ROOT,ai_budget=None,shared_bridge=None):
         self.workspace_lock=None
+        self.connected_workspace=shared_bridge is not None
         self.behavior_service=None
         self.behavior_service_lock=threading.Lock()
         try:
@@ -964,8 +965,9 @@ class DemoHTTPServer(ThreadingHTTPServer):
         # neither recover jobs nor obscure the existing endpoint error contract.
         super().__init__(server_address,handler_class)
         try:
-            self.workspace_lock=ProjectWorkspaceLock(self.store.output_root)
-            self.store.enable_persistence()
+            if shared_bridge is None:
+                self.workspace_lock=ProjectWorkspaceLock(self.store.output_root)
+                self.store.enable_persistence()
             self.projects=self.store.project_store
             from ohmni.application.conversation import ConversationPlanner
 
@@ -973,6 +975,9 @@ class DemoHTTPServer(ThreadingHTTPServer):
             from ohmni.application.iteration import ProjectAssistant
 
             self.assistant=ProjectAssistant(self.store.provider,self.projects,self.store)
+            if shared_bridge is not None:
+                self.planner=shared_bridge.planner
+                self.assistant=shared_bridge.assistant
         except ProjectWorkspaceInUseError:
             self.server_close()
             raise
@@ -1218,15 +1223,17 @@ class DemoHandler(SimpleHTTPRequestHandler):
             return self._json({"error":"plan_unavailable","refusal":{"message":"Planning is unavailable right now. Your request is still here. Try again or use guided setup."}},HTTPStatus.SERVICE_UNAVAILABLE)
 
     def _post_project(self,project_id=None):
+        from ohmni.application.project_store import StaleProjectRevision
         from ohmni.application.projects import ProjectRefusalError, preview_project
         from ohmni.synthesis import SynthesisBrief
 
-        payload=self._project_payload({"brief"})
+        payload=self._project_payload({"brief", "base_revision_id"} if project_id and self.server.connected_workspace else {"brief"})
         if payload is None:return
         try:
             # JSON strict mode accepts enum names and JSON arrays, without
             # turning strings such as "false" or "1" into typed options.
             if type(payload["brief"]) is not dict:raise ValueError
+            if project_id and self.server.connected_workspace and not (isinstance(payload["base_revision_id"],str) and PROJECT_ID_PATTERN.fullmatch(payload["base_revision_id"])):raise ValueError
             brief=SynthesisBrief.model_validate_json(json.dumps(payload["brief"]),strict=True)
             if not brief.project_name.strip() or len(brief.sensors)>4:raise ValueError
             preview=_owned_json_object(preview_project(brief).model_dump(mode="json"))
@@ -1236,9 +1243,12 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except BaseException:  # noqa: BLE001 - application failures never leak server details
             return self._json({"error":"project_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
         try:
-            project=self.server.projects.save_revision(brief.model_dump(mode="json"),brief.fingerprint,preview,project_id)
+            project=self.server.projects.save_revision(brief.model_dump(mode="json"),brief.fingerprint,preview,project_id,
+                expected_revision_id=payload.get("base_revision_id"))
             if project is None:return self._json({"error":"project_not_found"},HTTPStatus.NOT_FOUND)
             return self._json({"project":project,**self.server._identity()},HTTPStatus.CREATED)
+        except StaleProjectRevision:
+            return self._json({"error":"project_changed","refusal":{"message":"This project has a newer revision. Reopen it before saving your changes."}},HTTPStatus.CONFLICT)
         except BaseException:  # noqa: BLE001 - persistence errors never become successful saves
             return self._json({"error":"project_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
 

@@ -23,7 +23,7 @@ check is not a hardware bench test or a guarantee that a board is ready to build
 Start with the [Fetch.ai implementation and setup guide](docs/hackathon/FETCH_AI_IMPLEMENTATION_PLAN.md)
 for the weekend scope, local commands, integration checklist and fallback.
 The Fetch adapter supports reviewed board generation, private downloads, and an
-Ohmni 3D workspace with component teaching. See [using Ohmni in ASI:One](docs/hackathon/FETCH_AGENT_SETUP.md). Paper redesign and new Sentry prize work
+main Ohmni UI with saved projects, persistent board/component chat and reviewed revision editing. See [using Ohmni in ASI:One](docs/hackathon/FETCH_AGENT_SETUP.md). Paper redesign and new Sentry prize work
 are deferred; the existing disabled telemetry core remains available.
 See [research and readiness](docs/hackathon/RESEARCH_AND_READINESS.md) for eligibility
 and submission details, and [assistant coordination](docs/hackathon/ASSISTANT_WORKFLOW.md)

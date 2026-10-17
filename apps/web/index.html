@@ -45,7 +45,7 @@
         <button type="button" class="home-feature" data-home-info="checks"><span class="feature-icon mint"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="m20 3 13 6v12c0 8-13 16-13 16S7 29 7 21V9Z"/><path d="m13 19 5 5 10-11"/></svg></span><span><strong>Real engineering checks</strong><span>See what passed, what failed and what still needs testing.</span></span><span class="feature-arrow" aria-hidden="true">›</span></button>
       </section>
     </main>
-    <footer class="home-footer"><span>USB-powered ESP32 sensor, controller and memory projects.</span><button type="button" data-home-info="limits">Local prototype · Know the limits</button></footer>
+    <footer class="home-footer"><span>USB-powered ESP32 sensor, controller and memory projects.</span><button type="button" data-home-info="limits">Prototype · Know the limits</button></footer>
     <dialog id="home-info" class="home-info" aria-labelledby="home-info-title"><header><h2 id="home-info-title">How Ohmni works</h2><button type="button" data-home-info-close>Close</button></header><div id="home-info-content"></div></dialog>
   </section>
   <div class="app-layout" hidden>
@@ -59,7 +59,7 @@
         <a href="#home"><span aria-hidden="true">⌂</span> Home</a>
       </nav>
       <section id="project-shelf" class="sidebar-history" aria-labelledby="saved-projects-title">
-        <div class="sidebar-section-title"><h2 id="saved-projects-title">Recent projects</h2><span>Local</span></div>
+        <div class="sidebar-section-title"><h2 id="saved-projects-title">Recent projects</h2><span id="workspace-storage">Local</span></div>
         <div id="saved-projects" class="saved-projects"></div>
       </section>
       <div class="sidebar-project">
@@ -189,7 +189,7 @@
           <div class="result-navigation"><div class="result-tabs" role="tablist" aria-label="Explore your design"><button type="button" id="tab-board" data-panel="board" role="tab" aria-selected="true" aria-controls="panel-board">The board</button><button type="button" id="tab-learn" data-panel="learn" role="tab" aria-selected="false" aria-controls="panel-learn">How it works</button><button type="button" id="tab-checks" data-panel="checks" role="tab" aria-selected="false" aria-controls="panel-checks">Checks &amp; evidence</button></div><button type="button" id="open-build" data-navigate="build" aria-label="Build &amp; export" class="primary compact">Build &amp; export <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></svg></button></div>
 
           <div id="panel-board" data-result-panel="board" role="tabpanel" aria-labelledby="tab-board">
-            <div class="result-workspace"><div class="board-shell"><div class="board-stage pcb-stage"><div class="board-stage-heading"><span>Your generated circuit board</span><div class="tool-row" role="group" aria-label="View"><button type="button" data-view="front" class="chip on">Front</button><button type="button" data-view="back" class="chip">Back</button><button type="button" data-view="reset" class="chip">Reset</button></div></div><canvas id="board-canvas" tabindex="0" aria-label="Your circuit board. Drag to rotate, scroll to zoom, click a part to inspect it."></canvas><div id="board-hover-label" class="pcb-hover-label" hidden aria-hidden="true"></div><div id="board-visual-controls" class="board-visual-controls"></div><div id="board-empty" class="board-empty" hidden>The board view needs a canvas this browser did not provide. Explore the same parts in the system list.</div><div class="board-stage-footer"><p class="board-hint">Drag to rotate · scroll to zoom · shift-drag to pan</p><div class="tool-row" role="group" aria-label="Show"><button type="button" data-toggle="showComponents" class="chip on">Parts</button><button type="button" data-toggle="showCopper" class="chip on">Copper</button></div></div><p class="board-hint thickness-note" id="board-thickness-note"></p></div><aside class="board-panel"><div class="board-tools"><label class="slider">Pull the systems apart<input type="range" id="explode" min="0" max="100" value="0" aria-describedby="explode-note"></label><p class="fineprint" id="explode-note">One board. A few groups of parts, each with a different job.</p></div><div id="systems" class="systems"></div><div id="selection" class="selection" aria-live="polite"></div><div id="board-lessons" class="circuit-lessons compact-lessons" aria-label="Discover your circuit"></div></aside></div><aside id="result-assistant" hidden aria-label="Ask about this board"></aside></div>
+            <div class="result-workspace"><div class="board-shell"><div class="board-stage pcb-stage"><div class="board-stage-heading"><span>Your generated circuit board</span><div class="tool-row" role="group" aria-label="View"><button type="button" data-view="front" class="chip on">Front</button><button type="button" data-view="back" class="chip">Back</button><button type="button" data-view="reset" class="chip">Reset</button></div></div><canvas id="board-canvas" tabindex="0" aria-label="Your circuit board. Drag to rotate, scroll to zoom, click a part to inspect it."></canvas><div id="board-hover-label" class="pcb-hover-label" hidden aria-hidden="true"></div><div id="board-visual-controls" class="board-visual-controls"></div><div id="board-empty" class="board-empty" hidden>The board view needs a canvas this browser did not provide. Explore the same parts in the system list.</div><div class="board-stage-footer"><p class="board-hint">Drag to rotate · scroll to zoom · shift-drag to pan</p><div class="tool-row" role="group" aria-label="Show"><button type="button" data-toggle="showComponents" class="chip on">Parts</button><button type="button" data-toggle="showCopper" class="chip on">Copper</button></div></div><p class="board-hint thickness-note" id="board-thickness-note"></p></div><aside class="board-panel"><div class="board-tools"><label class="slider">Pull the systems apart<input type="range" id="explode" min="0" max="100" value="0" aria-describedby="explode-note"></label><p class="fineprint" id="explode-note">One board. A few groups of parts, each with a different job.</p></div><div id="systems" class="systems"></div><div id="selection" class="selection" aria-live="polite"></div><div id="component-tutor" hidden></div><div id="board-lessons" class="circuit-lessons compact-lessons" aria-label="Discover your circuit"></div></aside></div><aside id="result-assistant" hidden aria-label="Ask about this board"></aside></div>
             <div class="explore"><div class="explore-head"><span class="little-spark" aria-hidden="true">✳</span><div><h2>Follow a connection.</h2><p>Pick a flow to light up the parts and copper that carry it.</p></div></div><div id="flow-tabs" class="flow-tabs" role="group" aria-label="Flows"></div><div id="flow-detail" class="flow-detail"></div></div>
           </div>
 
@@ -225,7 +225,7 @@
       <aside id="lab-lessons" class="circuit-lessons" aria-label="Learn about this circuit"></aside>
     </div>
   </dialog>
-  <script type="module" src="/app.js"></script>
+  <script type="module" src="/main.js"></script>
   <dialog id="component-stories" class="component-stories" aria-labelledby="component-stories-title">
     <header class="story-heading">
       <div><h2 id="component-stories-title">Component library</h2><p>Inspect all 180 package models and their recorded source status.</p></div>
@@ -264,8 +264,8 @@
       </section>
     </div>
   </dialog>
-  <script type="module">import { initializeComponentStories } from '/component-stories.js'; initializeComponentStories();</script>
+
   <section id="visual-explorer" hidden role="dialog" aria-modal="true" aria-label="Educational component explorer"></section>
-  <script type="module">import { initializeVisualExplorer } from '/visual-explorer.js'; initializeVisualExplorer();</script>
+
 </body>
 </html>

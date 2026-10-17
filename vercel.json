@@ -5,6 +5,10 @@
   "outputDirectory": "apps/web",
   "rewrites": [
     {
+      "source": "/connected/:path*",
+      "destination": "https://ohmni-agent.fly.dev/connected/:path*"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://ohmni-demo.fly.dev/api/:path*"
     }
@@ -23,7 +27,11 @@
         },
         {
           "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
+          "value": "no-referrer"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
         }
       ]
     }

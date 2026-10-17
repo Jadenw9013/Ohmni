@@ -90,6 +90,23 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
         root.setAttribute("aria-busy",String(busy));
     }
     function reset() {version++;busy=false;transcript=[];$("#assistant-welcome").hidden=false;turn=null;identity=null;$("#assistant-response").innerHTML="";$("#assistant-status").textContent="";$("#assistant-error").hidden=true;sync();}
+    let historyBefore = null;
+    const historyRow = item => `<div class="assistant-user-message"><span>You${item.source === 'Fetch' ? ' · Fetch' : ''}</span><p>${e(item.message || '')}</p></div><div class="assistant-reply"><span class="assistant-speaker">Ohmni</span>${item.turn ? turnHtml({...item.turn,ready:false}) : `<p style="white-space:pre-wrap">${e(item.reply || '')}</p>`}</div>`;
+    async function restoreHistory(older=false) {
+        if (!globalThis.OHMNI_CONNECTED || !context || context.dirty) return;
+        const current=version, selected=context;
+        try {
+            const response=await projectRequest(`/api/projects/${selected.projectId}/revisions/${selected.revision.revision_id}/history${older && historyBefore ? '?before='+historyBefore : ''}`,{fetcher});
+            if(version!==current)return;
+            const entries=response.payload.messages.map(historyRow);
+            transcript=older ? [...entries,...transcript] : entries;
+            historyBefore=response.payload.before;
+            $("#assistant-response").innerHTML=transcript.join('');
+            $("#assistant-welcome").hidden=transcript.length>0;
+            root.querySelector('[data-older-chat]')?.remove();
+            if(historyBefore){const button=document.createElement('button');button.type='button';button.className='ghost';button.dataset.olderChat='';button.textContent='Load earlier messages';button.onclick=()=>void restoreHistory(true);$("#assistant-response").prepend(button);}
+        }catch(err){if(version===current)error(err);}
+    }
     async function ask(message) {
         if (busy||!context||context.dirty) return;
         if (!message.trim()||message.length>2000) return error(new Error("Enter a question or change in up to 2000 characters."));
@@ -125,7 +142,8 @@ export function mountProjectAssistant(root, {fetcher=globalThis.fetch, onApplied
     $("#assistant-change").addEventListener("click",()=>prepare("I would like help changing this design. Ask me what I want it to do and guide me through supported options."));
     $("#assistant-form").addEventListener("submit",event=>{event.preventDefault();void ask($("#assistant-message").value);});
     $("#assistant-apply").addEventListener("click",()=>void apply());
-    $("#assistant-reset").addEventListener("click",()=>{reset();$("#assistant-message").focus();});
+    $("#assistant-reset").addEventListener("click",()=>{reset();void restoreHistory();$("#assistant-message").focus();});
+    if(globalThis.OHMNI_CONNECTED) $("#assistant-reset").textContent="New topic";
     sync();
-    return {ask,apply,dispose:reset,setContext(next){const nextKey=JSON.stringify(next&&[next.projectId,next.revision.revision_id,next.revision.brief_fingerprint,next.revision.job_id,next.dirty]);context=next;if(key!==nextKey){key=nextKey;reset();}else sync();}};
+    return {ask,apply,dispose:reset,setContext(next){const nextKey=JSON.stringify(next&&[next.projectId,next.revision.revision_id,next.revision.brief_fingerprint,next.revision.job_id,next.dirty]);context=next;if(key!==nextKey){key=nextKey;reset();void restoreHistory();}else sync();}};
 }

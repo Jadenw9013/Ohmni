@@ -137,6 +137,7 @@ class ChatBridge:
                 from scripts.demo_server import JobStore
                 self.jobs = JobStore(self.root, max_active_jobs=1)
                 self.jobs.enable_persistence()
+            self.jobs.provider = provider
             self.projects = self.jobs.project_store
             self.planner = ConversationPlanner(provider, self.projects)
             self.assistant = ChatProjectAssistant(provider, self.projects, self.jobs)
@@ -150,6 +151,9 @@ class ChatBridge:
                 ''')
             from .workspace import BoardWorkspace
             self.board_workspace = BoardWorkspace(self, provider)
+            from .connected import ConnectedWorkspace
+            self.connected = ConnectedWorkspace(self)
+            self.assistant.history_reader = lambda project, revision: self.connected.history(project, revision, "board")["messages"][-8:]
             self.path.chmod(0o600)
         except Exception:
             self.workspace.close()
@@ -194,6 +198,7 @@ class ChatBridge:
                     return 'Message capacity reached. Try again tomorrow; no operation started.'
                 db.execute('INSERT INTO messages VALUES(?,?,NULL,?)', (owner, str(message_id), self.clock()))
                 state = self._load(db, owner)
+                self._sync_revision(state)
                 self._save(db, owner, state)
             try:
                 reply = self._operate(owner, state, text.strip())
@@ -205,9 +210,18 @@ class ChatBridge:
             with self.db() as db:
                 self._save(db, owner, state)
                 db.execute('UPDATE messages SET reply=? WHERE owner=? AND id=?', (reply, owner, str(message_id)))
+            self.connected.record_fetch(owner, state, text.strip(), reply)
             return reply
         finally:
             self.lock.release()
+
+    def _sync_revision(self, state):
+        project = self.projects.get(state.get('project_id', ''))
+        latest = project['revisions'][-1] if project else None
+        if latest and latest['revision_id'] != state.get('revision_id'):
+            state.update(revision_id=latest['revision_id'], job_id=latest.get('job_id'), pending_change=False)
+            for key in ('plan', 'assistant_turn_id', 'plan_expires'):
+                state.pop(key, None)
 
     def _operate(self, owner, state, text):
         command = text.casefold()
@@ -318,18 +332,18 @@ class ChatBridge:
                 state['job_id'] = job_id
                 with self.db() as db:
                     self._save(db, owner, state)
+        if not job_id and state.get('project_id'):
+            return ('Your latest revision is saved in Ohmni and has not been generated yet. '
+                    'Review it there, then choose Generate my board. No new build started.' + self._project_link(owner, state))
         if not job_id:
             return 'This conversation has no generated board yet. Describe your idea, review the plan and use its CONFIRM code.'
         job = self.jobs.get(job_id)
         if job is None:
             return 'The recorded job is unavailable. No replacement build was started.'
         reply = describe_result(job)
+        if state.get('project_id'):
+            reply += self._project_link(owner, state)
         if job['status'] == 'complete':
-            if state.get('project_id') and state.get('revision_id'):
-                workspace_url = self.board_workspace.issue(owner, state)
-                reply += (f'\n\n[Open your board in Ohmni — 3D view and component tutor]({workspace_url})'
-                          '\nSelect a component to learn about it. This private workspace link lasts 24 hours; '
-                          'anyone with it can view the board and use its tutor. Ask OPEN for a fresh link.')
             check, _ = self.jobs.read_build_package(job_id)
             if check == 'current':
                 token = secrets.token_urlsafe(32)
@@ -341,6 +355,12 @@ class ChatBridge:
             else:
                 reply += '\n\nDownloads withheld: the artifact package is missing, stale, or does not pass release checks.'
         return reply
+
+    def _project_link(self, owner, state):
+        url = self.connected.issue(owner, state)
+        return (f'\n\n[Open your board in Ohmni — saved project, 3D and chat]({url})'
+                '\nOpen this link to connect the project to your private Ohmni workspace, including editing and saved conversations. '
+                'This one-use connection link expires in 30 minutes. Keep it private. Ask OPEN for a new link.')
 
     def download(self, token):
         if not re.fullmatch(r'[A-Za-z0-9_-]{43}', token):

@@ -7,6 +7,7 @@ import mimetypes
 
 from ohmni.application.request_budget import BudgetExceeded
 
+from .connected import AccessDenied, register_connected
 from .workspace import WorkspaceUnavailable
 
 
@@ -21,6 +22,8 @@ async def start_gateway(bridge, public_port=8080, sdk_port=8081):
     async def errors(request, handler):
         try:
             response = await handler(request)
+        except AccessDenied as exc:
+            response = web.json_response({'error': 'workspace_access', 'refusal': {'message': str(exc)}}, status=403)
         except WorkspaceUnavailable as exc:
             response = web.json_response({'error': str(exc)}, status=410)
         except BudgetExceeded:
@@ -31,7 +34,7 @@ async def start_gateway(bridge, public_port=8080, sdk_port=8081):
             response = web.json_response({'error': 'The request could not be completed. Check your selection and try again.'}, status=400)
         except Exception:  # noqa: BLE001 - never expose provider or persistence details
             response = web.json_response({'error': 'Teaching is temporarily unavailable. Your board has not changed. Please try again.'}, status=503)
-        if request.path.startswith(('/workspace', '/assets/')):
+        if request.path.startswith(('/workspace', '/assets/', '/connected/')):
             response.headers.update(private_headers)
         return response
 
@@ -116,6 +119,8 @@ async def start_gateway(bridge, public_port=8080, sdk_port=8081):
     app.router.add_post('/workspace/api/teach', teach)
     app.router.add_get('/workspace/api/download', workspace_download)
     app.router.add_get('/downloads/{token}/build-package.zip', download)
+    if getattr(bridge, "connected", None) is not None:
+        await register_connected(app, bridge, client)
     app.router.add_route('*', '/{tail:.*}', transport)
     runner = web.AppRunner(app, access_log=None)  # Capability URLs are credentials; never log them.
     await runner.setup()
