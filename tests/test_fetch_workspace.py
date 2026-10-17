@@ -102,8 +102,10 @@ def test_links_survive_status_and_restart_and_remain_job_bound(tmp_path):
         bridge.close()
 
 
-def test_gateway_workspace_requires_capability_and_blocks_project_enumeration(tmp_path):
+def test_gateway_workspace_requires_capability_and_blocks_project_enumeration(tmp_path, monkeypatch):
     pytest.importorskip('aiohttp')
+    from ohmni.integrations.fetch_ai import http
+    monkeypatch.setattr(http, '__file__', '/opt/venv/lib/python3.13/site-packages/ohmni/integrations/fetch_ai/http.py')
     async def run():
         from aiohttp import ClientSession
 

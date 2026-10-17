@@ -4,7 +4,6 @@ from __future__ import annotations
 import asyncio
 import json
 import mimetypes
-from pathlib import Path
 
 from ohmni.application.request_budget import BudgetExceeded
 
@@ -98,8 +97,8 @@ async def start_gateway(bridge, public_port=8080, sdk_port=8081):
             'Content-Disposition': 'attachment; filename="ohmni-build-package.zip"'})
 
     # Serve only explicit repository UI assets, never arbitrary local files or demo APIs.
-    from scripts.demo_server import STATIC_ASSETS
-    web_root = Path(__file__).resolve().parents[4] / 'apps' / 'web'
+    from scripts.demo_server import STATIC_ASSETS, WEB_ROOT
+    web_root = WEB_ROOT  # Runtime package may live in site-packages; assets live beside scripts/.
     allowed = set(STATIC_ASSETS) | {'fetch-workspace.html', 'fetch-workspace.js', 'fetch-workspace.css'}
 
     async def asset(request):
