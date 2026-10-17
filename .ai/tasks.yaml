@@ -416,7 +416,7 @@
       "id": "PCB-PRODUCT-AUDIT-1",
       "title": "Real-user PCB generation reliability audit and repairs",
       "type": "product_quality",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/PCB-PRODUCT-AUDIT-1.yaml",
       "review_policy": "self_review_allowed; independent review not claimed"
@@ -4124,7 +4124,7 @@
       "scope": "PCB-PRODUCT-AUDIT-1",
       "title": "Audit ordinary ideas through verified downloads and fix failures",
       "priority": 100,
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "dependencies": [],
       "blockers": [],
       "acceptance_criteria": [
@@ -4134,19 +4134,25 @@
       ],
       "implementation": {
         "started_at_commit": "1f972971",
-        "approval_evidence": ".ai/approvals/PCB-PRODUCT-AUDIT-1.yaml"
+        "approval_evidence": ".ai/approvals/PCB-PRODUCT-AUDIT-1.yaml",
+        "completed_at_commit": "7ecc2444aa0b7dfa58d8f8ef6814183e4aeb2148"
       },
       "review": {
         "required": false,
         "independent": false,
-        "status": "PENDING"
+        "status": "PASSED",
+        "commit": "7ecc2444aa0b7dfa58d8f8ef6814183e4aeb2148",
+        "notes": "Self-review only; no independent review claimed."
       },
       "verification": {
         "required": [
           "fast",
           "browser",
           "live_audit"
-        ]
+        ],
+        "status": "PASSED",
+        "record": ".ai/verification/PPA-T01.yaml",
+        "commit": "7ecc2444aa0b7dfa58d8f8ef6814183e4aeb2148"
       }
     }
   ]
