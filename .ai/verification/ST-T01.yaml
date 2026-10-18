@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "id": "ST-T01",
+  "task": "ST-T01",
+  "scope": "STACKCHAN-TUTOR-1",
+  "status": "PASSED",
+  "commit": "c5ff5d93",
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "passed": 2828,
+      "skipped": 102,
+      "deselected": 72,
+      "seconds": 473.86,
+      "note": "One failure under the machine default Node 20.15.1 (tests/test_demo_ui.py::test_frontend_module_behavior, subtest 'every reference entry has exactly one disposition'), also failing on unmodified main at setup. It passes under Node 22.23.3, the version the repository requires."
+    },
+    {
+      "command": "tools/stackchan/.venv/bin/python -m pytest tools/stackchan/tests",
+      "result": "PASS",
+      "passed": 23,
+      "note": "Serial framing against a fake robot (id matching, boot noise, errors, timeouts, events, audio queue, play/listening, ready handshake) and voice classification/endpointing. Found and fixed a real defect: the endpoint lead-in could include the microphone start-up click."
+    },
+    {
+      "command": "pytest tests/test_stackchan_isolation.py",
+      "result": "PASS",
+      "passed": 3
+    },
+    {
+      "command": "ruff check tools/stackchan tests/test_stackchan_isolation.py",
+      "result": "PASS"
+    },
+    {
+      "command": "pio run (tools/stackchan/firmware)",
+      "result": "PASS",
+      "note": "Builds from the repository copy; firmware image size 557,581 bytes, identical to the v0.3.0 image flashed on the development robot."
+    },
+    {
+      "command": "pytest tests/test_architecture.py tests/test_stackchan_isolation.py tests/test_ai_workflow.py",
+      "result": "PASS",
+      "passed": 94,
+      "note": "Architecture scans now skip local .venv/.pio folders so a tool virtualenv inside tools/ is never parsed as repository code."
+    }
+  ],
+  "hardware_session": {
+    "date": "2026-10-17/18",
+    "robot": "M5Stack StackChan (CoreS3, ESP32-S3 rev v0.2, 16 MB flash), factory StackChan-UserDemo V1.4.4 backed up in full and byte-verified before flashing",
+    "host": "macOS 15.7.4, Apple silicon, USB-C to the base",
+    "firmware": "ohmni-stackchan 0.3.0",
+    "capabilities": [
+      {
+        "capability": "USB serial protocol (ping/state/diag, ready event)",
+        "status": "VERIFIED",
+        "evidence": "Replies over /dev/cu.usbmodem*; diag reports board_M5StackChan (27), PSRAM, speaker, mic and touch controller present"
+      },
+      {
+        "capability": "Servo moves and factory calibration reuse",
+        "status": "VERIFIED",
+        "evidence": "Targets yaw ±20°, pitch 15° reached within ~2° (yaw 18.1/-18.4, pitch 14.4); start position near 0/0 using the factory NVS zero positions"
+      },
+      {
+        "capability": "Stall protection false positives",
+        "status": "VERIFIED",
+        "evidence": "9 unobstructed moves at 250, 600 and 1500 ms: no stall events, limits unchanged"
+      },
+      {
+        "capability": "Stall detection with a blocked head",
+        "status": "UNKNOWN",
+        "evidence": "Requires a person to hold the head (companion/stall_test.py); not yet run"
+      },
+      {
+        "capability": "RGB LEDs",
+        "status": "PARTIAL",
+        "evidence": "IO-expander LED RAM read back exactly the RGB565 values sent for red, green and blue; visible output not yet confirmed by an observer"
+      },
+      {
+        "capability": "Face rendering",
+        "status": "PARTIAL",
+        "evidence": "Full-screen sprite allocated in PSRAM after fixing an allocation failure; visible output not yet confirmed by an observer"
+      },
+      {
+        "capability": "Speaker streaming",
+        "status": "PARTIAL",
+        "evidence": "3.06 s of 16 kHz speech queued in 2.69 s with firmware flow control; audible output not yet confirmed by an observer"
+      },
+      {
+        "capability": "Microphone streaming",
+        "status": "VERIFIED",
+        "evidence": "94 chunks = 3.01 s of 16 kHz audio per 3 s window, no gaps; quiet-room RMS ~65-85"
+      },
+      {
+        "capability": "Head-touch double tap with a finger",
+        "status": "UNKNOWN",
+        "evidence": "Touch controller initialised (diag touch=true); no human double tap recorded yet"
+      },
+      {
+        "capability": "Speech end-pointing threshold with a real voice",
+        "status": "UNKNOWN",
+        "evidence": "Speech played from the Mac did not reach the robot microphone above room noise (likely muted or routed to headphones); needs a person speaking"
+      }
+    ]
+  },
+  "limitations": [
+    "Not physical bench validation of any Ohmni-generated board.",
+    "Items marked PARTIAL or UNKNOWN need an observer at the robot."
+  ]
+}
