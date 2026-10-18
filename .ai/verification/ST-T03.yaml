@@ -3,15 +3,15 @@
   "id": "ST-T03",
   "task": "ST-T03",
   "scope": "STACKCHAN-TUTOR-1",
-  "status": "PARTIAL",
-  "commit": "b5f7b743",
+  "status": "PASSED",
+  "commit": "995fb00a",
   "commands": [
     {
       "command": "tools/stackchan/.venv/bin/python -m pytest tools/stackchan/tests",
       "result": "PASS",
-      "passed": 58,
+      "passed": 59,
       "note": "Adds PageLink tests (allowed origin context/selection; other origins and Origin-less clients refused with 403; command round trip; refusal; no page; disconnect) and workspace voice tests (part resolution, labelled answers keeping unknowns, tour segments, page tutor routing, clarifying questions, no-workspace decline, tour highlight per step).",
-      "commit": "b8395d42"
+      "commit": "995fb00a"
     },
     {
       "command": "OHMNI_REQUIRE_BROWSER=1 pytest tests/test_stackchan_isolation.py tests/test_ai_workflow.py tests/test_stackchan_browser.py",
@@ -22,6 +22,11 @@
     {
       "command": "ruff check tools/stackchan",
       "result": "PASS"
+    },
+    {
+      "command": "Live tutor: connected-workspace fixture in Chromium + real companion on the robot, provider AnthropicProvider(max_attempts=2, timeout_seconds=20) as in production",
+      "result": "PASS",
+      "note": "Question 'What does C1 do on this board?' resolved C1, went page -> component tutor -> teach route -> live model; grounded answer in 9.2 s citing VBUS/GND connectivity and the regulator placement reason, separating recorded intent from measured behaviour; spoken by the robot and saved in C1's tutor thread. A direct teach call with the same provider also passed. Two live model calls in total."
     }
   ],
   "hardware_session": {
@@ -36,24 +41,12 @@
     "not_observed": [
       "Audible output (no observer)",
       "Spoken question captured by the robot microphone and transcribed (needs a person)"
-    ]
+    ],
+    "live_tutor": "PASSED 2026-10-18"
   },
-  "pending": [
-    {
-      "requirement": "live_tutor",
-      "status": "NOT_RUN",
-      "reason": "No Anthropic credentials on this machine, and the deployed workspace does not yet serve this branch. Needs either ANTHROPIC_API_KEY for a local connected-workspace run with the real provider, or a deployed preview of this branch.",
-      "attempts": [
-        {
-          "date": "2026-10-18",
-          "result": "NOT_RUN",
-          "detail": "Live provider wired exactly as production (AnthropicProvider(max_attempts=2, timeout_seconds=20)); the API rejected the supplied credential with HTTP 401. The value is not a standard API key (prefix sk-ant-usr-, not sk-ant-api03-). No answer was produced; nothing else failed."
-        }
-      ]
-    }
-  ],
+  "pending": [],
   "limitations": [
-    "Teach answers in automated and hardware runs used the stub provider."
+    "Spoken questions captured by the robot microphone and transcribed by Whisper were not exercised in the live run (question text was injected); endpointing with a real voice remains UNKNOWN in ST-T01."
   ],
   "review": ".ai/reviews.yaml#ST-T03-INDEPENDENT-REVIEW",
   "review_fix_commit": "b8395d42"
