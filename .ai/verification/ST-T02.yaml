@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "ST-T02",
+  "task": "ST-T02",
+  "scope": "STACKCHAN-TUTOR-1",
+  "status": "PASSED",
+  "commit": "f03c5298",
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast (Node 22.23.3 on PATH)",
+      "result": "PASS",
+      "passed": 2830,
+      "skipped": 102,
+      "deselected": 72,
+      "seconds": 438.9
+    },
+    {
+      "command": "npm --prefix apps/web test (Node 22.23.3)",
+      "result": "PASS",
+      "passed": 1161,
+      "note": "Includes 7 robot-link unit tests and 3 app-level tests: opt-in, read-only context after the board renders, focus through the systems-list path with robot attribution, refusal of unknown parts/commands and of ask outside a connected workspace."
+    },
+    {
+      "command": "OHMNI_REQUIRE_BROWSER=1 pytest tests/test_stackchan_browser.py tests/test_connected_browser.py",
+      "result": "PASS",
+      "passed": 2,
+      "note": "Real Chromium against the connected gateway and a stand-in companion on ws://127.0.0.1:8770: no connection before opt-in, Origin is the workspace origin, context carries job/project ids, components and tour without tokens, focus/trace/camera/tour/isolate succeed, ask goes through the existing teach route (stub provider) and is saved in the page tutor, run/unknown part/bad preset are refused, no build started."
+    },
+    {
+      "command": "pytest tests/test_demo_application.py tests/test_demo_ui.py",
+      "result": "PASS",
+      "passed": 37,
+      "note": "robot-link.js added to the static asset allowlist."
+    },
+    {
+      "command": "ruff check tests/test_stackchan_browser.py",
+      "result": "PASS"
+    }
+  ],
+  "limitations": [
+    "Browser: Chromium only. Safari mixed-content rules for ws://127.0.0.1 from an https origin and Chrome local-network-access prompts on the deployed site are not yet exercised.",
+    "The teach route in the browser test uses a stub provider; a live LLM answer is part of ST-T03 verification."
+  ]
+}

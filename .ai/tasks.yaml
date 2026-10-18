@@ -4434,7 +4434,7 @@
       "scope": "STACKCHAN-TUTOR-1",
       "title": "Opt-in loopback robot channel in the main workspace",
       "priority": 85,
-      "status": "READY",
+      "status": "VERIFIED",
       "dependencies": [],
       "blockers": [],
       "acceptance_criteria": [
@@ -4444,12 +4444,15 @@
         "Existing apps/web tests keep passing; new tests cover context emission, command validation, rejection and absence of a companion; home routing tests are unaffected."
       ],
       "implementation": {
-        "approval_evidence": ".ai/approvals/STACKCHAN-TUTOR-1.yaml"
+        "approval_evidence": ".ai/approvals/STACKCHAN-TUTOR-1.yaml",
+        "started_at_commit": "d3402970",
+        "completed_at_commit": "f03c5298"
       },
       "review": {
         "required": true,
         "independent": false,
-        "status": "NOT_STARTED"
+        "status": "UNAVAILABLE",
+        "notes": "Self-review only; independent review pending on the PR."
       },
       "verification": {
         "required": [
@@ -4457,7 +4460,9 @@
           "web_tests",
           "browser"
         ],
-        "status": "NOT_STARTED"
+        "status": "PASSED",
+        "record": ".ai/verification/ST-T02.yaml",
+        "commit": "f03c5298"
       }
     },
     {
