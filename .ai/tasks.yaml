@@ -462,6 +462,23 @@
       "status": "VERIFIED",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/ASI-ACCEPTANCE-1.yaml"
+    },
+    {
+      "approval_evidence": ".ai/approvals/STACKCHAN-TUTOR-1.yaml",
+      "approved_by": "human",
+      "description": "M5Stack StackChan desk robot narrates boards in the Ohmni workspace, answers grounded questions through the existing teach route and steers view-only workspace commands. Phase 2 change requests (ST-T05) are not approved.",
+      "id": "STACKCHAN-TUTOR-1",
+      "non_goals": [
+        "Voice confirmation of design changes, purchases or downloads",
+        "Robot- or companion-created evidence, verdicts, check results or supplier facts",
+        "Any network exposure beyond loopback; changes to Fetch agent behavior or quotas",
+        "Firmware generation for user boards or claims of physical bench validation"
+      ],
+      "plan_document": "docs/hackathon/STACKCHAN_TUTOR_PLAN.md",
+      "review_policy": "independent review required for COMPLETE; unavailable permits VERIFIED only",
+      "status": "APPROVED",
+      "title": "Stack-chan desk tutor for Ohmni boards",
+      "type": "product_feature"
     }
   ],
   "tasks": [
@@ -4374,6 +4391,171 @@
         "status": "PASSED",
         "record": ".ai/verification/ASI-T01.yaml",
         "commit": "676662cf160ceda46c20be06b95d6c7abfd1ecd6"
+      }
+    },
+    {
+      "id": "ST-T01",
+      "scope": "STACKCHAN-TUTOR-1",
+      "title": "Add Stack-chan firmware and companion under tools/stackchan with host tests",
+      "priority": 90,
+      "status": "READY",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Firmware (PlatformIO, pinned platform and libraries, factory partition layout) and Python companion live under tools/stackchan with a README covering flashing, factory restore and the serial protocol.",
+        "No runtime dependency in either direction: src/ohmni does not import it and pyproject extras are unchanged.",
+        "Host tests cover the serial protocol framing, intent classification and endpointing without hardware.",
+        "Hardware verification is recorded per capability (servos, stall, LEDs, speaker, microphone, touch); untested capabilities are listed as UNKNOWN."
+      ],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/STACKCHAN-TUTOR-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": false,
+        "status": "NOT_STARTED"
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "tools_host_tests",
+          "hardware_session_record"
+        ],
+        "status": "NOT_STARTED"
+      }
+    },
+    {
+      "id": "ST-T02",
+      "scope": "STACKCHAN-TUTOR-1",
+      "title": "Opt-in loopback robot channel in the main workspace",
+      "priority": 85,
+      "status": "READY",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "When enabled, the workspace connects to loopback (fixed port) after setupBoard and sends a read-only context: job, project and revision ids, components, tour steps and selection; with no companion it fails silently and behavior is unchanged.",
+        "The page accepts only the closed view-only command set (focus, isolate one ref, trace, frame, camera preset, tour step, ask) and validates refs against the rendered board; unknown commands and refs are rejected.",
+        "Focus follows the existing select -> setHighlight -> renderSelection path without CircuitLessons re-entry; no command performs a mutation.",
+        "Existing apps/web tests keep passing; new tests cover context emission, command validation, rejection and absence of a companion; home routing tests are unaffected."
+      ],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/STACKCHAN-TUTOR-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": false,
+        "status": "NOT_STARTED"
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "web_tests",
+          "browser"
+        ],
+        "status": "NOT_STARTED"
+      }
+    },
+    {
+      "id": "ST-T03",
+      "scope": "STACKCHAN-TUTOR-1",
+      "title": "Companion tour narration and grounded questions through the page teach route",
+      "priority": 80,
+      "status": "APPROVED",
+      "dependencies": [
+        "ST-T01",
+        "ST-T02"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "The companion verifies the WebSocket Origin against the configured Ohmni origin and the local demo origin and refuses others.",
+        "Narration speaks experience.tour.steps text verbatim and highlights each step's component_refs and net_names; a double tap pauses it immediately and narration resumes on command.",
+        "Questions are sent to the page, which uses the existing per-revision teach route; the companion holds no provider key, and unknowns returned by teach are spoken, not dropped.",
+        "The robot never states that a check passed unless the board context records it; spoken answers are labelled as explanations."
+      ],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/STACKCHAN-TUTOR-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": false,
+        "status": "NOT_STARTED"
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "tools_host_tests",
+          "browser",
+          "hardware_session_record",
+          "live_tutor"
+        ],
+        "status": "NOT_STARTED"
+      }
+    },
+    {
+      "id": "ST-T04",
+      "scope": "STACKCHAN-TUTOR-1",
+      "title": "Spoken view commands with component-name resolution",
+      "priority": 70,
+      "status": "APPROVED",
+      "dependencies": [
+        "ST-T03"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Phrases such as 'show me the regulator', 'isolate it', 'what does it connect to', 'zoom out', 'next' map to the closed command set using refs and names from the board context.",
+        "Ambiguous or unknown part names lead to a clarifying question, never a guess.",
+        "Selecting a part on screen makes the robot acknowledge it by name and purpose from the context."
+      ],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/STACKCHAN-TUTOR-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": false,
+        "status": "NOT_STARTED"
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "tools_host_tests",
+          "browser",
+          "hardware_session_record"
+        ],
+        "status": "NOT_STARTED"
+      }
+    },
+    {
+      "id": "ST-T05",
+      "scope": "STACKCHAN-TUTOR-1",
+      "title": "Phase 2: spoken change requests with on-screen confirmation and old-vs-new narration",
+      "priority": 50,
+      "status": "PROPOSED",
+      "dependencies": [
+        "ST-T04"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Spoken change requests are routed to the existing project assistant; only an on-screen user action applies a change turn and starts the existing run.",
+        "'What if' questions are answered as labelled explanations and change nothing.",
+        "After a new revision completes, the robot narrates a deterministic comparison of components, nets and requirement outcomes between the two revisions."
+      ],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/STACKCHAN-TUTOR-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": false,
+        "status": "NOT_STARTED"
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "web_tests",
+          "browser",
+          "native",
+          "hardware_session_record"
+        ],
+        "status": "NOT_STARTED"
       }
     }
   ]
