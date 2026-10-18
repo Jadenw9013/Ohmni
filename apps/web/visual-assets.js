@@ -9,15 +9,18 @@ export const ASSET_FAMILIES = Object.freeze(["qfp", "header", "aluminum_can", "a
     "small_outline", "few_terminal", "leadless_block", "white_connector", "shielded_connector",
     "rear_metal_block", "electrolytic_can", "wound_inductor", "coated_radial", "gold_post",
     "coated_axial", "ceramic_chip", "coated_red", "unresolved_patch", "esp32_module", "usb_c",
-    "pin_header", "switch", "led", "sensor", "regulator", "chip_resistor"]);
+    "pin_header", "switch", "led", "sensor", "regulator", "chip_resistor", "i2s_microphone", "microsd_module"]);
 export const ASSET_SOURCE = Object.freeze({ kind: "ORIGINAL_PROCEDURAL_SOURCE",
     source: "apps/web/visual-assets.js", license: "Repository license unspecified",
     thirdPartyGeometry: false, electricalAuthority: false });
+const RECORDER_SOURCE = Object.freeze({kind:"PROCEDURAL_WITH_SOURCE_CAD_DIMENSIONS",
+    source:"apps/web/visual-assets.js; src/ohmni/catalog/data/recorder", license:"Adafruit CC-BY-SA-3.0 for adapted module outline/header geometry",
+    thirdPartyGeometry:true,electricalAuthority:false});
 const SOURCE_PAD_FAMILIES = new Set(["esp32_module", "usb_c", "pin_header", "switch",
-    "led", "sensor", "regulator", "chip_resistor"]);
+    "led", "sensor", "regulator", "chip_resistor", "i2s_microphone", "microsd_module"]);
 export const ASSET_REGISTRY = Object.freeze(Object.fromEntries(ASSET_FAMILIES.map((family) => [family,
     Object.freeze({ family, modelAssetId: `ohmni-procedural/${family}@${ASSET_VERSION}`,
-        source: ASSET_SOURCE, units: "mm", upAxis: "z", contactPlane: 0,
+        source: ["i2s_microphone","microsd_module"].includes(family) ? RECORDER_SOURCE : ASSET_SOURCE, units: "mm", upAxis: "z", contactPlane: 0,
         appearanceOnly: true, contactBasis: SOURCE_PAD_FAMILIES.has(family) ? "source-pads" : "illustration-parameters" })])));
 
 export function createMaterials() {
@@ -679,7 +682,35 @@ function regulator(group, options, materials) {
     group.userData.dimensions = { width, depth, height: height + 0.1 };
 }
 
-const FACTORIES = Object.freeze({ qfp, header, aluminum_can: aluminumCan, axial_resistor: axialResistor,
+function recorderModule(group, options, materials, sd = false) {
+    const width = sd ? 25.4 : 16.51, depth = sd ? 22.86 : 12.7, standoff = 5;
+    mesh(group, "breakout PCB", beveledBoxGeometry(width, depth, 1.6, .25), materials.mask, [0, 0, standoff]);
+    const count = sd ? 9 : 6;
+    const sourcePads = validSourcePads(options);
+    const pads = options.pads !== undefined || options.actual === true ? sourcePads : Array.from({length: count}, (_, i) => ({number: String(i+1),
+        x_mm: (sd ? 1 : -1) * (i-(count-1)/2)*2.54, y_mm: sd ? 8.89 : 3.81}));
+    if (pads.length) instances(group, sourcePads.length ? "source-position gold recorder pins" : "illustrative recorder pins",
+        beveledBoxGeometry(.64,.64,8,.05), materials.gold, pads.map(p=>({x:p.x_mm,y:p.y_mm,z:0})));
+    if(pads.length) instances(group,"recorder header insulators",beveledBoxGeometry(2.3,2.3,2.5,.1),
+        materials.plastic,pads.map(p=>({x:p.x_mm,y:p.y_mm,z:2.35})));
+    if (sd) {
+        mesh(group,"microSD socket",beveledBoxGeometry(14,14,1.8,.15),materials.shield,[0,-2,6.6]);
+        mesh(group,"removable card",new THREE.BoxGeometry(11,13,.8),materials.plastic,[0,-5,6.9]);
+        printOn(group,"SD",6,1.3,materials.silk,7.8,[0,-5]);
+    } else {
+        // Acoustic opening faces away from carrier; the sensor can is underneath.
+        mesh(group,"microphone underneath",new THREE.BoxGeometry(3.5,2.65,1),materials.shield,[0,-1.8,4]);
+        const port = mesh(group,"acoustic port",new THREE.CylinderGeometry(.45,.45,.05,24),materials.darkMark,[0,-1.8,6.63]);
+        port.rotation.x=Math.PI/2;
+        printOn(group,"MIC",7,1.2,materials.silk,6.65,[0,-4]);
+    }
+    group.userData.dimensions={width,depth,height:8.4};
+    group.userData.contactBasis="source-pads";
+    group.userData.sourceContacts=sourcePads.map(p=>({number:p.number ?? null,x_mm:p.x_mm,y_mm:p.y_mm}));
+    group.userData.geometryNote="Module outline and header positions from bundled Adafruit CAD; socket/can details, header height and materials are illustrative.";
+}
+
+const FACTORIES = Object.freeze({ i2s_microphone: (g,o,m)=>recorderModule(g,o,m,false), microsd_module: (g,o,m)=>recorderModule(g,o,m,true), qfp, header, aluminum_can: aluminumCan, axial_resistor: axialResistor,
     small_outline: smallOutline, few_terminal: (g, o, m) => smallOutline(g, o, m, true), leadless_block: leadlessBlock,
     white_connector: whiteConnector, shielded_connector: shieldedConnector, rear_metal_block: rearMetalBlock,
     electrolytic_can: electrolyticCan, wound_inductor: woundInductor, coated_radial: coatedRadial, gold_post: goldPost,
@@ -688,7 +719,7 @@ const FACTORIES = Object.freeze({ qfp, header, aluminum_can: aluminumCan, axial_
     esp32_module: esp32Module, usb_c: usbC, pin_header: pinHeader, switch: tactileSwitch, led, sensor, regulator,
     chip_resistor: (g, o, m) => chipBody(g, { ...o, pads: o.pads ?? [] }, m, "resin") });
 
-const COLOR_MATERIAL = Object.freeze({ qfp: "resin", header: "plastic", aluminum_can: "aluminum", axial_resistor: "blue",
+const COLOR_MATERIAL = Object.freeze({ i2s_microphone: "mask", microsd_module: "mask", qfp: "resin", header: "plastic", aluminum_can: "aluminum", axial_resistor: "blue",
     small_outline: "resin", few_terminal: "resin", leadless_block: "resin", white_connector: "whitePlastic",
     shielded_connector: "shield", rear_metal_block: "shield", electrolytic_can: "sleeve", wound_inductor: "winding",
     coated_radial: "orange", gold_post: "gold", coated_axial: "blue", ceramic_chip: "tan", coated_red: "red",
@@ -702,7 +733,7 @@ export function createAsset(family, options = {}, materials = createMaterials())
     const group = new THREE.Group();
     group.name = `${family} package illustration`;
     group.userData = { assetFamily: family, assetVersion: ASSET_VERSION,
-        appearanceOnly: true, dimensionsAreIllustrative: true, source: ASSET_SOURCE, label: options.label ?? null };
+        appearanceOnly: true, dimensionsAreIllustrative: true, source: ASSET_REGISTRY[family].source, label: options.label ?? null };
     let palette = materials;
     if (options.color !== undefined) {
         const key = COLOR_MATERIAL[family];

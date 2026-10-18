@@ -89,7 +89,7 @@ OPTIONAL_STATIC_ASSETS=frozenset({"vendor/sentry-telemetry.js"})
 JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
 JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid","server_restarted","routing_incomplete","eda_tool_failed"}
-STATIC_ASSETS=("index.html","app.js","main.js","connected-session.js","component-tutor.js","view-model.js","board-model.js","board-view.js",
+STATIC_ASSETS=("index.html","app.js","main.js","connected-session.js","component-tutor.js","recorder-panel.js","view-model.js","board-model.js","board-view.js",
                "hackathon-demo.html","hackathon-demo.js","hackathon-demo-model.js","hackathon-demo.css",
                "hackathon-demo/demo.json","hackathon-demo/saved-run/golden.kicad_pcb",
                "hackathon-demo/saved-run/fault/diagnostic-fault.kicad_pcb","hackathon-demo/ohmni-demo-fabrication.zip",
@@ -747,8 +747,20 @@ class JobStore:
     def _pcb_policy(report):
         pcb=report.get("pcb")
         expected=current_pcb_policy()
-        if not isinstance(pcb,dict) or any(pcb.get(key)!=value for key,value in expected.items()):
-            raise ValueError("PCB compiler or local footprint geometry policy has changed")
+        if not isinstance(pcb,dict): raise TypeError("PCB policy missing")
+        if all(pcb.get(key)==value for key,value in expected.items()): return
+        # Recorder inventory is additive. Preserve an older build only when its
+        # entire pre-recorder registry still matches today's unchanged geometry.
+        # Any edit to an existing footprint/compiler continues to retire it.
+        family=report.get("project",{}).get("archetype")
+        legacy_family=family in {"a1_usb_i2c_sensor","a2_usb_gpio_controller","a3_usb_spi_peripheral"}
+        legacy_demo=report.get("mode") != "bounded_synthesis" and family is None
+        if legacy_family or legacy_demo:
+            from ohmni.physical.footprints import FOOTPRINTS, footprint_geometry_fingerprint
+            old_ids=set(FOOTPRINTS)-{"Ohmni:I2S-SPH0645-BREAKOUT","Ohmni:MICROSD-SDIO-BREAKOUT"}
+            compatible={**expected,"footprint_geometry_fingerprint":footprint_geometry_fingerprint(old_ids)}
+            if all(pcb.get(key)==value for key,value in compatible.items()): return
+        raise ValueError("PCB compiler or local footprint geometry policy has changed")
     def _build_package_snapshot(self,job_id):
         job=self.get(job_id)
         if not job or job["status"]!="complete":return "unavailable",None
@@ -812,6 +824,25 @@ class JobStore:
                             placement_documents={name:hashlib.sha256(captured[name]).hexdigest()
                                                  for name in ("placement-request.json","placement.json")})
             captured["project-revision.json"]=(json.dumps(revision,indent=2,sort_keys=True)+"\n").encode("utf-8")
+        recorder = report.get("project", {}).get("recorder")
+        is_recorder = lineage is not None and lineage["brief"]["archetype"] == "a4_usb_voice_recorder"
+        if is_recorder and not isinstance(recorder,dict): return "unavailable",None
+        if recorder is not None:
+            if not is_recorder: return "unavailable",None
+            if lineage is None or recorder.get("brief_fingerprint") != lineage.get("brief_fingerprint") or recorder.get("circuit_hash") != report["project"].get("circuit_hash"):
+                return "stale",None
+            from ohmni.application.recorder import recorder_artifacts
+            expected_files,_=recorder_artifacts(SynthesisBrief.model_validate(lineage["brief"]),recorder["circuit_hash"])
+            if recorder.get("files") != {name:hashlib.sha256(data).hexdigest() for name,data in expected_files.items()}:
+                return "stale",None
+            for name,digest in recorder["files"].items():
+                if not re.fullmatch(r"(?:firmware|simulation)/(?:main/)?[A-Za-z0-9][A-Za-z0-9._-]{0,100}",name): return "unavailable",None
+                path=directory/name
+                if any(parent.is_symlink() for parent in path.parents if parent != directory and directory in parent.parents):
+                    return "unavailable",None
+                state,data=self._read_matching(path,digest,path.parent)
+                if state!="current": return state,None
+                captured[name]=data
         captured["bom.csv"]=_build_bom_csv(report).encode("utf-8-sig")
         captured["ASSEMBLY-AND-BRINGUP.md"]=_build_guide(report).encode("utf-8")
         buffer=io.BytesIO()
@@ -910,7 +941,7 @@ def _build_guide(report):
            "- The manufacturing profile and all supplied prices are synthetic; obtain a fabricator review and current quotes.",
            "- Electrical checks use bundled catalog facts. Seed datasheet claims have not been machine re-verified against their source PDFs.",
            "- Review the schematic, PCB, report.json, component orientations, and assembly risks below.",
-           "- Firmware is not included. This release does not build, flash, or simulate MCU code.",
+           ("- Recorder firmware source and digital simulation are included; see firmware/README.md. Physical operation is untested." if report.get("project",{}).get("recorder") else "- Firmware is not included. This release does not build, flash, or simulate MCU code."),
            "- USB-C provides power; it does not add a USB programming interface.",
            "- Confirm programming access in the schematic. An omitted programming header means no supplied programming connector.",
            "- Where provided, use the programming connections with an appropriate 3.3 V logic adapter and reviewed firmware.",

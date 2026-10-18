@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "id": "VR-T01",
+  "task": "VR-T01",
+  "scope": "VOICE-RECORDER-1",
+  "status": "PASSED",
+  "commit": "ec5a4ca7735d3f3191b1d16cf1368a3fceebc406",
+  "merged_main": "27567182",
+  "pr": "https://github.com/Jadenw9013/Ohmni/pull/97",
+  "ci": {
+    "repository_gates": "https://github.com/Jadenw9013/Ohmni/actions/runs/39077804210",
+    "firmware": "https://github.com/Jadenw9013/Ohmni/actions/runs/39077804221",
+    "result": "SUCCESS",
+    "fast": {
+      "passed": 2787,
+      "skipped": 108,
+      "deselected": 72
+    },
+    "corpus": {
+      "passed": 108,
+      "skipped": 3,
+      "deselected": 2856
+    },
+    "frontend": {
+      "passed": 1151
+    },
+    "native_recorder": {
+      "passed": 1,
+      "deselected": 12
+    },
+    "firmware_sample_rates_hz": [
+      32000,
+      48000
+    ],
+    "firmware_max_seconds": 3600
+  },
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "LOCAL_TIMING_FAILURES_WITH_PASSING_CI",
+      "passed": 2823,
+      "failed": 2,
+      "skipped": 101,
+      "deselected": 72,
+      "note": "Two local browser startup/reload timeouts. Same source passes CI; all three relevant browser tests pass in an isolated required-browser rerun below. No timeout was increased or test skipped to hide these failures."
+    },
+    {
+      "command": "OHMNI_REQUIRE_BROWSER=1 python -m pytest -o addopts= -q tests/test_connected_browser.py tests/test_fetch_workspace_browser.py tests/test_voice_recorder_browser.py",
+      "result": "PASS",
+      "passed": 3,
+      "seconds": 37.95,
+      "commit": "ec5a4ca7735d3f3191b1d16cf1368a3fceebc406"
+    },
+    {
+      "command": "python -m pytest -o addopts= -q tests/test_voice_recorder.py tests/test_project_families.py",
+      "result": "PASS",
+      "passed": 50,
+      "seconds": 38.82,
+      "commit": "ec5a4ca7735d3f3191b1d16cf1368a3fceebc406"
+    },
+    {
+      "command": "python -m pytest -q -m integration --basetemp build/recorder-integration-release",
+      "result": "PASS",
+      "passed": 30,
+      "skipped": 21,
+      "note": "Optional integration prerequisites remain skipped; real recorder native/browser checks run separately."
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "passed": 1151
+    },
+    {
+      "command": "python scripts/run_browser_acceptance.py --output build/recorder-browser-acceptance",
+      "result": "PASS",
+      "saved_demo_steps": 188,
+      "telemetry_checks": 58,
+      "browser_regressions": 14
+    },
+    {
+      "command": "ESP-IDF v5.4.2 idf.py build, ESP32 target, both exported sample rates at 3600 seconds",
+      "result": "PASS",
+      "framework_commit": "f5c3654a1c2d2a01f7f67def7a0dc48e691f63c0",
+      "note": "Portable C conversion/debounce/storage also compiled and executed in host tests. Target compilation is not physical execution."
+    },
+    {
+      "command": "pip wheel --no-deps -w build/recorder-wheel .; inspect required wheel members",
+      "result": "PASS",
+      "note": "Firmware C/build files, Adafruit source CAD/licenses and both catalog parts present."
+    },
+    {
+      "command": "ruff changed Python files (excluding inherited EXE001 permission warnings); git diff --check",
+      "result": "PASS",
+      "note": "Repository-wide lint has pre-existing issues in unrelated bench scripts and one behavior test; these were not changed."
+    }
+  ],
+  "native": {
+    "components": 25,
+    "pcb_size_mm": [
+      100,
+      70
+    ],
+    "kicad_drc_violations": 0,
+    "unrouted_connections": 0,
+    "outcome": "READY_FOR_MANUFACTURING_REVIEW",
+    "physical_testing": "NOT_PERFORMED"
+  },
+  "browser": {
+    "provider": "deterministic test doubles; no live model-quality claim",
+    "verified": [
+      "Fetch plan/confirmation creates saved recorder",
+      "Main Ohmni opens actual generated board",
+      "Recorder fault scenario selectable",
+      "MIC1 selection and grounded tutor context",
+      "Component history survives reload and service reopen",
+      "Ohmni change to 48 kHz creates immutable revision",
+      "Fetch SIMULATE reads the revised rate",
+      "Fetch duration edit confirms into same project",
+      "Old revision and job remain intact",
+      "390 px viewport has no overflow",
+      "Fetch TEACH shares component history with main UI"
+    ]
+  },
+  "limitations": [
+    "No physical recorder assembled, flashed or measured.",
+    "Digital workload model uses synthetic samples and modeled latency; no analog or ESP32 instruction emulation.",
+    "Current allocations are authored assumptions. Supply/thermal/USB compliance, I2S alignment, audio quality and SD reliability require physical qualification.",
+    "Live ASI conversation and production deployment have not been performed for this feature.",
+    "Independent review unavailable; task is VERIFIED, not formal COMPLETE."
+  ],
+  "merge_verification": {
+    "status": "PASSED",
+    "commit": "b6abde75f22cea759768438f2c5b96e580d21307",
+    "merged_main": "9f1d850b",
+    "repository_gates": "https://github.com/Jadenw9013/Ohmni/actions/runs/39105540231",
+    "firmware": "https://github.com/Jadenw9013/Ohmni/actions/runs/39105540221",
+    "all_push_and_pr_checks": "PASSED",
+    "fast": {
+      "passed": 2789,
+      "skipped": 108,
+      "deselected": 72
+    },
+    "frontend_passed": 1151,
+    "corpus": {
+      "passed": 108,
+      "skipped": 3,
+      "deselected": 2858
+    },
+    "native_recorder": {
+      "passed": 1,
+      "deselected": 12
+    },
+    "local": {
+      "focused_native_browser_api_passed": 91,
+      "seconds": 83.65,
+      "log": "build/recorder-b6abde75-tests.log",
+      "precommit_browser_planner_assistant_passed": 46
+    },
+    "prior_ci_failure": "GitHub CreateArtifact service timed out after five attempts; all engineering steps had passed. Fresh merge CI including upload passed without bypassing checks.",
+    "independent_review": "UNAVAILABLE",
+    "production_deployment": "NOT_PERFORMED",
+    "physical_testing": "NOT_PERFORMED"
+  }
+}

@@ -19,6 +19,7 @@ class ArchetypeId(StrEnum):
     A1_USB_I2C_SENSOR = "a1_usb_i2c_sensor"
     A2_USB_GPIO_CONTROLLER = "a2_usb_gpio_controller"
     A3_USB_SPI_PERIPHERAL = "a3_usb_spi_peripheral"
+    A4_USB_VOICE_RECORDER = "a4_usb_voice_recorder"
 
 
 class InputPower(StrEnum):
@@ -68,6 +69,8 @@ class SynthesisBrief(BaseModel):
     status_led_count: int = Field(default=1, ge=0)
     button_count: int = Field(default=0, ge=0)
     spi_devices: tuple[SpiPeripheralSlot, ...] = Field(default_factory=tuple)
+    recorder_sample_rate_hz: Literal[32000, 48000] = 32000
+    recorder_max_seconds: int = Field(default=300, ge=1, le=3600)
     include_programming_header: bool = True
     max_board_layers: int = Field(default=2, ge=1, le=8)
     board_width_mm: float = Field(default=100.0, ge=40, le=100)
@@ -76,11 +79,22 @@ class SynthesisBrief(BaseModel):
     budget_usd: float | None = Field(default=20.0, ge=0)
     safety_domains: tuple[SafetyDomain, ...] = Field(default_factory=tuple)
 
+    @model_validator(mode="after")
+    def recorder_settings_only_on_recorder(self):
+        if self.archetype is not ArchetypeId.A4_USB_VOICE_RECORDER and (
+            self.recorder_sample_rate_hz != 32000 or self.recorder_max_seconds != 300
+        ):
+            raise ValueError("Recording settings require the voice recorder family")
+        return self
+
     @property
     def fingerprint(self) -> str:
         """Stable identity for the complete input brief."""
 
         values = self.model_dump(mode="json")
+        if self.archetype is not ArchetypeId.A4_USB_VOICE_RECORDER:
+            del values["recorder_sample_rate_hz"]
+            del values["recorder_max_seconds"]
         # Schema-v1 saved A1 inputs predate these optional slots. Empty new
         # slots preserve their existing fingerprint and artifact lineage.
         for name in ("button_count", "spi_devices"):

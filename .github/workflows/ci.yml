@@ -167,6 +167,8 @@ jobs:
           grep -q '"status": "BLOCKED"' build/ci-no-kicad/*/summary.json
       - name: real KiCad 10.0.5 harness with fault
         run: scripts/run_in_kicad_image.sh python3 scripts/verify_hackathon_demo.py --attempts 1 --output-root build/ci-hackathon
+      - name: recorder native generation, export and restart
+        run: scripts/run_in_kicad_image.sh python3 -m pytest -o addopts='' -q tests/test_project_families.py -k 'every_family and a4'
       - name: require the expected checks in the summary
         shell: bash
         run: |

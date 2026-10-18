@@ -67,7 +67,8 @@ class ProjectAssistant:
         # Stored text is data, not instructions. Facts have server-created IDs and sources.
         facts = [{"id": "brief." + field, "label": field.replace("_", " "), "value": value,
                   "source": f"Saved revision {revision['number']}", "basis": "saved_requirement"}
-                 for field, value in revision["brief"].items() if field != "schema_version"]
+                 for field, value in revision["brief"].items() if field != "schema_version"
+                 and (not field.startswith("recorder_") or revision["brief"]["archetype"] == "a4_usb_voice_recorder")]
         for group in ("asked_for", "assumed", "needs_clarification"):
             for i, item in enumerate(revision["preview"].get(group, [])):
                 facts.append({"id": f"preview.{group}.{i}", "label": item["label"], "value": item["value"],
@@ -91,6 +92,10 @@ class ProjectAssistant:
                           "source": f"Revision {revision['number']} run record", "basis": "run_state"})
         # A run's completion is not a verdict. Only expose the actual recorded bounded summary.
         report = (job or {}).get("report") or {}
+        recorder = report.get("project", {}).get("recorder")
+        if recorder:
+            facts.append({"id":"report.recorder", "label":"Recorder firmware and simulated scenarios", "value":recorder,
+                "source":f"Revision {revision['number']} recorder artifacts", "basis":"recorded_result"})
         bom = report.get("bom") or {}
         if isinstance(bom, dict) and isinstance(bom.get("lines"), list) and bom["lines"]:
             # Report-owned component identities only. Prices and stock are not

@@ -28,11 +28,11 @@ def library():
 
 
 def test_all_seed_parts_and_packages_are_truthfully_present(library):
-    page = library.page(LibraryQuery())
+    page = library.page(LibraryQuery(limit=50))
     catalog = JsonPartCatalog()
-    assert page["total"] == 12
+    assert page["total"] == 14
     assert [item["part_id"] for item in page["items"]] == [p.part_id for p in catalog.all_parts()]
-    assert sum(len(item["variants"]) for item in page["items"]) == 19
+    assert sum(len(item["variants"]) for item in page["items"]) == 21
     for item in page["items"]:
         part = catalog.require(item["part_id"])
         assert item["description"] == part.description
@@ -153,7 +153,7 @@ def test_live_read_endpoint_does_not_create_projects_jobs_or_exports(tmp_path):
         before = server.projects.list_projects()
         status, headers, raw = _request(base, "/api/components?limit=2")
         page = json.loads(raw)
-        assert status == 200 and page["total"] == 12
+        assert status == 200 and page["total"] == 14
         assert page["ui_version"] == headers["x-ohmni-ui-version"] == server.ui_version
         assert page["server_instance_id"] == server.server_instance_id
         assert _request(base, "/api/components?offset=2")[0] == 400

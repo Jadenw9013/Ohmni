@@ -21,6 +21,7 @@ from .units import Quantity, Unit, ValueRange
 class Interface(StrEnum):
     """Buses and interfaces the MVP models. Free text belongs in `notes`."""
 
+    I2S = "i2s"
     I2C = "i2c"
     SPI = "spi"
     UART = "uart"

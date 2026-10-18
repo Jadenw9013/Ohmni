@@ -302,7 +302,8 @@ def _seed_package(tmp_path, job_id="a" * 12, brief=None):
                 "schematic_fingerprint": fingerprints["golden.kicad_sch"],
                 "files": files, "release_status": "ready_for_manufacturing_review"}
     if brief is not None:
-        result = synthesize_a1(brief)
+        from ohmni.synthesis import synthesize
+        result = synthesize(brief)
         placement = generate_placement(result.circuit, result.placement_request, default_catalog())
         manifest["circuit_fingerprint"] = result.circuit.content_hash
     package_hash = hashlib.sha256(json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()).hexdigest()

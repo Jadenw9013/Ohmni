@@ -131,10 +131,11 @@ test("the registry records original geometry and appearance provenance without a
     for (const family of ASSET_FAMILIES) {
         const record = ASSET_REGISTRY[family];
         assert.equal(record.modelAssetId, `ohmni-procedural/${family}@reference-packages-v1`);
-        assert.equal(record.source.kind, "ORIGINAL_PROCEDURAL_SOURCE");
-        assert.equal(record.source.thirdPartyGeometry, false);
+        const recorder=["i2s_microphone","microsd_module"].includes(family);
+        assert.equal(record.source.kind, recorder ? "PROCEDURAL_WITH_SOURCE_CAD_DIMENSIONS" : "ORIGINAL_PROCEDURAL_SOURCE");
+        assert.equal(record.source.thirdPartyGeometry, recorder);
         assert.equal(record.source.electricalAuthority, false);
-        assert.equal(record.source.license, "Repository license unspecified");
+        assert.equal(record.source.license, recorder ? "Adafruit CC-BY-SA-3.0 for adapted module outline/header geometry" : "Repository license unspecified");
         assert.equal(record.appearanceOnly, true);
         assert.equal(record.units, "mm");
         assert.equal(record.upAxis, "z");

@@ -37,7 +37,7 @@ class TestOutputFormats:
         assert payload["export_blocked"] is False
         assert payload["coverage"] == 1.0
         assert payload["counts_by_severity"]["critical"] == 0
-        assert len(payload["results"]) == 25
+        assert len(payload["results"]) == 26
         spi = next(r for r in payload["results"] if r["rule_id"] == "PB-SPI-001")
         assert spi["outcome"] == "not_applicable"
 

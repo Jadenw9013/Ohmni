@@ -3,6 +3,7 @@
 from .a1 import synthesize_a1
 from .a2 import synthesize_a2
 from .a3 import synthesize_a3
+from .a4 import synthesize_a4
 from .models import (
     ArchetypeId,
     I2cSensorSlot,
@@ -21,6 +22,7 @@ def synthesize(brief: SynthesisBrief, catalog=None) -> SynthesisResult:
         ArchetypeId.A1_USB_I2C_SENSOR: synthesize_a1,
         ArchetypeId.A2_USB_GPIO_CONTROLLER: synthesize_a2,
         ArchetypeId.A3_USB_SPI_PERIPHERAL: synthesize_a3,
+        ArchetypeId.A4_USB_VOICE_RECORDER: synthesize_a4,
     }[brief.archetype]
     return compiler(brief, catalog)
 

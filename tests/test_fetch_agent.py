@@ -8,7 +8,8 @@ def test_supported_options_never_claim_a_build_or_unsupported_function():
     assert "Sensor station" in reply and "Memory & data" in reply
     assert "smell identification is not supported" in reply
     assert "has not saved a plan or started a build" in reply
-    assert "Firmware, simulation, and hardware measurements are not included" in reply
+    assert "Voice recorder" in reply
+    assert "recorder" in reply and "firmware" in reply and "digital behavioral simulation" in reply
 
 
 def test_blank_and_oversize_messages_are_bounded():

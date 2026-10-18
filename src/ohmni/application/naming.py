@@ -159,6 +159,10 @@ def component_term(circuit: CircuitIR, catalog, ref: str) -> Term:
     def term(human: str) -> Term:
         return Term(human=human, technical=technical, detail=detail)
 
+    if instance.part_id == "ADAFRUIT_3421":
+        return term("Microphone")
+    if instance.part_id == "ADAFRUIT_4682_SDHC":
+        return term("microSD card module")
     if category in {ComponentCategory.MCU, ComponentCategory.MCU_MODULE}:
         return term("Main computer")
     if category is ComponentCategory.SENSOR:

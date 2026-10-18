@@ -24,7 +24,7 @@ def _briefs():
 
 def test_options_offer_complete_supported_defaults_and_auto_address_slots():
     options=project_options()
-    assert options["schema_version"]==1 and len(options["families"])==3
+    assert options["schema_version"]==1 and len(options["families"])==4
     assert {sensor["part_id"]:sensor["addresses"] for sensor in options["sensors"]}=={
         "BME280":[0x76,0x77],"TMP102AIDRLR":[0x48,0x49]}
     for family in options["families"]:
@@ -106,10 +106,10 @@ def test_options_identity_and_all_family_revisions_survive_restart(tmp_path):
 
 
 def test_invalid_family_combinations_are_refused_without_a_saved_revision(tmp_path):
-    a1,a2,a3=_briefs()
+    a1,a2,a3,a4=_briefs()
     invalid=[a1.model_copy(update={"sensors":(I2cSensorSlot(part_id="BME280",address=0x76),)*2}),
              a2.model_copy(update={"sensors":a1.sensors*2}),
-             a3.model_copy(update={"spi_devices":a3.spi_devices*3})]
+             a3.model_copy(update={"spi_devices":a3.spi_devices*3}), a4.model_copy(update={"include_programming_header":False})]
     with _server(tmp_path) as (server,base):
         for brief in invalid:
             status,response=_request(base,"/api/projects",{**server._identity(),"brief":brief.model_dump(mode="json")})
@@ -151,6 +151,12 @@ def test_every_family_creates_runs_reopens_and_exports_through_the_real_api(tmp_
             archive=zipfile.ZipFile(io.BytesIO(response.read()))
         assert SynthesisBrief.model_validate(json.loads(archive.read("confirmed-brief.json"))).fingerprint==brief.fingerprint
         assert json.loads(archive.read("report.json"))["project"]["archetype"]==brief.archetype.value
+        if brief.archetype.value == "a4_usb_voice_recorder":
+            import hashlib
+            for name,digest in report["project"]["recorder"]["files"].items():
+                assert hashlib.sha256(archive.read(name)).hexdigest()==digest
+            assert "firmware/main/main.c" in archive.namelist()
+            assert "simulation/synthetic-test-tone.wav" in archive.namelist()
         assert _request(base,run_path,identity)[1]["job_id"]==job_id
     with _server(tmp_path) as (_restarted,base):
         status,job=_request(base,f"/api/jobs/{job_id}")

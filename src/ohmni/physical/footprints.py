@@ -10,6 +10,7 @@ import json
 from collections.abc import Iterable
 
 from .models import FootprintDefinition, FootprintDrill, FootprintPad, FootprintSource
+from .recorder_footprints import recorder_footprints
 
 LICENSE = "KiCad footprint libraries, CC-BY-SA-4.0 with KiCad library exception"
 
@@ -138,6 +139,9 @@ _register(FootprintDefinition(
                           ("2", -3.25, 2.25), ("2", 3.25, 2.25))],
 ))
 
+
+for _recorder_definition in recorder_footprints():
+    _register(_recorder_definition)
 
 def footprint(footprint_id: str) -> FootprintDefinition | None:
     return FOOTPRINTS.get(footprint_id)

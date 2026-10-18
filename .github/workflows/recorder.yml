@@ -1,0 +1,33 @@
+name: recorder-firmware
+on:
+  pull_request:
+  push:
+jobs:
+  target-compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        sample-rate: [32000, 48000]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -e .
+      - name: Export actual synthesized revision firmware
+        run: python scripts/prepare_recorder_firmware.py --output build/recorder --sample-rate ${{ matrix.sample-rate }} --max-seconds 3600
+      - name: Compile ESP32 firmware (not a hardware test)
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.4.2
+          target: esp32
+          path: build/recorder/firmware
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recorder-esp32-${{ matrix.sample-rate }}-compile-evidence
+          path: |
+            build/recorder/firmware/manifest.json
+            build/recorder/firmware/build/ohmni_voice_recorder.bin
+            build/recorder/firmware/build/ohmni_voice_recorder.map
+          if-no-files-found: error

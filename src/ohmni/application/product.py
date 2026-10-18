@@ -416,6 +416,8 @@ class ProductExperience(BaseModel):
 _BRIEF_LABELS = {
     "project_name": "Project name",
     "archetype": "What your board does",
+    "recorder_sample_rate_hz": "Recording sample rate (Hz)",
+    "recorder_max_seconds": "Maximum recording length (seconds)",
     "input_power": "Power connection",
     "input_voltage_v": "Input voltage",
     "logic_voltage_v": "Chip supply voltage",
@@ -467,7 +469,7 @@ def _readable(field: str, value: str) -> str:
         return f"{value} mm"
     if field == "archetype":
         return {"a1_usb_i2c_sensor": "Measure your space", "a2_usb_gpio_controller": "Buttons and lights",
-                "a3_usb_spi_peripheral": "Store data"}.get(value, value)
+                "a3_usb_spi_peripheral": "Store data", "a4_usb_voice_recorder": "Record voice to microSD"}.get(value, value)
     if field == "input_power":
         return {"usb_c_5v": "USB-C power, 5 V"}.get(value, value)
     if field == "interface":
@@ -692,6 +694,10 @@ def _purpose(circuit: CircuitIR, catalog, ref: str, grouping: ComponentGrouping)
     processors = {ComponentCategory.MCU, ComponentCategory.MCU_MODULE}
     signal_nets = [net for net in nets if net.kind is NetKind.SIGNAL]
 
+    if instance.part_id == "ADAFRUIT_3421":
+        return "Converts sound to digital I2S samples. The ESP32 supplies bit and word clocks; SEL is grounded for the left slot. Included recorder firmware stores mono WAV files. Keep the acoustic opening clear; sound quality and data timing need physical testing."
+    if instance.part_id == "ADAFRUIT_4682_SDHC":
+        return "Holds a removable FAT32 microSD card for WAV recordings. SPI carries commands and data; DET reports insertion. A separate 3.3 V regulator supplies the card. Stop recording before removal; card speed, current and power-loss behavior need physical testing."
     if category in {ComponentCategory.MCU, ComponentCategory.MCU_MODULE}:
         return "The processor runs a program to coordinate the devices wired to it. The circuit provides connections; firmware supplies the behavior."
     if category is ComponentCategory.MEMORY:

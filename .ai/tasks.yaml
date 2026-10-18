@@ -447,6 +447,15 @@
       "approval_evidence": ".ai/approvals/UNIFIED-FETCH-1.yaml"
     },
     {
+      "id": "VOICE-RECORDER-1",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/VOICE-RECORDER-1.yaml",
+      "status": "VERIFIED",
+      "type": "product_milestone",
+      "title": "Complete voice recorder project family",
+      "review_policy": "independent review required for COMPLETE; unavailable permits VERIFIED only"
+    },
+    {
       "id": "ASI-ACCEPTANCE-1",
       "title": "ASI-only acceptance and Fetch submission readiness",
       "type": "product_feature",
@@ -4293,6 +4302,45 @@
         "status": "PASSED",
         "record": ".ai/verification/UF-T01.yaml",
         "commit": "ebb35e6b940e3d1375e793f014216ea27e3ee506"
+      }
+    },
+    {
+      "id": "VR-T01",
+      "scope": "VOICE-RECORDER-1",
+      "title": "Implement and verify voice recorder end to end",
+      "priority": 100,
+      "status": "VERIFIED",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Source-backed microphone and storage components, footprints, 3D models and teaching.",
+        "Deterministic synthesis, semantic/ERC/DRC/route checks and bounded simulation.",
+        "Revision-bound buildable firmware, downloadable artifacts, recording/error handling tests.",
+        "Create, save, teach, edit and rebuild through shared Fetch and Ohmni services; persistent chats preserved.",
+        "Regression gates and explicit physical-test limitations."
+      ],
+      "implementation": {
+        "started_at_commit": "c3038a47",
+        "approval_evidence": ".ai/approvals/VOICE-RECORDER-1.yaml",
+        "completed_at_commit": "b6abde75f22cea759768438f2c5b96e580d21307"
+      },
+      "review": {
+        "required": true,
+        "independent": false,
+        "status": "UNAVAILABLE",
+        "notes": "Independent review pending on PR97; no self-review is labeled independent."
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "integration",
+          "browser",
+          "native",
+          "firmware"
+        ],
+        "status": "PASSED",
+        "record": ".ai/verification/VR-T01.yaml",
+        "commit": "b6abde75f22cea759768438f2c5b96e580d21307"
       }
     },
     {
