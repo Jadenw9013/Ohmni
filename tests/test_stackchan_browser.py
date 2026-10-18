@@ -129,7 +129,9 @@ def test_workspace_robot_link_context_view_commands_and_tutor(tmp_path):
             assert context["project_id"] == state["project_id"]
             assert {c["ref"] for c in context["components"]} == {c["ref"] for c in good["components"]}
             assert context["tour"][0]["component_refs"] == [first_ref]
-            assert "access" not in json.dumps(context).lower(), "no tokens or links leave the page"
+            serialized = json.dumps(context).lower()
+            for secret in ("access", "connect=", "token", "http://", "https://", claim.lower()):
+                assert secret not in serialized, f"no tokens or links leave the page ({secret})"
 
             assert command({"type": "command", "id": 1, "name": "focus", "args": {"ref": first_ref}})["ok"]
             assert first_ref in page.locator("#selection .part-id").inner_text()

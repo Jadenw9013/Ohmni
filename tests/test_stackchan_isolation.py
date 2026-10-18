@@ -9,7 +9,7 @@ def test_ohmni_runtime_never_imports_stackchan():
     offenders = [
         str(path.relative_to(ROOT))
         for path in (ROOT / "src" / "ohmni").rglob("*.py")
-        if re.search(r"^\s*(from|import)\s+(tools\.)?stackchan\b", path.read_text(encoding="utf-8"), re.MULTILINE)
+        if re.search(r"^\s*(from|import)\s+((tools\.)?stackchan\b|tools\s+import\s+.*\bstackchan\b)", path.read_text(encoding="utf-8"), re.MULTILINE)
     ]
     assert offenders == []
 

@@ -83,7 +83,7 @@ function harness(overrides = {}) {
     const calls = [];
     const link = createRobotLink({
         WebSocketImpl: FakeSocket,
-        actions: { focus: async ({ ref }) => { calls.push(ref); link.notifySelected(ref); } },
+        actions: { focus: async ({ ref }) => { calls.push(ref); link.notifySelected(ref, "robot"); } },
         getContext: context,
         onStatus: (status) => statuses.push(status),
         setTimer: (fn, ms) => { timers.push({ fn, ms }); return timers.length; },
@@ -146,4 +146,68 @@ test("without WebSocket support the link stays off", () => {
     const { link } = harness({ WebSocketImpl: null });
     link.enable();
     assert.equal(link.status, "off");
+});
+
+test("commands run one at a time in order, and floods are refused as busy", async () => {
+    FakeSocket.made = [];
+    const log = [];
+    const releases = [];
+    const link = createRobotLink({
+        WebSocketImpl: FakeSocket,
+        getContext: context,
+        actions: { focus: ({ ref }) => new Promise((resolve) => { log.push(`start ${ref}`); releases.push(() => { log.push(`end ${ref}`); resolve(); }); }) },
+    });
+    link.enable();
+    const socket = FakeSocket.made[0];
+    socket.open();
+    const pending = [1, 2, 3, 4, 5].map((id) => socket.onmessage({ data: JSON.stringify({ type: "command", id, name: "focus", args: { ref: id % 2 ? "U2" : "R1" } }) }));
+    assert.deepEqual(socket.sent.at(-1), { type: "result", id: 5, ok: false, error: "busy: too many commands waiting" });
+    await Promise.resolve();
+    assert.deepEqual(log, ["start U2"], "the second command waits for the first");
+    for (let i = 0; i < 4; i += 1) {
+        while (releases.length <= i) await new Promise((resolve) => setTimeout(resolve, 0));
+        releases[i]();
+    }
+    await Promise.all(pending);
+    assert.deepEqual(log, ["start U2", "end U2", "start R1", "end R1", "start U2", "end U2", "start R1", "end R1"]);
+    assert.deepEqual(socket.sent.filter((m) => m.type === "result" && m.ok).map((m) => m.id), [1, 2, 3, 4]);
+});
+
+test("robot questions are spaced out so a companion cannot drain the shared AI budget", async () => {
+    FakeSocket.made = [];
+    let clock = 10_000;
+    let asks = 0;
+    const link = createRobotLink({
+        WebSocketImpl: FakeSocket, getContext: context, now: () => clock,
+        actions: { ask: async () => { asks += 1; return { explanation: "ok" }; } },
+    });
+    link.enable();
+    const socket = FakeSocket.made[0];
+    socket.open();
+    const ask = (id) => socket.receive({ type: "command", id, name: "ask", args: { ref: "U2", question: "why?" } });
+    await ask(1);
+    await ask(2);
+    clock += 3000;
+    await ask(3);
+    assert.equal(asks, 2);
+    assert.match(socket.sent.find((m) => m.id === 2).error, /wait a moment/);
+});
+
+test("selection notices are attributed explicitly, de-duplicated, and disabling clears robot view state", () => {
+    let disabled = 0;
+    const { link } = harness({ onDisable: () => { disabled += 1; } });
+    link.enable();
+    const socket = FakeSocket.made[0];
+    socket.open();
+    link.notifySelected("U2", "robot");
+    link.notifySelected("U2", "robot");
+    link.notifySelected("U2");
+    link.notifySelected("R1");
+    assert.deepEqual(socket.sent.filter((m) => m.type === "selected"), [
+        { type: "selected", ref: "U2", by: "robot" },
+        { type: "selected", ref: "U2", by: "user" },
+        { type: "selected", ref: "R1", by: "user" },
+    ]);
+    link.disable();
+    assert.equal(disabled, 1);
 });

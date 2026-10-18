@@ -93,6 +93,7 @@ const state = {
     revisionContext: null,
     projectName: null,
     robotLink: null,
+    robotSelecting: false,
 };
 
 // ── journey ─────────────────────────────────────────────────────────────
@@ -787,6 +788,7 @@ function renderResult(report, jobId) {
     show("review");
     setupBoard(exp.board);
     state.robotLink?.sendContext();
+    robotAutoConnect();
     setConnection("connected");
     void loadResultAssistant();
 }
@@ -893,18 +895,34 @@ function robotContext() {
 
 function robotFocus(ref) {
     if (state.panel !== "board") selectResultPanel("board");
-    // Same order as the systems list, so CircuitLessons is not re-entered.
-    state.boardView?.select(ref);
-    state.boardView?.setHighlight({ refs: [ref] });
-    renderSelection(ref);
-    $$("#systems .part-pick").forEach((button) => button.classList.toggle("on", button.dataset.ref === ref));
+    if (state.selected !== ref) {
+        // Same order as the systems list, so CircuitLessons is not re-entered. Selections made
+        // here are attributed to the robot; re-selecting the current part keeps its tutor (and
+        // any question the user is typing) intact.
+        state.robotSelecting = true;
+        try {
+            state.boardView?.select(ref);
+            state.boardView?.setHighlight({ refs: [ref] });
+            renderSelection(ref);
+        } finally {
+            state.robotSelecting = false;
+        }
+        $$("#systems .part-pick").forEach((button) => button.classList.toggle("on", button.dataset.ref === ref));
+    } else {
+        state.boardView?.setHighlight({ refs: [ref] });
+    }
     state.boardView?.focus(ref);
+}
+
+function setIsolated(ref) {
+    state.boardView?.setOptions({ isolate: ref || null });
+    setHidden("#robot-show-all", !ref);
 }
 
 const ROBOT_ACTIONS = Object.freeze({
     focus: ({ ref }) => { robotFocus(ref); },
     isolate: ({ ref }) => {
-        state.boardView?.setOptions({ isolate: ref || null });
+        setIsolated(ref);
         if (ref) state.boardView?.focus(ref); else state.boardView?.frame();
         state.boardControls?.sync();
     },
@@ -960,6 +978,7 @@ function mountRobotLink() {
     state.robotLink = createRobotLink({
         actions: ROBOT_ACTIONS,
         getContext: robotContext,
+        onDisable: () => { setIsolated(null); state.boardControls?.sync(); },
         onStatus: (status) => {
             button.textContent = ROBOT_STATUS_TEXT[status] || ROBOT_STATUS_TEXT.off;
             button.setAttribute("aria-pressed", String(status !== "off"));
@@ -971,7 +990,16 @@ function mountRobotLink() {
         if (state.robotLink.enabled) { state.robotLink.disable(); robotPreference(false); }
         else { robotPreference(true); state.robotLink.enable(); }
     });
-    if (robotPreference()) state.robotLink.enable();
+    $("#robot-show-all")?.addEventListener("click", () => {
+        setIsolated(null);
+        state.boardView?.frame();
+        state.boardControls?.sync();
+    });
+}
+
+// A remembered opt-in reconnects once a board is on screen, not on the landing page.
+function robotAutoConnect() {
+    if (state.robotLink && !state.robotLink.enabled && robotPreference()) state.robotLink.enable();
 }
 
 function resetBoardView() {
@@ -979,6 +1007,7 @@ function resetBoardView() {
     state.boardView.camera = createCamera();
     state.boardView.setOptions({ explode: 0, showCopper: true, showComponents: true, showBack: false });
     state.boardView.setOptions({ autoRotate: false, animateFlow: false, xray: false, showLabels: true });
+    setIsolated(null);
     state.boardView.select(null);
     selectFlow(null);
     state.boardView.frame();
@@ -999,7 +1028,7 @@ export function renderSelection(ref) {
     state.componentTutor?.dispose();
     state.componentTutor = mountComponentTutor($("#component-tutor"), {context:state.revisionContext, component:ref});
     state.boardLessons?.select(ref);
-    state.robotLink?.notifySelected(ref);
+    state.robotLink?.notifySelected(ref, state.robotSelecting ? "robot" : "user");
     $$("#schematic-holder .sym").forEach((symbol) => {
         const selected = symbol.dataset.ref === ref;
         symbol.classList.toggle("sel", selected);

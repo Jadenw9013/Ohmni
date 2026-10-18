@@ -912,3 +912,36 @@ test("the robot cannot reach unknown parts, actions outside the set, or the tuto
         await socket.receive({ type: "command", id: 4, name: "ask", args: { ref: "U2", question: "Why this regulator?" } });
         assert.deepEqual(socket.sent.at(-1), { type: "result", id: 4, ok: false, error: "Questions are available in the connected Ohmni workspace." });
     }));
+
+test("robot isolate offers an on-screen way back and is cleared when the link is turned off", async () =>
+    withRobotApp(async (app, dom) => {
+        const button = dom.get("#robot-link");
+        button.listeners.click();
+        const socket = RobotSocket.made[0];
+        socket.open();
+        await app.poll(JOB_ID, identity, { monitorer: () => {} });
+        const showAll = dom.get("#robot-show-all");
+        showAll.hidden = true; // as declared in index.html
+        await socket.receive({ type: "command", id: 1, name: "isolate", args: { ref: "U2" } });
+        assert.equal(showAll.hidden, false, "the user can always leave a robot isolate");
+        showAll.listeners.click();
+        assert.equal(showAll.hidden, true);
+        await socket.receive({ type: "command", id: 2, name: "isolate", args: { ref: "U2" } });
+        button.listeners.click();
+        assert.equal(showAll.hidden, true, "turning the robot off restores the full board");
+    }));
+
+test("a remembered opt-in reconnects only after a board is on screen", async () => {
+    const storage = new Map([["ohmni.robotLink", "on"]]);
+    const original = globalThis.localStorage;
+    globalThis.localStorage = { getItem: (key) => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) };
+    try {
+        await withRobotApp(async (app) => {
+            assert.equal(RobotSocket.made.length, 0, "no connection from the landing page or before a board exists");
+            await app.poll(JOB_ID, identity, { monitorer: () => {} });
+            assert.equal(RobotSocket.made.length, 1);
+        });
+    } finally {
+        if (original === undefined) delete globalThis.localStorage; else globalThis.localStorage = original;
+    }
+});

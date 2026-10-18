@@ -9,6 +9,8 @@ export const ROBOT_LINK_PREF = "ohmni.robotLink";
 export const CAMERA_PRESETS = Object.freeze(["top", "front", "back"]);
 export const ROBOT_COMMANDS = Object.freeze(["focus", "isolate", "trace", "frame", "camera", "tour", "ask"]);
 const MAX_QUESTION = 2000;
+const MAX_QUEUED = 4;          // commands waiting or running; more are refused as busy
+const MIN_ASK_INTERVAL_MS = 3000;
 
 // What the companion may know about the board: identities, plain-language component
 // cards, the deterministic tour and the recorded check statuses. No artifacts or tokens.
@@ -104,21 +106,27 @@ export async function runCommand(message, context, actions) {
 }
 
 // The socket lifecycle. Statuses: off, connecting, connected, waiting (companion not found; retrying).
+// Commands run one at a time, in order; the page never trusts the companion with concurrency.
 export function createRobotLink({
     url = ROBOT_LINK_URL,
     WebSocketImpl = globalThis.WebSocket,
     actions,
     getContext,
     onStatus = () => {},
+    onDisable = () => {},
     retryMs = 5000,
     setTimer = (fn, ms) => globalThis.setTimeout(fn, ms),
     clearTimer = (handle) => globalThis.clearTimeout(handle),
+    now = () => Date.now(),
 } = {}) {
     let socket = null;
     let enabled = false;
     let timer = null;
     let status = "off";
-    let executing = 0;
+    let chain = Promise.resolve();
+    let queued = 0;
+    let lastAsk = -Infinity;
+    let lastSelected = null;
 
     const setStatus = (next) => { if (next !== status) { status = next; onStatus(next); } };
     const send = (payload) => {
@@ -147,18 +155,27 @@ export function createRobotLink({
         }
         socket = ws;
         ws.onopen = () => { setStatus("connected"); sendContext(); };
-        ws.onmessage = async (event) => {
+        ws.onmessage = (event) => {
             let message;
-            try { message = JSON.parse(typeof event.data === "string" ? event.data : ""); } catch { return; }
-            if (message?.type !== "command") return;
-            executing += 1;
-            let reply;
-            try {
-                reply = await runCommand(message, getContext?.(), actions);
-            } finally {
-                executing -= 1;
+            try { message = JSON.parse(typeof event.data === "string" ? event.data : ""); } catch { return chain; }
+            if (message?.type !== "command") return chain;
+            const id = typeof message.id === "string" || typeof message.id === "number" ? message.id : null;
+            if (queued >= MAX_QUEUED) {
+                send({ type: "result", id, ok: false, error: "busy: too many commands waiting" });
+                return chain;
             }
-            send(reply);
+            if (message.name === "ask") {
+                if (now() - lastAsk < MIN_ASK_INTERVAL_MS) {
+                    send({ type: "result", id, ok: false, error: "busy: wait a moment between questions" });
+                    return chain;
+                }
+                lastAsk = now();
+            }
+            queued += 1;
+            chain = chain.then(async () => {
+                try { send(await runCommand(message, getContext?.(), actions)); } finally { queued -= 1; }
+            });
+            return chain;
         };
         ws.onerror = () => {};
         ws.onclose = () => {
@@ -176,11 +193,19 @@ export function createRobotLink({
             if (timer !== null) { clearTimer(timer); timer = null; }
             const ws = socket;
             socket = null;
+            lastSelected = null;
             ws?.close();
             setStatus("off");
+            onDisable();
         },
         sendContext,
-        // "robot" when the selection came from a companion command, so it is not echoed back as a user action.
-        notifySelected(ref) { send({ type: "selected", ref: ref ?? null, by: executing > 0 ? "robot" : "user" }); },
+        // by: "robot" for selections a companion command made, so they are not echoed back as user actions.
+        // Identical consecutive notifications (one click renders the selection twice) are sent once.
+        notifySelected(ref, by = "user") {
+            const key = `${by}:${ref ?? ""}`;
+            if (key === lastSelected || !socket || socket.readyState !== 1) return;
+            lastSelected = key;
+            send({ type: "selected", ref: ref ?? null, by });
+        },
     };
 }
