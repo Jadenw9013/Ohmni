@@ -16,6 +16,7 @@ import { mountBoardControls } from "./board-controls.js";
 import { mountCircuitLessons } from "./circuit-lessons.js";
 import { mountConversation } from "./conversation.js";
 import { mountComponentTutor } from "./component-tutor.js";
+import { boardContext, createRobotLink, ROBOT_LINK_PREF } from "./robot-link.js";
 import { mountProjectAssistant } from "./project-assistant.js";
 import { mountProjectWorkbench } from "./project-workbench.js";
 import { scopeHtml } from "./scope-view.js";
@@ -91,6 +92,7 @@ const state = {
     workbench: null,
     revisionContext: null,
     projectName: null,
+    robotLink: null,
 };
 
 // ── journey ─────────────────────────────────────────────────────────────
@@ -784,6 +786,7 @@ function renderResult(report, jobId) {
     selectResultPanel("board");
     show("review");
     setupBoard(exp.board);
+    state.robotLink?.sendContext();
     setConnection("connected");
     void loadResultAssistant();
 }
@@ -878,6 +881,99 @@ function setupBoard(board) {
     state.boardLessons = mountCircuitLessons($("#board-lessons"), state.experience, state.boardView, { onViewChange: () => state.boardControls?.sync() });
 }
 
+// ── desk robot (opt-in, view-only) ──────────────────────────────────────
+
+function robotContext() {
+    return boardContext(state.experience, {
+        jobId: state.jobId,
+        projectId: state.revisionContext?.projectId,
+        revisionId: state.revisionContext?.revisionId,
+    }, state.selected);
+}
+
+function robotFocus(ref) {
+    if (state.panel !== "board") selectResultPanel("board");
+    // Same order as the systems list, so CircuitLessons is not re-entered.
+    state.boardView?.select(ref);
+    state.boardView?.setHighlight({ refs: [ref] });
+    renderSelection(ref);
+    $$("#systems .part-pick").forEach((button) => button.classList.toggle("on", button.dataset.ref === ref));
+    state.boardView?.focus(ref);
+}
+
+const ROBOT_ACTIONS = Object.freeze({
+    focus: ({ ref }) => { robotFocus(ref); },
+    isolate: ({ ref }) => {
+        state.boardView?.setOptions({ isolate: ref || null });
+        if (ref) state.boardView?.focus(ref); else state.boardView?.frame();
+        state.boardControls?.sync();
+    },
+    trace: ({ ref }) => {
+        const nets = state.experience?.board.components.find((c) => c.ref === ref)?.net_names || [];
+        state.boardView?.setHighlight({ nets });
+        state.boardView?.setOptions({ animateFlow: true });
+        state.boardControls?.sync();
+        return { nets };
+    },
+    frame: () => { state.boardView?.frame(); },
+    camera: ({ preset }) => { state.boardView?.setCameraPreset(preset); state.boardControls?.sync(); },
+    tour: ({ index }) => {
+        showTourStep(index);
+        const step = state.experience.tour.steps[index];
+        if (step.component_refs.length) state.boardView?.focus(step.component_refs); else state.boardView?.frame();
+        return { title: step.title };
+    },
+    ask: async ({ ref, question }) => {
+        if (!globalThis.OHMNI_CONNECTED || !state.revisionContext) {
+            throw new Error("Questions are available in the connected Ohmni workspace.");
+        }
+        robotFocus(ref);
+        if (!state.componentTutor?.ask) throw new Error("The component tutor is unavailable for this part.");
+        const answer = await state.componentTutor.ask(question);
+        return {
+            explanation: answer?.explanation || "",
+            unknowns: answer?.unknowns || [],
+            next_questions: answer?.next_questions || [],
+            sources: (answer?.sources || []).map((source) => source.label).filter(Boolean),
+        };
+    },
+});
+
+const ROBOT_STATUS_TEXT = Object.freeze({
+    off: "Desk robot: off",
+    connecting: "Desk robot: connecting…",
+    connected: "Desk robot: connected",
+    waiting: "Desk robot: not found, retrying",
+});
+
+function robotPreference(value) {
+    try {
+        if (value === undefined) return globalThis.localStorage?.getItem(ROBOT_LINK_PREF) === "on";
+        globalThis.localStorage?.setItem(ROBOT_LINK_PREF, value ? "on" : "off");
+    } catch { /* storage unavailable: the toggle still works for this page */ }
+    return Boolean(value);
+}
+
+function mountRobotLink() {
+    const button = $("#robot-link");
+    if (!button || typeof globalThis.WebSocket !== "function") return;
+    state.robotLink = createRobotLink({
+        actions: ROBOT_ACTIONS,
+        getContext: robotContext,
+        onStatus: (status) => {
+            button.textContent = ROBOT_STATUS_TEXT[status] || ROBOT_STATUS_TEXT.off;
+            button.setAttribute("aria-pressed", String(status !== "off"));
+            button.classList.toggle("on", status === "connected");
+        },
+    });
+    button.hidden = false;
+    button.addEventListener("click", () => {
+        if (state.robotLink.enabled) { state.robotLink.disable(); robotPreference(false); }
+        else { robotPreference(true); state.robotLink.enable(); }
+    });
+    if (robotPreference()) state.robotLink.enable();
+}
+
 function resetBoardView() {
     if (!state.boardView) return;
     state.boardView.camera = createCamera();
@@ -903,6 +999,7 @@ export function renderSelection(ref) {
     state.componentTutor?.dispose();
     state.componentTutor = mountComponentTutor($("#component-tutor"), {context:state.revisionContext, component:ref});
     state.boardLessons?.select(ref);
+    state.robotLink?.notifySelected(ref);
     $$("#schematic-holder .sym").forEach((symbol) => {
         const selected = symbol.dataset.ref === ref;
         symbol.classList.toggle("sel", selected);
@@ -1357,6 +1454,7 @@ function renderBringUp(exp) {
 // ── wiring ──────────────────────────────────────────────────────────────
 
 function attach() {
+    mountRobotLink();
     const shell = $(".app-layout");
     const closeSidebar = () => {
         shell?.setAttribute("data-sidebar-open", "false");

@@ -838,3 +838,77 @@ test("failed revision exposes recovery chat and editing invalidates it",async()=
     assert.equal(dom.get("#recovery-assistant-context").textContent,"Working with saved revision 1.");
     app.invalidateProjectResult();assert.equal(dom.get("#recovery-assistant").hidden,true);
 }));
+
+// ── desk robot link (opt-in, view-only) ─────────────────────────────────
+
+class RobotSocket {
+    static made = [];
+    constructor(url) { this.url = url; this.readyState = 0; this.sent = []; RobotSocket.made.push(this); }
+    send(data) { this.sent.push(JSON.parse(data)); }
+    close() { this.readyState = 3; this.onclose?.(); }
+    open() { this.readyState = 1; this.onopen?.(); }
+    async receive(payload) { await this.onmessage?.({ data: JSON.stringify(payload) }); }
+}
+
+async function withRobotApp(run) {
+    const original = globalThis.WebSocket;
+    RobotSocket.made = [];
+    globalThis.WebSocket = RobotSocket;
+    try {
+        return await withApp(async (app, dom) => {
+            globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", progress: [], report: completedReport() }));
+            return run(app, dom);
+        });
+    } finally {
+        if (original === undefined) delete globalThis.WebSocket; else globalThis.WebSocket = original;
+    }
+}
+
+test("the desk robot link is opt-in and sends the completed board as read-only context", async () =>
+    withRobotApp(async (app, dom) => {
+        const button = dom.get("#robot-link");
+        assert.equal(button.hidden, false, "the opt-in control is offered");
+        assert.equal(RobotSocket.made.length, 0, "nothing connects before the user opts in");
+        button.listeners.click();
+        const socket = RobotSocket.made[0];
+        assert.equal(socket.url, "ws://127.0.0.1:8770");
+        socket.open();
+        assert.equal(button.textContent, "Desk robot: connected");
+        assert.equal(socket.sent.length, 0, "no board yet, no context");
+        await app.poll(JOB_ID, identity, { monitorer: () => {} });
+        const context = socket.sent.find((message) => message.type === "context");
+        assert.ok(context, "context follows the rendered board");
+        assert.equal(context.job_id, JOB_ID);
+        assert.ok(context.components.some((part) => part.ref === "U2" && /regulator/.test(part.name)));
+        assert.equal(context.tour_source, "deterministic_projection_not_a_language_model");
+        button.listeners.click();
+        assert.equal(button.textContent, "Desk robot: off");
+    }));
+
+test("robot focus uses the list selection path and is reported as robot-driven", async () =>
+    withRobotApp(async (app, dom) => {
+        dom.get("#robot-link").listeners.click();
+        const socket = RobotSocket.made[0];
+        socket.open();
+        await app.poll(JOB_ID, identity, { monitorer: () => {} });
+        await socket.receive({ type: "command", id: 1, name: "focus", args: { ref: "U2" } });
+        assert.match(dom.get("#selection").innerHTML, /3\.3 V voltage regulator/);
+        assert.deepEqual(socket.sent.at(-2), { type: "selected", ref: "U2", by: "robot" });
+        assert.deepEqual(socket.sent.at(-1), { type: "result", id: 1, ok: true });
+        app.renderSelection(null);
+        assert.deepEqual(socket.sent.at(-1), { type: "selected", ref: null, by: "user" });
+    }));
+
+test("the robot cannot reach unknown parts, actions outside the set, or the tutor outside a connected workspace", async () =>
+    withRobotApp(async (app, dom) => {
+        dom.get("#robot-link").listeners.click();
+        const socket = RobotSocket.made[0];
+        socket.open();
+        await app.poll(JOB_ID, identity, { monitorer: () => {} });
+        await socket.receive({ type: "command", id: 2, name: "focus", args: { ref: "U99" } });
+        assert.equal(socket.sent.at(-1).ok, false);
+        await socket.receive({ type: "command", id: 3, name: "run", args: {} });
+        assert.match(socket.sent.at(-1).error, /unknown command/);
+        await socket.receive({ type: "command", id: 4, name: "ask", args: { ref: "U2", question: "Why this regulator?" } });
+        assert.deepEqual(socket.sent.at(-1), { type: "result", id: 4, ok: false, error: "Questions are available in the connected Ohmni workspace." });
+    }));

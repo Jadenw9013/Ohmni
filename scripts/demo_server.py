@@ -89,7 +89,7 @@ OPTIONAL_STATIC_ASSETS=frozenset({"vendor/sentry-telemetry.js"})
 JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
 JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid","server_restarted","routing_incomplete","eda_tool_failed"}
-STATIC_ASSETS=("index.html","app.js","main.js","connected-session.js","component-tutor.js","recorder-panel.js","view-model.js","board-model.js","board-view.js",
+STATIC_ASSETS=("index.html","app.js","main.js","connected-session.js","component-tutor.js","robot-link.js","recorder-panel.js","view-model.js","board-model.js","board-view.js",
                "hackathon-demo.html","hackathon-demo.js","hackathon-demo-model.js","hackathon-demo.css",
                "hackathon-demo/demo.json","hackathon-demo/saved-run/golden.kicad_pcb",
                "hackathon-demo/saved-run/fault/diagnostic-fault.kicad_pcb","hackathon-demo/ohmni-demo-fabrication.zip",
