@@ -14,7 +14,6 @@ COMPONENTS = [
 @pytest.mark.parametrize("text,intent", [
     ("Show me the regulator", "focus"),
     ("zoom in on U2", "focus"),
-    ("Where is the regulator?", "focus"),
     ("Isolate it", "isolate"),
     ("show only the regulator", "isolate"),
     ("What does it connect to?", "trace"),
@@ -29,6 +28,20 @@ COMPONENTS = [
     ("Show me more", None),
     ("Why does the regulator get warm?", None),
     ("What does the regulator do?", None),
+    # review ST-REV3 HIGH-1: questions are never hijacked by view keywords
+    ("where is the board from?", None),
+    ("Where is the power coming from?", None),
+    ("How do I find the datasheet?", None),
+    ("Why did you go to the next step?", None),
+    ("Why does the whole board need 3.3 V?", None),
+    ("Why is the sensor on the underside?", None),
+    ("What's on the back side of the board?", None),
+    ("What does isolate mean?", None),
+    ("How wide is this trace?", None),
+    ("show me how the regulator works", None),
+    ("go to the next step", None),
+    ("Hey Stack-chan, show me the regulator", "focus"),
+    ("can you zoom out", "frame"),
 ])
 def test_view_intent(text, intent):
     assert view_intent(text) == intent
@@ -125,3 +138,14 @@ def test_choosing_after_which_one_runs_the_remembered_view_command():
     assert s._answer_pending_choice("the first one")
     assert page.calls == [("focus", {"ref": "C1"}), ("isolate", {"ref": "C1"})]
     assert s.pending_view is None
+
+
+def test_unknown_part_names_never_fall_back_to_the_selection():
+    # review ST-REV3 HIGH-2
+    s, page = session()
+    s.selected = "C1"
+    s.view_command("focus", "show me the transformer")
+    assert page.calls == []
+    assert "can't find that part" in s.spoken[-1]
+    s.view_command("focus", "show me it")
+    assert page.calls == [("focus", {"ref": "C1"})]

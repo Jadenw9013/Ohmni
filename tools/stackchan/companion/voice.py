@@ -234,12 +234,32 @@ VIEW_PATTERNS = (
 )
 
 
+LEAD_FILLER = re.compile(r"^(?:(?:hey|ok|okay|um+|uh+|please|so|now|stack ?-?chan|stackchan|robot|can you|could you|would you)\b[\s,]*)+")
+QUESTION_START = re.compile(r"^(why|how|when|where|which|who|should|shall|is|are|does|do|did|was|were|what)\b")
+EXPLICIT_TRACE = re.compile(r"^(what (does|is) .+ (connected|connect|wired|hooked up)( to)?|where does (it|this|that) connect( to)?)$")
+NOT_A_VIEW = re.compile(r"\b(next|previous|last) (step|one)\b|^show me (how|why|what|more)\b")
+
+
 def view_intent(text: str) -> str | None:
-    t = re.sub(r"[^\w\s'.-]", " ", text.lower())
+    """A view command only when the utterance starts with one (review ST-REV3 HIGH-1).
+
+    Questions ("why is the whole board 3.3 V?", "what does trace mean?") go to the tutor.
+    """
+    t = " ".join(re.sub(r"[^\w\s'.-]", " ", text.lower()).split())
+    t = LEAD_FILLER.sub("", t).strip()
+    if QUESTION_START.match(t):
+        return "trace" if EXPLICIT_TRACE.match(t) else None
+    if NOT_A_VIEW.search(t):
+        return None
     for name, pattern in VIEW_PATTERNS:
-        if re.search(pattern, t):
+        if re.match(pattern, t):
             return name
     return None
+
+
+VIEW_WORDS = {"show", "me", "zoom", "in", "out", "on", "to", "point", "at", "focus", "highlight", "find", "go",
+              "isolate", "only", "trace", "connections", "connection", "its", "connect", "connected", "where",
+              "what", "does", "is", "please", "can", "you", "could", "hey", "here", "them", "there"}
 
 
 # ----------------------------------------------------------------- session
@@ -486,7 +506,7 @@ class VoiceSession:
         if view:
             self.log(f"[intent] view:{view}")
             self.view_command(view, text)
-            self.narrating = was_narrating
+            self.narrating = was_narrating and not self.pending_view  # wait for "which one?"
             return
         intent, text = classify(text)
         self.log(f"[intent] {intent}")
@@ -584,7 +604,17 @@ class VoiceSession:
             return
         components = self.components
         if ref is None:
-            ref, candidates = resolve_part(text, components, self.selected)
+            # Use the on-screen selection only for "it/this" or no target at all; an unknown
+            # name is never mapped to the selection (review ST-REV3 HIGH-2).
+            ref, candidates = resolve_part(text, components)
+            if ref is None and self.selected and self.selected in candidates:
+                ref = self.selected
+            if ref is None and not candidates:
+                if not (_words(text) - VIEW_WORDS) and self.selected:
+                    ref = self.selected
+                elif _words(text) - VIEW_WORDS:
+                    self.say("I can't find that part on this board. Which part do you mean?", face="thinking")
+                    return
             if ref is None:
                 if candidates:
                     self.pending_view = (view, candidates)
