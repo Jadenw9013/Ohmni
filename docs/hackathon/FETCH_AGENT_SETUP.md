@@ -18,7 +18,7 @@ provides a private ZIP link when the existing release checks allow it.
    after 30 minutes.
 5. Watch the acknowledgement and automatic progress/result messages. `STATUS`
    checks the latest run without another model call or rebuild.
-6. Open **Open your board in Ohmni — saved project, 3D and chat** in the result.
+6. Optionally send `OPEN`, then open **Open your board in Ohmni — saved project, 3D and chat**.
    It connects the existing project to the main Ohmni UI: saved projects, 3D,
    component tutoring, board chat and revision editing. The private connection
    link is one-use and expires in 30 minutes. It grants editing access; keep it

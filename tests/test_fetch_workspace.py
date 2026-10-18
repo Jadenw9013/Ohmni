@@ -90,7 +90,8 @@ def test_links_survive_status_and_restart_and_remain_job_bound(tmp_path):
     try:
         with bridge.db() as db:
             owner = db.execute('SELECT owner FROM workspaces').fetchone()[0]
-        assert '/#connect=' in bridge.result(owner)  # New links enter the main UI; legacy read links still work.
+        assert '/#connect=' not in bridge.result(owner)  # No unsolicited edit capability in results/shared chats.
+        assert '/#connect=' in bridge.result(owner, include_workspace=True)
         assert bridge.board_workspace.read(token)['job_id'] == state['job_id']
         from ohmni.integrations.fetch_ai.workspace import BoardWorkspace
         reopened = BoardWorkspace(bridge, Teacher())

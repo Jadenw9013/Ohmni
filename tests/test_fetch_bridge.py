@@ -103,6 +103,65 @@ def test_questions_expiry_and_changed_plan_invalidate_confirmation(tmp_path):
         bridge.close()
 
 
+def test_short_clarification_after_restart_keeps_offered_alternative_without_building(tmp_path):
+    class ClarifyingProvider(Provider):
+        def generate_structured(self, request, schema):
+            self.calls += 1
+            if self.calls == 1:
+                return BoardPlan(brief=DEMO_BRIEF, questions=('Use a button and light instead of recording audio?',))
+            assert request.data['previous_questions'] == ['Use a button and light instead of recording audio?']
+            assert request.data['previous_proposal'] == DEMO_BRIEF.model_dump(mode='json')
+            assert request.data['messages'] == ['I want a voice diary recorder.', 'Yes']
+            return BoardPlan(brief=DEMO_BRIEF)
+
+    provider, jobs = ClarifyingProvider(), Jobs(tmp_path)
+    bridge = ChatBridge(tmp_path, provider, 'https://agent.example', jobs=jobs)
+    session = str(uuid4())
+    send(bridge, session, 'I want a voice diary recorder.')
+    old = confirm_code(bridge, session)
+    bridge.close()
+    bridge = ChatBridge(tmp_path, provider, 'https://agent.example', jobs=jobs)
+    try:
+        reply = send(bridge, session, 'Yes')
+        assert 'reply CONFIRM' in reply and provider.calls == 2 and jobs.starts == 0
+        assert 'does not match' in send(bridge, session, 'CONFIRM ' + old)
+        assert 'cannot start' in send(bridge, session, 'yes')
+        send(bridge, session, 'CONFIRM ' + confirm_code(bridge, session))
+        assert jobs.starts == 1
+    finally:
+        bridge.close()
+
+
+def test_yes_answers_revision_question_but_never_applies_or_builds(tmp_path):
+    from ohmni.application.iteration import IterationResponse
+
+    class RevisionProvider(Provider):
+        def generate_structured(self, request, schema):
+            if request.request_type != 'project_iteration':
+                return super().generate_structured(request, schema)
+            if request.data['messages'][-1] == 'Yes':
+                assert request.data['previous']['questions'] == ['Use two lights?']
+                return IterationResponse(kind='change', proposal=BoardPlan(
+                    brief=DEMO_BRIEF.model_copy(update={'status_led_count': 2})))
+            return IterationResponse(kind='change', proposal=BoardPlan(brief=DEMO_BRIEF, questions=('Use two lights?',)))
+
+    jobs = Jobs(tmp_path)
+    bridge = ChatBridge(tmp_path, RevisionProvider(), 'https://agent.example', jobs=jobs)
+    session = str(uuid4())
+    try:
+        send(bridge, session, 'A USB button and light board.')
+        send(bridge, session, 'CONFIRM ' + confirm_code(bridge, session))
+        send(bridge, session, 'Change the lights.')
+        old = confirm_code(bridge, session)
+        assert 'reply CONFIRM' in send(bridge, session, 'Yes')
+        assert jobs.starts == 1
+        assert 'does not match' in send(bridge, session, 'CONFIRM ' + old)
+        send(bridge, session, 'CONFIRM ' + confirm_code(bridge, session))
+        assert jobs.starts == 2
+    finally:
+        bridge.close()
+
+
 def test_persistent_deduplication_and_confirmed_revision_survive_restart(tmp_path):
     bridge, provider, jobs, clock = setup(tmp_path)
     session, message = str(uuid4()), str(uuid4())
@@ -132,6 +191,8 @@ def test_private_links_expire_and_cannot_bypass_stale_artifact_checks(tmp_path):
             {'status': 'UNKNOWN', 'label': 'RF operation', 'detail': 'Not measured.'}], 'verification_ladder': []})
         reply = send(bridge, session, 'FILES')
         assert 'VIOLATED: 1' in reply and 'UNKNOWN: 1' in reply
+        assert '#connect=' not in reply and 'Optional: reply OPEN' in reply
+        assert '#connect=' in send(bridge, session, 'OPEN')
         token = reply.split('/downloads/')[1].split('/')[0]
         assert bridge.download(token) == b'checked-zip'
         assert bridge.download('../' + token) is None
