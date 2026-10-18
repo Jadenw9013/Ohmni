@@ -56,8 +56,12 @@ def _imported_top_level_modules(path: Path) -> set[str]:
     return found
 
 
+# Local tool environments (e.g. tools/stackchan/.venv, PlatformIO's .pio) are not repository code.
+_NOT_SOURCE = {"__pycache__", ".venv", ".pio"}
+
+
 def _python_files(directory: Path) -> list[Path]:
-    return sorted(p for p in directory.rglob("*.py") if "__pycache__" not in p.parts)
+    return sorted(p for p in directory.rglob("*.py") if not _NOT_SOURCE.intersection(p.parts))
 
 
 class TestDomainPurity:

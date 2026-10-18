@@ -149,7 +149,21 @@ listed here were built during the event, and only these should be judged.
 
 <!-- Fill in during the event: feature, what it does, and the commits or PR that built it. -->
 
-- _Nothing yet. This list is filled in during the event._
+- **Stack-chan desk tutor** ([plan](docs/hackathon/STACKCHAN_TUTOR_PLAN.md),
+  [`tools/stackchan`](tools/stackchan/README.md), scope `STACKCHAN-TUTOR-1`, branch
+  `claude/stackchan-tutor-proposal`). An M5Stack StackChan robot next to the screen
+  narrates the board you open in the Ohmni workspace, and you can talk to it:
+  - Custom robot firmware: USB JSON protocol, servos with stall protection, face, LEDs,
+    head-touch double tap, speaker and microphone streaming.
+  - An opt-in, loopback-only link in the workspace (`apps/web/robot-link.js`). The page
+    shares a read-only description of the board and accepts only view-only commands.
+  - The robot narrates Ohmni's deterministic board tour, highlighting each step. Double-tap
+    its head to pause it and ask a question. Questions go through Ohmni's existing component
+    tutor (live-verified), so the robot holds no AI key.
+  - Spoken view commands ("show me the regulator", "isolate it", "what does it connect to",
+    "zoom out"). Clicking a part on screen makes the robot name it.
+  - Not done: design changes by voice (ST-T05, proposed only). Speech recognition with a
+    real voice has not yet been bench-tested. The robot never confirms a design change.
 
 ## Contributing and AI tools
 

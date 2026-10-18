@@ -20,15 +20,20 @@ export function mountComponentTutor(root,{context,component,fetcher=globalThis.f
             if(disposed)return;rows=older?[...payload.messages,...rows]:payload.messages;before=payload.before;render(older);
         }catch(error){if(!disposed)$('[data-tutor-error]').textContent=error.message;}
     }
+    // One path for typed questions and the desk robot: same route, thread and saved history.
+    async function submit(question){
+        if(busy)throw new Error('Ohmni is still answering the previous question.');
+        busy=true;$('[data-tutor-send]').disabled=true;$('[data-tutor-send]').textContent='Thinking…';$('[data-tutor-error]').textContent='';
+        try{const {payload}=await projectRequest(path+'/teach',{fetcher,timeoutMs:90000,method:'POST',data:{component,question}});
+            if(disposed)return payload.answer;rows.push({message:question,answer:payload.answer});render();return payload.answer;
+        }catch(error){if(!disposed)$('[data-tutor-error]').textContent=error.message;throw error;}
+        finally{busy=false;if(!disposed){$('[data-tutor-send]').disabled=false;$('[data-tutor-send]').textContent='Ask Ohmni';}}
+    }
     async function ask(event){
         event.preventDefault();if(busy)return;
         const question=$('[data-tutor-question]').value.trim();if(!question)return;
-        busy=true;$('[data-tutor-send]').disabled=true;$('[data-tutor-send]').textContent='Thinking…';$('[data-tutor-error]').textContent='';
-        try{const {payload}=await projectRequest(path+'/teach',{fetcher,timeoutMs:90000,method:'POST',data:{component,question}});
-            if(disposed)return;rows.push({message:question,answer:payload.answer});render();$('[data-tutor-question]').value='';
-        }catch(error){if(!disposed)$('[data-tutor-error]').textContent=error.message;}
-        finally{busy=false;if(!disposed){$('[data-tutor-send]').disabled=false;$('[data-tutor-send]').textContent='Ask Ohmni';}}
+        try{await submit(question);if(!disposed)$('[data-tutor-question]').value='';}catch{/* shown in the tutor */}
     }
     $('[data-tutor-form]').addEventListener('submit',ask);void load();
-    return {dispose(){disposed=true;}};
+    return {dispose(){disposed=true;},ask:submit};
 }

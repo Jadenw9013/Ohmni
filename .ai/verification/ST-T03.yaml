@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "id": "ST-T03",
+  "task": "ST-T03",
+  "scope": "STACKCHAN-TUTOR-1",
+  "status": "PASSED",
+  "commit": "995fb00a",
+  "commands": [
+    {
+      "command": "tools/stackchan/.venv/bin/python -m pytest tools/stackchan/tests",
+      "result": "PASS",
+      "passed": 59,
+      "note": "Adds PageLink tests (allowed origin context/selection; other origins and Origin-less clients refused with 403; command round trip; refusal; no page; disconnect) and workspace voice tests (part resolution, labelled answers keeping unknowns, tour segments, page tutor routing, clarifying questions, no-workspace decline, tour highlight per step).",
+      "commit": "995fb00a"
+    },
+    {
+      "command": "OHMNI_REQUIRE_BROWSER=1 pytest tests/test_stackchan_isolation.py tests/test_ai_workflow.py tests/test_stackchan_browser.py",
+      "result": "PASS",
+      "passed": 16,
+      "note": "Page-side link and teach routing with an aiohttp stand-in companion; the real PageLink-to-page path is shown by the hardware session below."
+    },
+    {
+      "command": "ruff check tools/stackchan",
+      "result": "PASS"
+    },
+    {
+      "command": "Live tutor: connected-workspace fixture in Chromium + real companion on the robot, provider AnthropicProvider(max_attempts=2, timeout_seconds=20) as in production",
+      "result": "PASS",
+      "note": "Question 'What does C1 do on this board?' resolved C1, went page -> component tutor -> teach route -> live model; grounded answer in 9.2 s citing VBUS/GND connectivity and the regulator placement reason, separating recorded intent from measured behaviour; spoken by the robot and saved in C1's tutor thread. A direct teach call with the same provider also passed. Two live model calls in total."
+    }
+  ],
+  "hardware_session": {
+    "date": "2026-10-18",
+    "setup": "Connected-workspace fixture (gateway + main UI, stub teaching provider) in headless Chromium; real companion (ohmni mode components) driving the real robot over USB, firmware 0.3.0",
+    "observed": [
+      "Page connected from its own origin; context received: 15 parts, 2 tour steps",
+      "Both tour steps narrated through the robot speaker with a tour command per step",
+      "A typed-in question ('What does C1 do on this board?') resolved C1 by reference, went through the page tutor and the teach route (0.2 s, stub provider), was spoken, and appeared in C1's saved tutor thread with its 'Still unknown' item",
+      "Double taps during the session were made by the user (confirmed); speech stopped and the robot listened"
+    ],
+    "not_observed": [
+      "Audible output (no observer)",
+      "Spoken question captured by the robot microphone and transcribed (needs a person)"
+    ],
+    "live_tutor": "PASSED 2026-10-18"
+  },
+  "pending": [],
+  "limitations": [
+    "Spoken questions captured by the robot microphone and transcribed by Whisper were not exercised in the live run (question text was injected); endpointing with a real voice remains UNKNOWN in ST-T01."
+  ],
+  "review": ".ai/reviews.yaml#ST-T03-INDEPENDENT-REVIEW",
+  "review_fix_commit": "b8395d42"
+}

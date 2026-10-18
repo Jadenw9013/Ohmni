@@ -958,6 +958,83 @@
         "HACK-BROWSER-01-IR04"
       ],
       "notes": "Reviewed caller outcome wiring, mobile checks, smoke synchronization, fail-closed gate, Windows cleanup and final merge of 041d6016. All findings fixed; no open BLOCKER/HIGH/MEDIUM. This does not claim live telemetry, paid-provider rehearsal or production deployment."
+    },
+    {
+      "id": "ST-T01-T02-INDEPENDENT-REVIEW",
+      "scope": "STACKCHAN-TUTOR-1",
+      "task": "ST-T01,ST-T02",
+      "reviewer": "independent Claude subagent (read-only; did not write the code)",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "3df8f5b0",
+      "finding_ids": [
+        "ST-REV1-F1",
+        "ST-REV1-F2",
+        "ST-REV1-F3",
+        "ST-REV1-F4",
+        "ST-REV1-F5",
+        "ST-REV1-F6",
+        "ST-REV1-F7",
+        "ST-REV1-F8",
+        "ST-REV1-F9",
+        "ST-REV1-F10",
+        "ST-REV1-F11"
+      ],
+      "notes": "Reviewed c5ff5d93 and f03c5298 against the acceptance criteria and invariants; reran robot-link (7), full web suite (1161, Node 22.23.3) and tools/stackchan tests (23). No BLOCKER/HIGH findings; all acceptance criteria MET; no material overclaims in verification records. Five MEDIUM findings recorded for fixing before ST-T03 builds on the link."
+    },
+    {
+      "id": "ST-T03-INDEPENDENT-REVIEW",
+      "scope": "STACKCHAN-TUTOR-1",
+      "task": "ST-T03",
+      "reviewer": "independent Claude subagent (read-only; did not write the code)",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "b5f7b743",
+      "finding_ids": [
+        "ST-REV2-F1",
+        "ST-REV2-F2",
+        "ST-REV2-F3",
+        "ST-REV2-F4",
+        "ST-REV2-F5",
+        "ST-REV2-F6",
+        "ST-REV2-F7",
+        "ST-REV2-F8"
+      ],
+      "notes": "No BLOCKER/HIGH. Origin allowlist probed (missing, null, foreign, look-alike, case, trailing slash: all 403); no AI key or off-machine board data; ST-REV1-F5 resolved. Criteria 1-3 MET, criterion 4 PARTIAL before the F4 label fix. Noted that the browser test uses an aiohttp stand-in companion, so PageLink-to-page is shown by the hardware session."
+    },
+    {
+      "id": "ST-T04-INDEPENDENT-REVIEW",
+      "scope": "STACKCHAN-TUTOR-1",
+      "task": "ST-T04",
+      "reviewer": "independent Claude subagent (read-only; did not write the code)",
+      "independent": true,
+      "status": "FINDINGS_OPEN",
+      "commit": "e564fa01",
+      "finding_ids": [
+        "ST-REV3-HIGH-1",
+        "ST-REV3-HIGH-2",
+        "ST-REV3-MEDIUM-1",
+        "ST-REV3-MEDIUM-2",
+        "ST-REV3-MEDIUM-3",
+        "ST-REV3-MEDIUM-4",
+        "ST-REV3-LOW"
+      ],
+      "notes": "Found 2 HIGH (question hijacking, guessed parts) and 4 MEDIUM; criterion 3 MET, 1 PARTIAL, 2 NOT MET at e564fa01. HIGH-1/HIGH-2/MEDIUM-2 fixed in 1d60ee13 with the reviewer's phrases as regression tests; remaining MEDIUM/LOW deferred at the owner's request to prioritize delivery."
+    },
+    {
+      "id": "ST-T04-FIX-VERIFICATION",
+      "scope": "STACKCHAN-TUTOR-1",
+      "task": "ST-T04",
+      "reviewer": "implementing agent (not independent)",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "1d60ee13",
+      "finding_ids": [
+        "ST-REV3-HIGH-1",
+        "ST-REV3-HIGH-2",
+        "ST-REV3-MEDIUM-2"
+      ],
+      "notes": "Blocking findings resolved and covered by tests (95 companion tests). An independent re-review of the fixes has not been run, so ST-T04 is VERIFIED, not COMPLETE."
     }
   ],
   "findings": [
@@ -2496,6 +2573,410 @@
       "resolution": "Check elapsed time before and after evaluation and require the focus polling result. Fake-clock regressions cover late readiness. An unresponsive evaluate call is bounded by the outer 600 s process deadline.",
       "resolution_commit": "946d281b781d78f4ac95132791a164046e113356",
       "verification": ".ai/verification/HACK-BROWSER-01.yaml"
+    },
+    {
+      "id": "ST-REV1-F1",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Robot ask is not serialized and bypasses the tutor busy guard",
+      "description": "A process on the loopback port can fire concurrent teach requests (shared AI budget, saved history), and a robot command re-mounts the tutor during a typed question.",
+      "affected_files": [
+        "apps/web/app.js",
+        "apps/web/robot-link.js"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "Commands run one at a time; more than 4 waiting are refused as busy; asks are spaced 3 s apart; re-focusing the selected part keeps its tutor.",
+      "resolution_commit": "942d4382",
+      "verification": "apps/web/tests/robot-link.test.mjs"
+    },
+    {
+      "id": "ST-REV1-F2",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "User selections are labelled robot while a robot ask is in flight",
+      "description": "The executing counter spans the whole awaited command, so user clicks during a 90 s ask are attributed to the robot.",
+      "affected_files": [
+        "apps/web/robot-link.js"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "Selections are attributed explicitly from robotFocus (robotSelecting flag), not by a counter spanning awaited commands.",
+      "resolution_commit": "942d4382",
+      "verification": "apps/web/tests/robot-link.test.mjs"
+    },
+    {
+      "id": "ST-REV1-F3",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Robot isolate cannot be undone from the page and survives a new board",
+      "description": "resetBoardView does not clear isolate and no on-screen control exits it.",
+      "affected_files": [
+        "apps/web/app.js"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "resetBoardView clears isolate; a 'Show all parts' control appears while isolated; disabling the link clears it.",
+      "resolution_commit": "942d4382",
+      "verification": "apps/web/tests/view-model.test.mjs"
+    },
+    {
+      "id": "ST-REV1-F4",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Endpointing truncates speech that starts immediately after the double tap",
+      "description": "The noise floor is taken from the first chunks; if they are speech the threshold rises above speech.",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "Floor = 10th percentile of capture levels; threshold capped at 900 RMS; regression test for immediate speech.",
+      "resolution_commit": "0d84ceca",
+      "verification": "tools/stackchan/tests/test_voice.py"
+    },
+    {
+      "id": "ST-REV1-F5",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Companion voice.py calls Anthropic directly, contrary to the plan",
+      "description": "Questions must go through the page's teach route; the companion must hold no provider key.",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "The direct Anthropic path is removed; questions use the page teach route (independently confirmed in the ST-T03 review).",
+      "resolution_commit": "b5f7b743",
+      "verification": ".ai/reviews.yaml#ST-T03-INDEPENDENT-REVIEW"
+    },
+    {
+      "id": "ST-REV1-F6",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Stale microphone chunks carry into the next capture",
+      "description": "Only host-started listening clears the audio queue.",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py",
+        "tools/stackchan/companion/stackchan.py"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "Audio queue cleared on every listen-on event and at the start of handle_listen.",
+      "resolution_commit": "0d84ceca",
+      "verification": "tools/stackchan/tests/test_voice.py"
+    },
+    {
+      "id": "ST-REV1-F7",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Short questions are misclassified as narration commands",
+      "description": "Commands match anywhere in short utterances: 'Why stop there?' -> stop.",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "Commands must be the whole filler-stripped utterance (repeated words collapsed); review examples are regression cases.",
+      "resolution_commit": "0d84ceca",
+      "verification": "tools/stackchan/tests/test_voice.py"
+    },
+    {
+      "id": "ST-REV1-F8",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "Stall sampling is starved while the speaker queue is full",
+      "description": "servo::monitor does not run inside the playChunk wait loop.",
+      "affected_files": [
+        "tools/stackchan/firmware/src/main.cpp"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "Firmware; deferred while an external uncommitted edit to main.cpp awaits the owner's decision.",
+      "resolution_commit": null,
+      "verification": null
+    },
+    {
+      "id": "ST-REV1-F9",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "Firmware replies can be truncated, allocations are unchecked, parse errors carry no id",
+      "description": "sendJson ignores availableForWrite; heap_caps_malloc results unchecked; bad-json/line-too-long replies lack id.",
+      "affected_files": [
+        "tools/stackchan/firmware/src/main.cpp"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "Firmware; deferred while an external uncommitted edit to main.cpp awaits the owner's decision.",
+      "resolution_commit": null,
+      "verification": null
+    },
+    {
+      "id": "ST-REV1-F10",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "The link auto-connects at page load rather than after a board renders",
+      "description": "With the preference stored, it connects and retries on the home page too.",
+      "affected_files": [
+        "apps/web/app.js"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "A remembered opt-in auto-connects only after a board renders.",
+      "resolution_commit": "942d4382",
+      "verification": "apps/web/tests/view-model.test.mjs"
+    },
+    {
+      "id": "ST-REV1-F11",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "INFO",
+      "status": "ACCEPTED_RISK",
+      "title": "Notes: experience-level ref validation, duplicate selected events, tutor history writes, weak token assertion, isolation regex gap, .vercelignore lacks .pio",
+      "description": "See review notes.",
+      "affected_files": [
+        "apps/web/robot-link.js",
+        "tests/test_stackchan_browser.py",
+        "tests/test_stackchan_isolation.py",
+        ".vercelignore"
+      ],
+      "found_at_commit": "3df8f5b0",
+      "resolution": "Fixed: .vercelignore excludes tools/, isolation regex covers 'from tools import', stronger no-token assertion (942d4382). Accepted: refs validated against the experience model (the renderer ignores unknown geometry harmlessly); ask saves tutor history like a typed question (not a design mutation).",
+      "resolution_commit": "942d4382",
+      "verification": "tests/test_stackchan_browser.py"
+    },
+    {
+      "id": "ST-REV2-F1",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "A failed send crashes the voice loop",
+      "description": "A failed send crashes the voice loop",
+      "affected_files": [
+        "tools/stackchan/companion/ohmni_link.py",
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "b5f7b743",
+      "resolution": "ConnectionClosed during send is converted to PageError; pending ids are removed on every exit path.",
+      "resolution_commit": "b8395d42",
+      "verification": "tools/stackchan/tests"
+    },
+    {
+      "id": "ST-REV2-F2",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Two tabs fight over the robot; replaced tab's commands hang",
+      "description": "Two tabs fight over the robot; replaced tab's commands hang",
+      "affected_files": [
+        "tools/stackchan/companion/ohmni_link.py",
+        "tools/stackchan/companion/voice.py",
+        "apps/web/robot-link.js"
+      ],
+      "found_at_commit": "b5f7b743",
+      "resolution": "Pending commands are per connection and fail at once on replacement; the replaced tab gets close code 4001 and stops reconnecting ('in another tab').",
+      "resolution_commit": "b8395d42",
+      "verification": "tools/stackchan/tests"
+    },
+    {
+      "id": "ST-REV2-F3",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "A generic word beats the on-screen selection; clarification forgets the question",
+      "description": "A generic word beats the on-screen selection; clarification forgets the question",
+      "affected_files": [
+        "tools/stackchan/companion/ohmni_link.py",
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "b5f7b743",
+      "resolution": "Selection wins when tied or when a pronoun meets only a weak match; pending question answered by reference, name or ordinal; extra candidates counted.",
+      "resolution_commit": "b8395d42",
+      "verification": "tools/stackchan/tests"
+    },
+    {
+      "id": "ST-REV2-F4",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Answers labelled as records rather than explanations",
+      "description": "Answers labelled as records rather than explanations",
+      "affected_files": [
+        "tools/stackchan/companion/ohmni_link.py",
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "b5f7b743",
+      "resolution": "Prefix 'Here's Ohmni's explanation, based on your board's records.'; empty explanation has a spoken fallback.",
+      "resolution_commit": "b8395d42",
+      "verification": "tools/stackchan/tests"
+    },
+    {
+      "id": "ST-REV2-F5",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "An answer is dropped if the user double-taps during the wait",
+      "description": "An answer is dropped if the user double-taps during the wait",
+      "affected_files": [
+        "tools/stackchan/companion/ohmni_link.py",
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "b5f7b743",
+      "resolution": "Last answer kept; 'repeat' replays it when not narrating.",
+      "resolution_commit": "b8395d42",
+      "verification": "tools/stackchan/tests"
+    },
+    {
+      "id": "ST-REV2-F6",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Non-object JSON drops the page link",
+      "description": "Non-object JSON drops the page link",
+      "affected_files": [
+        "tools/stackchan/companion/ohmni_link.py",
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "b5f7b743",
+      "resolution": "Non-dict messages and non-int result ids are ignored.",
+      "resolution_commit": "b8395d42",
+      "verification": "tools/stackchan/tests"
+    },
+    {
+      "id": "ST-REV2-F7",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Companion keeps narrating after the page leaves",
+      "description": "Companion keeps narrating after the page leaves",
+      "affected_files": [
+        "tools/stackchan/companion/ohmni_link.py",
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "b5f7b743",
+      "resolution": "Narration pauses and context clears when the page disconnects. Page-side 'board left' notice is not implemented (the page keeps the last board while connected).",
+      "resolution_commit": "b8395d42",
+      "verification": "tools/stackchan/tests"
+    },
+    {
+      "id": "ST-REV2-F8",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Misconfigured origin fails silently",
+      "description": "Misconfigured origin fails silently",
+      "affected_files": [
+        "tools/stackchan/companion/ohmni_link.py",
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "b5f7b743",
+      "resolution": "Origins normalized to scheme://host[:port] in lower case; invalid values raise.",
+      "resolution_commit": "b8395d42",
+      "verification": "tools/stackchan/tests"
+    },
+    {
+      "id": "ST-REV3-HIGH-1",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "HIGH",
+      "status": "FIXED",
+      "title": "View patterns hijack ordinary questions and narration commands",
+      "description": "View patterns hijack ordinary questions and narration commands",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "View commands must start the filler-stripped utterance; question openers route to the tutor except the explicit connected-to form; reviewer phrases are regression tests.",
+      "resolution_commit": "1d60ee13",
+      "verification": "tools/stackchan/tests/test_view_commands.py"
+    },
+    {
+      "id": "ST-REV3-HIGH-2",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "HIGH",
+      "status": "FIXED",
+      "title": "Unknown part names in view commands fall back to the selection",
+      "description": "Unknown part names in view commands fall back to the selection",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Selection used only for pronouns/no target or when tied; unknown names get a clarifying reply.",
+      "resolution_commit": "1d60ee13",
+      "verification": "tools/stackchan/tests/test_view_commands.py"
+    },
+    {
+      "id": "ST-REV3-MEDIUM-1",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Choice handling guesses ('one', 'last one') and pending choices never expire",
+      "description": "Choice handling guesses ('one', 'last one') and pending choices never expire",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Deferred by the owner to prioritize delivery; follow-up.",
+      "resolution_commit": null,
+      "verification": null
+    },
+    {
+      "id": "ST-REV3-MEDIUM-2",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "View 'which one?' resumes narration immediately",
+      "description": "View 'which one?' resumes narration immediately",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Narration stays paused while a view choice is pending.",
+      "resolution_commit": "1d60ee13",
+      "verification": "tools/stackchan/tests/test_view_commands.py"
+    },
+    {
+      "id": "ST-REV3-MEDIUM-3",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "'more'/'repeat' read stale tutor state during the tour",
+      "description": "'more'/'repeat' read stale tutor state during the tour",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Deferred by the owner to prioritize delivery; follow-up.",
+      "resolution_commit": null,
+      "verification": null
+    },
+    {
+      "id": "ST-REV3-MEDIUM-4",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Robot isolation persists into the resumed tour",
+      "description": "Robot isolation persists into the resumed tour",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Deferred by the owner; the on-screen 'Show all parts' control and view reset still restore the board.",
+      "resolution_commit": null,
+      "verification": null
+    },
+    {
+      "id": "ST-REV3-LOW",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "L1-L6: flip-back mapping, acknowledgement dedup reset, swallowed page errors, abbreviation splitting, selection during a pending choice, 'zoom in' without target",
+      "description": "L1-L6: flip-back mapping, acknowledgement dedup reset, swallowed page errors, abbreviation splitting, selection during a pending choice, 'zoom in' without target",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Deferred follow-ups.",
+      "resolution_commit": null,
+      "verification": null
     }
   ]
 }
