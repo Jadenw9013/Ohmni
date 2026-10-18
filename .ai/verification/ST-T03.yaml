@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "ST-T03",
+  "task": "ST-T03",
+  "scope": "STACKCHAN-TUTOR-1",
+  "status": "PARTIAL",
+  "commit": "b5f7b743",
+  "commands": [
+    {
+      "command": "tools/stackchan/.venv/bin/python -m pytest tools/stackchan/tests",
+      "result": "PASS",
+      "passed": 47,
+      "note": "Adds PageLink tests (allowed origin context/selection; other origins and Origin-less clients refused with 403; command round trip; refusal; no page; disconnect) and workspace voice tests (part resolution, labelled answers keeping unknowns, tour segments, page tutor routing, clarifying questions, no-workspace decline, tour highlight per step)."
+    },
+    {
+      "command": "OHMNI_REQUIRE_BROWSER=1 pytest tests/test_stackchan_isolation.py tests/test_ai_workflow.py tests/test_stackchan_browser.py",
+      "result": "PASS",
+      "passed": 16
+    },
+    {
+      "command": "ruff check tools/stackchan",
+      "result": "PASS"
+    }
+  ],
+  "hardware_session": {
+    "date": "2026-10-18",
+    "setup": "Connected-workspace fixture (gateway + main UI, stub teaching provider) in headless Chromium; real companion (ohmni mode components) driving the real robot over USB, firmware 0.3.0",
+    "observed": [
+      "Page connected from its own origin; context received: 15 parts, 2 tour steps",
+      "Both tour steps narrated through the robot speaker with a tour command per step",
+      "A typed-in question ('What does C1 do on this board?') resolved C1 by reference, went through the page tutor and the teach route (0.2 s, stub provider), was spoken, and appeared in C1's saved tutor thread with its 'Still unknown' item",
+      "A double_tap touch event arrived from the robot during the session without a simulated tap: either a person tapped the head or a false touch trigger; not yet attributed"
+    ],
+    "not_observed": [
+      "Audible output (no observer)",
+      "Spoken question captured by the robot microphone and transcribed (needs a person)"
+    ]
+  },
+  "pending": [
+    {
+      "requirement": "live_tutor",
+      "status": "NOT_RUN",
+      "reason": "No Anthropic credentials on this machine, and the deployed workspace does not yet serve this branch. Needs either ANTHROPIC_API_KEY for a local connected-workspace run with the real provider, or a deployed preview of this branch."
+    }
+  ],
+  "limitations": [
+    "Teach answers in automated and hardware runs used the stub provider."
+  ]
+}
