@@ -1,15 +1,18 @@
 """Voice layer for Stack-chan: narration through the robot, double-tap to talk.
 
 Flow:
-  - Narrator speaks segments (e.g. component explanations) through the robot's
-    speaker using macOS text-to-speech, one sentence at a time.
+  - The narrator speaks segments through the robot's speaker using macOS
+    text-to-speech, one sentence at a time. With the Ohmni workspace connected
+    (`ohmni` mode), the segments are the board's deterministic tour and the page
+    highlights each step.
   - Double-tapping the head makes the robot stop speaking and stream its
     microphone. We detect the end of speech, transcribe locally with Whisper,
     and act on it: a fixed command (resume, stop, next, back, repeat, more), or
-    anything else is a question answered by Claude (needs ANTHROPIC_API_KEY or
-    an `ant auth login` profile; costs per question).
+    a question. Questions go to the page, which asks Ohmni's existing component
+    tutor (grounded in this board's records). The companion holds no AI key.
 
-Run:  python voice.py demo            # example narration about an I2C sensor board
+Run:  python voice.py ohmni           # narrate the board open in the Ohmni workspace
+      python voice.py demo            # offline example narration (no questions)
       python voice.py listen-test     # double-tap, speak, print the transcript
 """
 from __future__ import annotations
@@ -119,65 +122,61 @@ def classify(text: str) -> tuple[str, str]:
     return "question", text
 
 
-# ---------------------------------------------------------- Claude answers
+# ------------------------------------------------------------ board parts
 
-SYSTEM_PROMPT = """You are Stack-chan, a small desk robot that is the voice of Ohmni, an AI electronics \
-engineering mentor that helps people design circuits and printed circuit boards.
-
-Your reply is spoken aloud through a small speaker, so:
-- Answer in one to three short sentences of plain spoken English.
-- No markdown, lists, symbols or code. Say units in words ("four point seven kilo-ohms", "three point three volts").
-- If the question is about what is currently being explained, use the context you are given.
-
-Be an honest teacher. You explain; you do not verify. Never say a board or design passed a check, \
-is safe, or is ready to manufacture unless the context explicitly says that check ran and passed. \
-If you are unsure, say so briefly."""
+STOP_WORDS = {"the", "a", "an", "and", "of", "for", "to", "on", "in", "is", "it", "this", "that", "with",
+              "part", "parts", "chip", "component", "board", "what", "why", "how", "does", "do", "my"}
 
 
-class Assistant:
-    def __init__(self, model: str = "claude-opus-5-5"):
-        import anthropic
-        self._anthropic = anthropic
-        self.client = anthropic.Anthropic()
-        self.model = model
-        self.history: list[dict] = []
-
-    def ask(self, question: str, context: str | None) -> str:
-        anthropic = self._anthropic
-        content = question if not context else f"Currently explaining:\n{context}\n\nQuestion: {question}"
-        messages = self.history[-6:] + [{"role": "user", "content": content}]
-        try:
-            response = self.client.beta.messages.create(
-                model=self.model,
-                max_tokens=16000,
-                system=SYSTEM_PROMPT,
-                messages=messages,
-                output_config={"effort": "low"},  # short spoken answers; keep latency down
-                betas=["server-side-fallback-2026-07-01"],
-                fallbacks="default",
-            )
-        except anthropic.AuthenticationError:
-            return "I can't answer questions yet, because no Anthropic API key is set up."
-        except anthropic.RateLimitError:
-            return "I'm being rate limited right now. Please ask again in a minute."
-        except anthropic.APIStatusError as e:
-            return f"Sorry, the answer service returned an error, code {e.status_code}."
-        except anthropic.APIConnectionError:
-            return "Sorry, I couldn't reach the answer service. Check the internet connection."
-
-        if response.stop_reason == "refusal":
-            return "Sorry, I can't help with that one."
-        answer = " ".join(b.text for b in response.content if b.type == "text").strip()
-        if not answer:
-            return "Sorry, I don't have an answer for that."
-        self.history += [{"role": "user", "content": content}, {"role": "assistant", "content": answer}]
-        return answer
+def _words(text: str) -> set[str]:
+    return {w for w in re.findall(r"[a-z0-9]+(?:\.[0-9]+)?", text.lower()) if w not in STOP_WORDS and len(w) > 1}
 
 
-def has_claude_credentials() -> bool:
-    import os
-    return bool(os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN")
-                or (Path.home() / ".config" / "anthropic").exists())
+def resolve_part(text: str, components: list[dict], selected: str | None = None) -> tuple[str | None, list[str]]:
+    """Find which part a sentence is about. Returns (ref, candidates).
+
+    ref is None when nothing matched (fall back to `selected`, else ask) or when
+    several parts match equally (candidates lists them, so the user can choose).
+    """
+    said = _words(text)
+    compact = re.sub(r"[^a-z0-9]", "", text.lower())
+    scores: dict[str, int] = {}
+    for part in components:
+        ref = part["ref"]
+        score = 0
+        if re.search(rf"\b{re.escape(ref.lower())}\b", text.lower()) or re.sub(r"[^a-z0-9]", "", ref.lower()) in compact.split():
+            score += 10
+        part_id = re.sub(r"[^a-z0-9]", "", str(part.get("part_id", "")).lower())
+        if len(part_id) >= 4 and part_id[:6] in compact:
+            score += 8
+        name_words = _words(part.get("name", ""))
+        if name_words and name_words <= said:
+            score += 6
+        score += 2 * len(name_words & said)
+        if score:
+            scores[ref] = score
+    if not scores:
+        return (selected, []) if selected else (None, [])
+    best = max(scores.values())
+    top = [ref for ref, score in scores.items() if score == best]
+    return (top[0], top) if len(top) == 1 else (None, top)
+
+
+def part_name(components: list[dict], ref: str) -> str:
+    part = next((p for p in components if p["ref"] == ref), None)
+    return part["name"] if part and part.get("name") else ref
+
+
+def spoken_answer(answer: dict) -> str:
+    """What the robot says for a tutor answer: labelled, unknowns kept, one follow-up offered."""
+    text = f"From your board's records: {answer.get('explanation', '').strip()}"
+    unknowns = [u.strip() for u in answer.get("unknowns") or [] if u.strip()]
+    if unknowns:
+        text += " Not yet known: " + " ".join(unknowns)
+    follow = [q.strip() for q in answer.get("next_questions") or [] if q.strip()]
+    if follow:
+        text += f" You could ask: {follow[0]}"
+    return text
 
 
 # ----------------------------------------------------------------- session
@@ -187,13 +186,20 @@ class Segment:
     title: str
     text: str
     more: str | None = None
+    refs: list[str] = field(default_factory=list)
+    tour_index: int | None = None
+
+
+def segments_from_context(context: dict) -> list[Segment]:
+    return [Segment(step["title"], step["narration"], refs=list(step.get("component_refs") or []), tour_index=i)
+            for i, step in enumerate(context.get("tour") or []) if step.get("narration")]
 
 
 @dataclass
 class VoiceSession:
     bot: StackChan
     transcriber: Transcriber
-    assistant: Assistant | None = None
+    page: object | None = None  # ohmni_link.PageLink when the workspace is connected
     segments: list[Segment] = field(default_factory=list)
     voice: str | None = None
     endpointing: Endpointing = field(default_factory=Endpointing)
@@ -205,6 +211,8 @@ class VoiceSession:
     listen_pending: bool = False    # robot started listening (double tap)
     listen_ended: str | None = None  # robot stopped listening on its own: "touch" or "timeout"
     last_levels: list = field(default_factory=list)  # RMS per chunk of the last capture, for tuning
+    selected: str | None = None     # part currently selected in the workspace
+    board_id: str | None = None     # job id of the board being narrated
 
     def __post_init__(self) -> None:
         self.bot.on_event = self._on_event
@@ -221,6 +229,39 @@ class VoiceSession:
             self.log(f"[touch] {ev.get('gesture')}")
         elif kind == "stall":
             self.log(f"[stall] {ev}")
+
+    # -- workspace ------------------------------------------------------------
+    @property
+    def components(self) -> list[dict]:
+        return (self.page.context or {}).get("components", []) if self.page else []
+
+    def page_command(self, name: str, timeout: float = 10.0, **args):
+        """Ask the page for a view-only action. Returns data, or None if unavailable."""
+        if not self.page or not self.page.connected:
+            return None
+        from ohmni_link import PageError
+        try:
+            return self.page.command(name, timeout=timeout, **args)
+        except PageError as exc:
+            self.log(f"[page] {exc}")
+            return None
+
+    def sync_page(self) -> None:
+        """Pick up a new board and user selections from the page."""
+        if not self.page:
+            return
+        context = self.page.context
+        if context and context.get("job_id") != self.board_id:
+            self.board_id = context.get("job_id")
+            self.segments = segments_from_context(context)
+            self.index = self.sentence = 0
+            self.selected = context.get("selected")
+            self.narrating = bool(self.segments)
+            self.log(f"[page] board {self.board_id}: {len(self.segments)} tour steps")
+        while self.page.events:
+            event = self.page.events.popleft()
+            if event.get("type") == "selected":
+                self.selected = event.get("ref")
 
     # -- speaking -----------------------------------------------------------
     def say(self, text: str, face: str = "happy") -> bool:
@@ -257,12 +298,14 @@ class VoiceSession:
         seg = self.current
         if seg is None:
             self.narrating = False
-            self.say("That's everything for this board.", face="happy")
+            self.say("That's the whole tour. Double tap my head to ask about any part.", face="happy")
             return
         sentences = split_sentences(seg.text)
         if self.sentence == 0:
             self.log(f"[narrate] {seg.title}")
             self.bot.face("happy")
+            if seg.tour_index is not None:
+                self.page_command("tour", index=seg.tour_index)
         if self.sentence >= len(sentences):
             self.index += 1
             self.sentence = 0
@@ -363,30 +406,43 @@ class VoiceSession:
             if seg and seg.more:
                 self.say(seg.more)
             else:
-                self.answer(f"Tell me more about {seg.title}." if seg else text)
+                ref = self.selected or (seg.refs[0] if seg and seg.refs else None)
+                self.answer("Tell me more about this part and why it is on this board.", ref=ref)
         elif intent == "question":
             self.answer(text)
         else:
             self.say("Sorry, I didn't catch that.", face="sad")
 
-    def answer(self, question: str) -> None:
-        if self.assistant is None:
-            self.say("I can only follow commands like resume, next, or repeat right now. "
-                     "Questions need an Anthropic API key.", face="sad")
+    def answer(self, question: str, ref: str | None = None) -> None:
+        """Answer through the page's component tutor (Ohmni's teach route)."""
+        if not self.page or not self.page.connected:
+            self.say("Questions need your board open in the Ohmni workspace, with the desk robot connected.", face="sad")
             return
-        self.bot.face("thinking")
-        seg = self.current
-        context = f"{seg.title}: {seg.text}" if seg else None
+        components = self.components
+        if ref is None:
+            ref, candidates = resolve_part(question, components, self.selected)
+            if ref is None and candidates:
+                names = " or ".join(f"the {part_name(components, r)}, {r}" for r in candidates[:3])
+                self.say(f"Which one do you mean: {names}?", face="thinking")
+                return
+            if ref is None:
+                self.say("Which part do you mean? Select it on the screen, or say its name.", face="thinking")
+                return
+        self.say(f"Let me check the records for the {part_name(components, ref)}.", face="thinking")
         t = time.monotonic()
-        reply = self.assistant.ask(question, context)
-        self.log(f"[claude] {reply!r} ({time.monotonic() - t:.1f}s)")
-        self.say(reply)
+        data = self.page_command("ask", timeout=100, ref=ref, question=question)
+        if data is None:
+            self.say("Sorry, I couldn't get an answer from Ohmni just now.", face="sad")
+            return
+        self.log(f"[tutor] {data.get('explanation', '')!r} ({time.monotonic() - t:.1f}s)")
+        self.say(spoken_answer(data))
 
     # -- main loop ------------------------------------------------------------
     def run(self) -> None:
         self.log("Double-tap the robot's head to talk. Ctrl+C to quit.")
         while True:
             self.bot.poll_events()
+            self.sync_page()
             if self._listen_requested():
                 self.handle_listen()
             elif self.narrating:
@@ -400,8 +456,7 @@ class VoiceSession:
 DEMO_SEGMENTS = [
     Segment("Overview",
             "This example board is an ESP32 weather sensor. It is powered over USB and reads "
-            "temperature, humidity and pressure from a BME280 sensor over I2C. "
-            "Double tap my head any time to ask me something.",
+            "temperature, humidity and pressure from a BME280 sensor over I2C.",
             "The board has four jobs: take five volts from USB, turn it into three point three volts, "
             "run the ESP32, and talk to the sensor over two shared wires."),
     Segment("Voltage regulator",
@@ -427,26 +482,28 @@ def load_segments(path: Path) -> list[Segment]:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Stack-chan voice: narration + double-tap to talk")
-    ap.add_argument("mode", choices=["demo", "listen-test"])
-    ap.add_argument("--segments", type=Path, help="JSON list of {title, text, more?}")
+    ap.add_argument("mode", choices=["ohmni", "demo", "listen-test"])
+    ap.add_argument("--segments", type=Path, help="demo: JSON list of {title, text, more?}")
     ap.add_argument("--voice", help="macOS voice name (see `say -v ?`)")
     ap.add_argument("--whisper-model", default="mlx-community/whisper-base.en-mlx")
-    ap.add_argument("--port")
+    ap.add_argument("--port", help="robot serial port (default: auto-detect)")
+    ap.add_argument("--allow-origin", action="append", default=[],
+                    help="ohmni: extra workspace origin allowed to connect (e.g. a staging URL)")
     ap.add_argument("--once", action="store_true", help="listen-test: exit after one utterance")
     args = ap.parse_args(argv)
+    log = lambda m: print(m, file=sys.stderr)
 
     print("Loading speech recognition...", file=sys.stderr)
     transcriber = Transcriber(args.whisper_model)
-    assistant = None
-    if args.mode == "demo":
-        if has_claude_credentials():
-            assistant = Assistant()
-        else:
-            print("No Anthropic credentials found: commands work, free questions are disabled.", file=sys.stderr)
+    page = None
+    if args.mode == "ohmni":
+        from ohmni_link import DEFAULT_ORIGINS, PageLink
+        page = PageLink(origins=(*DEFAULT_ORIGINS, *args.allow_origin), log=log).start()
+        log(f"Waiting for the Ohmni workspace on ws://127.0.0.1:{page.port}. "
+            "Open your board and click 'Desk robot'.")
 
     with StackChan(args.port, timeout=3.0) as bot:
-        session = VoiceSession(bot, transcriber, assistant, voice=args.voice,
-                               log=lambda m: print(m, file=sys.stderr))
+        session = VoiceSession(bot, transcriber, page, voice=args.voice, log=log)
         try:
             if args.mode == "listen-test":
                 session.log("Double-tap the head, then say something.")
@@ -466,8 +523,9 @@ def main(argv: list[str] | None = None) -> int:
                             break
                     time.sleep(0.02)
             else:
-                session.segments = load_segments(args.segments) if args.segments else DEMO_SEGMENTS
-                session.narrating = True
+                if args.mode == "demo":
+                    session.segments = load_segments(args.segments) if args.segments else DEMO_SEGMENTS
+                    session.narrating = True
                 session.run()
         except KeyboardInterrupt:
             pass
@@ -477,6 +535,8 @@ def main(argv: list[str] | None = None) -> int:
                 bot.face("neutral")
             except StackChanError:
                 pass
+            if page:
+                page.close()
     return 0
 
 

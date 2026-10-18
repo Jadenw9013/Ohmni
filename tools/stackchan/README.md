@@ -21,6 +21,7 @@ nothing over USB. This firmware accepts line-delimited JSON over the base's USB-
 - `companion/stackchan.py`: serial library + CLI (pyserial).
 - `companion/voice.py`: narration and double-tap voice commands (macOS `say`,
   local Whisper via `mlx-whisper`).
+- `companion/ohmni_link.py`: loopback WebSocket link to the Ohmni workspace page.
 - `companion/stall_test.py`: manual stall-protection test.
 - `dances/`: timed pose/face/LED sequences (JSON).
 - `tests/`: host tests, no hardware needed.
@@ -34,7 +35,7 @@ come from M5Stack's open-source firmware, github.com/m5stack/StackChan
 ```sh
 cd tools/stackchan
 python3.13 -m venv .venv
-.venv/bin/pip install -r companion/requirements.txt        # pyserial, numpy, mlx-whisper (Apple silicon)
+.venv/bin/pip install -r companion/requirements.txt        # pyserial, numpy, mlx-whisper (Apple silicon), websockets
 .venv/bin/pip install pytest && .venv/bin/python -m pytest tests   # host tests
 ```
 
@@ -76,7 +77,8 @@ is reused. The firmware only reads it.
 .venv/bin/python companion/stackchan.py play dances/hello.json
 .venv/bin/python companion/stackchan.py record dances/mine.json --seconds 8   # move the head by hand
 .venv/bin/python companion/voice.py listen-test --once   # double-tap, speak, see transcript + levels
-.venv/bin/python companion/voice.py demo                 # example narration; double-tap to interrupt
+.venv/bin/python companion/voice.py ohmni                # narrate the board open in the Ohmni workspace
+.venv/bin/python companion/voice.py demo                 # offline example narration; double-tap to interrupt
 ```
 
 Opening the port can reset the robot; the companion waits for the boot `ready` event.
@@ -119,6 +121,29 @@ the servo holds where it stopped and that direction's range is narrowed until
 visibly be moving. Protection is enabled on both axes (the factory enables it on
 pitch only).
 
+## With the Ohmni workspace
+
+1. Start the companion: `.venv/bin/python companion/voice.py ohmni`. It listens on
+   `ws://127.0.0.1:8770` and accepts only pages from the Ohmni origins
+   (`OHMNI_MAIN_UI_URL`, default `https://ohmni-yvnd.vercel.app`, plus the local demo
+   server `http://127.0.0.1:8765`; add others with `--allow-origin`). Other websites are
+   refused with HTTP 403.
+2. Open your board in the Ohmni workspace (for Fetch builds, the "Open your board in
+   Ohmni" link) and click **Desk robot: off** in the board panel to connect. Chrome may
+   ask once to allow access to apps on this device. The choice is remembered, and later
+   boards reconnect after they render.
+3. The robot narrates the board's tour. That text is generated deterministically, not by an AI,
+   and the page highlights each step. Double-tap the head to pause and talk.
+
+The page sends a read-only description of the board (parts, tour, check statuses; no
+tokens or links). The companion can only ask for view-only actions and questions; it
+cannot change a design, start a build or download anything. Questions go through the
+page to Ohmni's existing component tutor, so answers are grounded in your board's records
+and use the workspace's shared AI budget. **The companion holds no AI key.** Spoken answers
+start with "From your board's records", keep the tutor's "not yet known" items, and
+offer one suggested follow-up. If a question names no part, the robot uses the part
+selected on screen; if a name matches several parts, it asks which one.
+
 ## Voice: double tap to talk
 
 - **Double tap** (two taps within 0.45 s): the robot stops talking, shows a
@@ -127,8 +152,8 @@ pitch only).
   by itself after 15 s.
 - The companion detects the end of speech (energy-based, 0.8 s of silence), then
   transcribes with Whisper (`mlx-community/whisper-base.en-mlx`, local) and
-  classifies the text. Short phrases map to `resume`, `stop`, `next`, `back`,
-  `repeat` or `more`. Anything longer is a question.
+  classifies the text. A phrase that is exactly a narration command maps to
+  `resume`, `stop`, `next`, `back`, `repeat` or `more`; anything else is a question.
 - Speaker and microphone share one I2S bus, so the robot never talks and listens
   at the same time.
 
