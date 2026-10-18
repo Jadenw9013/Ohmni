@@ -40,6 +40,13 @@
       "result": "PASS",
       "passed": 94,
       "note": "Architecture scans now skip local .venv/.pio folders so a tool virtualenv inside tools/ is never parsed as repository code."
+    },
+    {
+      "command": "tools/stackchan/.venv/bin/python -m pytest tools/stackchan/tests",
+      "result": "PASS",
+      "passed": 30,
+      "commit": "0d84ceca",
+      "note": "After review fixes F4/F6/F7: immediate-speech endpointing, stale-chunk clearing and review misclassification examples added as regression cases."
     }
   ],
   "hardware_session": {
@@ -103,5 +110,7 @@
   "limitations": [
     "Not physical bench validation of any Ohmni-generated board.",
     "Items marked PARTIAL or UNKNOWN need an observer at the robot."
-  ]
+  ],
+  "review_fix_commit": "0d84ceca",
+  "review": ".ai/reviews.yaml#ST-T01-T02-INDEPENDENT-REVIEW"
 }

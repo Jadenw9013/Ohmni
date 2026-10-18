@@ -35,10 +35,25 @@
     {
       "command": "ruff check tests/test_stackchan_browser.py",
       "result": "PASS"
+    },
+    {
+      "command": "npm --prefix apps/web test (Node 22.23.3)",
+      "result": "PASS",
+      "passed": 1166,
+      "commit": "942d4382",
+      "note": "After review fixes F1-F3/F10: serialized commands, busy refusal, ask spacing, explicit attribution, isolate exit, deferred auto-connect."
+    },
+    {
+      "command": "OHMNI_REQUIRE_BROWSER=1 pytest tests/test_stackchan_browser.py tests/test_connected_browser.py tests/test_demo_application.py tests/test_stackchan_isolation.py",
+      "result": "PASS",
+      "passed": 34,
+      "commit": "942d4382"
     }
   ],
   "limitations": [
     "Browser: Chromium only. Safari mixed-content rules for ws://127.0.0.1 from an https origin and Chrome local-network-access prompts on the deployed site are not yet exercised.",
     "The teach route in the browser test uses a stub provider; a live LLM answer is part of ST-T03 verification."
-  ]
+  ],
+  "review_fix_commit": "942d4382",
+  "review": ".ai/reviews.yaml#ST-T01-T02-INDEPENDENT-REVIEW"
 }
