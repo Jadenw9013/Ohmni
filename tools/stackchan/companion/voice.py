@@ -77,6 +77,7 @@ class Transcriber:
 class Endpointing:
     """Energy-based voice activity detection on the robot's 32 ms chunks."""
     min_threshold: float = 300.0     # RMS; a quiet room measured ~85 on this robot
+    max_threshold: float = 900.0     # cap, so speech that starts at once is never mistaken for the floor
     noise_factor: float = 3.0
     start_chunks: int = 3            # ~100 ms of speech to count as speaking
     end_silence_ms: int = 800        # stop after this much silence once speech started
@@ -92,28 +93,29 @@ def chunk_rms(pcm: bytes) -> float:
 
 # ------------------------------------------------------------------ intents
 
+# A command must be the whole utterance once filler is removed, so "Why stop there?"
+# is a question, not "stop".
 COMMANDS = {
-    "resume": r"\b(resume|continue|go on|keep going|carry on|play)\b",
-    "stop": r"\b(stop|cancel|never ?mind|quiet|that'?s all|be quiet)\b",
-    "next": r"\b(next|skip)\b",
-    "back": r"\b(back|previous|last one)\b",
-    "repeat": r"\b(repeat|again|say that again|what did you say)\b",
-    "more": r"\b(more|tell me more|explain more|go deeper|elaborate|details?)\b",
+    "resume": r"resume|continue|go on|keep going|carry on|play|go ahead",
+    "stop": r"stop|cancel|never ?mind|quiet|be quiet|that'?s all|pause",
+    "next": r"next|skip|next step|go next",
+    "back": r"back|go back|previous|last|previous step",
+    "repeat": r"repeat|again|say again|say it again|repeat it|what did (?:you )?say|come again",
+    "more": r"more|tell me more|explain more|go deeper|elaborate|more details?|details?",
 }
-FILLER = r"\b(hey|ok|okay|um+|uh+|please|stack ?-?chan|stackchan|robot|the|that|one|can you|could you)\b"
+FILLER = r"\b(hey|ok|okay|um+|uh+|please|stack ?-?chan|stackchan|robot|the|that|this|one|can you|could you|you)\b"
 
 
 def classify(text: str) -> tuple[str, str]:
-    """Return (intent, text). Short utterances can be commands; anything longer is a question."""
+    """Return (intent, text): a narration command, "question", or "unclear"."""
     t = re.sub(r"[^\w\s']", " ", text.lower()).strip()
-    core = re.sub(FILLER, " ", t)
-    core_words = core.split()
-    if len(core_words) <= 3:
-        for name, pattern in COMMANDS.items():
-            if re.search(pattern, t):
-                return name, text
-    if not core_words:
+    core = " ".join(re.sub(FILLER, " ", t).split())
+    core = re.sub(r"\b(\w+)(?: \1\b)+", r"\1", core)  # "stop stop" -> "stop"
+    if not core:
         return "unclear", text
+    for name, pattern in COMMANDS.items():
+        if re.fullmatch(f"(?:{pattern})", core):
+            return name, text
     return "question", text
 
 
@@ -211,6 +213,7 @@ class VoiceSession:
         kind = ev.get("event")
         if kind == "listen":
             if ev.get("on"):
+                self.bot.audio.clear()  # never mix in chunks from a previous capture
                 self.listen_pending, self.listen_ended = True, None
             elif ev.get("reason") != "host":
                 self.listen_ended = ev.get("reason")
@@ -291,8 +294,9 @@ class VoiceSession:
                 level = chunk_rms(pcm)
                 levels.append(level)
                 self.last_levels = levels
-                floor = float(np.median(levels[:8])) if len(levels) >= 4 else 0.0
-                threshold = max(ep.min_threshold, floor * ep.noise_factor)
+                # The floor is the quietest tenth heard so far (pauses between words), never the speech itself.
+                floor = float(np.percentile(levels, 10)) if len(levels) >= 4 else 0.0
+                threshold = min(ep.max_threshold, max(ep.min_threshold, floor * ep.noise_factor))
                 if level >= threshold:
                     speech_run += 1
                     silence_run = 0
@@ -313,6 +317,7 @@ class VoiceSession:
 
     def handle_listen(self) -> None:
         self.listen_pending = False
+        self.bot.audio.clear()
         was_narrating = self.narrating
         self.narrating = False
         self.log("[listen] listening...")

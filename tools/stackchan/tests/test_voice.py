@@ -18,6 +18,11 @@ from voice import Endpointing, VoiceSession, chunk_rms, classify, split_sentence
     ("um", "unclear"),
     ("Why do we need pull-up resistors?", "question"),
     ("What is next on the board after the regulator?", "question"),
+    ("What did you say?", "repeat"),
+    ("Why stop there?", "question"),          # review F7
+    ("What is the last one?", "question"),
+    ("Any more details?", "question"),
+    ("Stop, stop!", "stop"),
 ])
 def test_classify(text, intent):
     assert classify(text)[0] == intent
@@ -73,3 +78,18 @@ def test_endpointing_gives_up_without_speech():
 
 def test_endpointing_stops_when_robot_cancels():
     assert session([tone(60)] * 200, ended_after=5).capture_utterance() is None
+
+
+def test_endpointing_keeps_speech_that_starts_immediately():
+    # Review F4: talking right after the double tap must not become the noise floor.
+    chunks = [tone(2000)] * 3 + [tone(1500)] * 60 + [tone(60)] * 40
+    pcm = session(chunks).capture_utterance()
+    samples = np.frombuffer(pcm, dtype="<i2")
+    assert (samples == 1500).sum() == 60 * 512
+
+
+def test_listen_event_discards_stale_microphone_chunks():
+    s = session([])
+    s.bot.audio.append(tone(1500))
+    s._on_event({"event": "listen", "on": True, "source": "touch"})
+    assert not s.bot.audio and s.listen_pending
