@@ -9,13 +9,15 @@
     {
       "command": "tools/stackchan/.venv/bin/python -m pytest tools/stackchan/tests",
       "result": "PASS",
-      "passed": 47,
-      "note": "Adds PageLink tests (allowed origin context/selection; other origins and Origin-less clients refused with 403; command round trip; refusal; no page; disconnect) and workspace voice tests (part resolution, labelled answers keeping unknowns, tour segments, page tutor routing, clarifying questions, no-workspace decline, tour highlight per step)."
+      "passed": 58,
+      "note": "Adds PageLink tests (allowed origin context/selection; other origins and Origin-less clients refused with 403; command round trip; refusal; no page; disconnect) and workspace voice tests (part resolution, labelled answers keeping unknowns, tour segments, page tutor routing, clarifying questions, no-workspace decline, tour highlight per step).",
+      "commit": "b8395d42"
     },
     {
       "command": "OHMNI_REQUIRE_BROWSER=1 pytest tests/test_stackchan_isolation.py tests/test_ai_workflow.py tests/test_stackchan_browser.py",
       "result": "PASS",
-      "passed": 16
+      "passed": 16,
+      "note": "Page-side link and teach routing with an aiohttp stand-in companion; the real PageLink-to-page path is shown by the hardware session below."
     },
     {
       "command": "ruff check tools/stackchan",
@@ -29,7 +31,7 @@
       "Page connected from its own origin; context received: 15 parts, 2 tour steps",
       "Both tour steps narrated through the robot speaker with a tour command per step",
       "A typed-in question ('What does C1 do on this board?') resolved C1 by reference, went through the page tutor and the teach route (0.2 s, stub provider), was spoken, and appeared in C1's saved tutor thread with its 'Still unknown' item",
-      "A double_tap touch event arrived from the robot during the session without a simulated tap: either a person tapped the head or a false touch trigger; not yet attributed"
+      "Double taps during the session were made by the user (confirmed); speech stopped and the robot listened"
     ],
     "not_observed": [
       "Audible output (no observer)",
@@ -40,10 +42,19 @@
     {
       "requirement": "live_tutor",
       "status": "NOT_RUN",
-      "reason": "No Anthropic credentials on this machine, and the deployed workspace does not yet serve this branch. Needs either ANTHROPIC_API_KEY for a local connected-workspace run with the real provider, or a deployed preview of this branch."
+      "reason": "No Anthropic credentials on this machine, and the deployed workspace does not yet serve this branch. Needs either ANTHROPIC_API_KEY for a local connected-workspace run with the real provider, or a deployed preview of this branch.",
+      "attempts": [
+        {
+          "date": "2026-10-18",
+          "result": "NOT_RUN",
+          "detail": "Live provider wired exactly as production (AnthropicProvider(max_attempts=2, timeout_seconds=20)); the API rejected the supplied credential with HTTP 401. The value is not a standard API key (prefix sk-ant-usr-, not sk-ant-api03-). No answer was produced; nothing else failed."
+        }
+      ]
     }
   ],
   "limitations": [
     "Teach answers in automated and hardware runs used the stub provider."
-  ]
+  ],
+  "review": ".ai/reviews.yaml#ST-T03-INDEPENDENT-REVIEW",
+  "review_fix_commit": "b8395d42"
 }
