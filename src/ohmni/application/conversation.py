@@ -70,22 +70,35 @@ class ConversationPlanner:
             raise PlanUnavailable("This plan expired or was replaced. Prepare a new plan; check saved projects before confirming again.")
         return plan
 
-    def propose(self, message: str, parent_id: str | None = None):
+    def propose(self, message: str, parent_id: str | None = None, *, previous_plan: dict | None = None):
+        # Internal transport hook: only a server-owned persisted draft may be
+        # supplied here. HTTP callers still use parent_id and route ownership.
+        if parent_id and previous_plan is not None:
+            raise ValueError("Choose one previous plan source.")
+        restored = None
+        if previous_plan is not None:
+            snapshot = BoardPlan.model_validate_json(json.dumps({
+                'brief': previous_plan['brief'], 'questions': previous_plan['questions']}), strict=True)
+            messages = previous_plan['messages']
+            if not isinstance(messages, list) or any(type(item) is not str or not item.strip() for item in messages):
+                raise ValueError("Invalid saved planning transcript.")
+            restored = _Plan({'brief': snapshot.brief.model_dump(mode='json'),
+                              'questions': list(snapshot.questions), 'messages': list(messages)}, self.clock() + self.ttl)
         if self.provider is None:
             raise PlanUnavailable("AI planning is unavailable. Use guided setup.")
-        if type(message) is not str or not (1 if parent_id else 10) <= len(message.strip()) <= 2000:
+        if type(message) is not str or not (1 if parent_id or restored else 10) <= len(message.strip()) <= 2000:
             raise ValueError("Describe your request in up to 2000 characters; an answer must not be empty.")
         with self._lock:
             for key in list(self._plans):
                 if self._plans[key].expires <= self.clock():
                     del self._plans[key]
-            parent = self._get(parent_id) if parent_id else None
+            parent = self._get(parent_id) if parent_id else restored
             if parent and parent.project_id:
                 raise PlanUnavailable("This plan is already saved. Open its saved project to make changes.")
             transcript = [*(parent.result["messages"] if parent else []), message.strip()]
             if len(transcript) > 8 or sum(map(len, transcript)) > 8000:
                 raise ValueError("This conversation is full. Start a new plan with your combined requirements.")
-            if len(self._plans) >= self.capacity and parent is None:
+            if len(self._plans) >= self.capacity and not parent_id:
                 raise PlanUnavailable("Planning is busy. Try again later or use guided setup.")
         if not self._generating.acquire(blocking=False):
             raise PlanUnavailable("Another plan is being prepared. Try again shortly.")

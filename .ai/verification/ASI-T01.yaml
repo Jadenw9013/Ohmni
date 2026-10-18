@@ -1,0 +1,465 @@
+{
+  "schema_version": 1,
+  "id": "ASI-T01",
+  "task": "ASI-T01",
+  "scope": "ASI-ACCEPTANCE-1",
+  "status": "PASSED",
+  "commit": "676662cf160ceda46c20be06b95d6c7abfd1ecd6",
+  "date": "2026-10-17",
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "passed": 2782,
+      "skipped": 101,
+      "deselected": 70,
+      "seconds": 333.79,
+      "log": "/tmp/ohmni-asi-fast-final.log"
+    },
+    {
+      "command": "focused bridge, workspace, conversation, project assistant and agent pytest",
+      "result": "PASS",
+      "passed": 70,
+      "seconds": 35.62,
+      "log": "/tmp/ohmni-asi-focused.log"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "passed": 12
+    },
+    {
+      "command": "ruff changed Python; git diff --check; local Markdown links",
+      "result": "PASS"
+    }
+  ],
+  "production": {
+    "host": "https://ohmni-agent.fly.dev",
+    "image_digest": "sha256:bc5b3d9b88e9bd29c64b5054dc0bdee03c8fcb05ea13da0ff05c7a8455f24950",
+    "machine": "849765c266d968",
+    "health": "1/1 passing after rolling deployment",
+    "primary_ui": "ASI:One only; no custom Ohmni frontend opened",
+    "live_cases": [
+      "Fresh sensor idea, exact confirmation, native build, ZIP download",
+      "50 x 50 mm revision preserves sensor and other choices",
+      "Duplicate confirmation returns same completed job",
+      "Unsupported voice diary offers explicitly labeled controller alternative",
+      "Short Yes after service restart produces reviewable plan, no automatic build",
+      "Exact confirmation of accepted alternative builds controller and delivers ZIP"
+    ],
+    "downloads": [
+      {
+        "job_id": "9512d48b0dd0",
+        "project_id": "16ca7bbfe5d24ffa",
+        "revision_id": "6f783a9d0af54818",
+        "revision_number": 1,
+        "zip_sha256": "d857745d022774d0d8bd3fba01edd26b257b348fc9926e1ad6031e920ede91ba",
+        "entries": 20,
+        "fabrication_hashes_matched": 9,
+        "brief": {
+          "archetype": "a1_usb_i2c_sensor",
+          "board_height_mm": 70.0,
+          "board_width_mm": 100.0,
+          "budget_usd": 20.0,
+          "button_count": 0,
+          "description": "USB-C powered ESP32 board with a BME280 sensor for room temperature and humidity monitoring.",
+          "hand_solderable_preferred": false,
+          "include_programming_header": true,
+          "input_power": "usb_c_5v",
+          "input_voltage_v": 5.0,
+          "logic_voltage_v": 3.3,
+          "max_board_layers": 2,
+          "mcu_part_id": "ESP32-WROOM-32E",
+          "project_name": "Temperature & Humidity Sensor Node",
+          "safety_domains": [],
+          "schema_version": 1,
+          "sensors": [
+            {
+              "address": null,
+              "part_id": "BME280"
+            }
+          ],
+          "spi_devices": [],
+          "status_led_count": 1
+        },
+        "verification_ladder": [
+          {
+            "detail": "29 provenance-labeled statements",
+            "stage": "Requirements",
+            "status": "PASS"
+          },
+          {
+            "detail": "Electrical claims retain catalog/datasheet provenance; seed citations are not overstated",
+            "stage": "Datasheet evidence",
+            "status": "PASS_WITH_WARNINGS"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Identity",
+            "status": "VERIFIED",
+            "subsystem": "identity"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Connectivity",
+            "status": "VERIFIED",
+            "subsystem": "connectivity"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Pin Semantics",
+            "status": "VERIFIED",
+            "subsystem": "pin_semantics"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Electrical",
+            "status": "VERIFIED",
+            "subsystem": "electrical"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Interfaces",
+            "status": "VERIFIED",
+            "subsystem": "interfaces"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Thermal",
+            "status": "UNSUPPORTED",
+            "subsystem": "thermal"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Eda",
+            "status": "UNSUPPORTED",
+            "subsystem": "eda"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Simulation",
+            "status": "UNSUPPORTED",
+            "subsystem": "simulation"
+          },
+          {
+            "detail": "21 findings on exact schematic",
+            "stage": "KiCad ERC",
+            "status": "PASS_WITH_WARNINGS"
+          },
+          {
+            "detail": "51 geometry checks",
+            "stage": "Ohmni physical verification",
+            "status": "PASS"
+          },
+          {
+            "detail": "51 required connections",
+            "stage": "Ohmni routing verification",
+            "status": "PASS"
+          },
+          {
+            "detail": "0 violations / 0 unrouted",
+            "stage": "KiCad DRC",
+            "status": "PASS"
+          },
+          {
+            "detail": "Generic synthetic 2-layer prototype profile",
+            "stage": "Manufacturing profile",
+            "status": "PASS"
+          },
+          {
+            "detail": "Assembly risks and incomplete price coverage remain visible",
+            "stage": "Assembly / cost",
+            "status": "PASS_WITH_WARNINGS"
+          },
+          {
+            "detail": "No physical prototype has been measured",
+            "stage": "Bench verification",
+            "status": "NOT_YET_VERIFIED"
+          }
+        ],
+        "requirements_counts": {
+          "MET": 16,
+          "VIOLATED": 0,
+          "UNKNOWN": 13
+        }
+      },
+      {
+        "job_id": "5803310fb83c",
+        "project_id": "16ca7bbfe5d24ffa",
+        "revision_id": "6b52b554d34a472e",
+        "revision_number": 2,
+        "zip_sha256": "130b69eb21af95dcb927356216383987d5a5f1f82c1a1b1cfb2309fa154e1262",
+        "entries": 20,
+        "fabrication_hashes_matched": 9,
+        "brief": {
+          "archetype": "a1_usb_i2c_sensor",
+          "board_height_mm": 50.0,
+          "board_width_mm": 50.0,
+          "budget_usd": 20.0,
+          "button_count": 0,
+          "description": "USB-C powered ESP32 board with a BME280 sensor for room temperature and humidity monitoring.",
+          "hand_solderable_preferred": false,
+          "include_programming_header": true,
+          "input_power": "usb_c_5v",
+          "input_voltage_v": 5.0,
+          "logic_voltage_v": 3.3,
+          "max_board_layers": 2,
+          "mcu_part_id": "ESP32-WROOM-32E",
+          "project_name": "Temperature & Humidity Sensor Node",
+          "safety_domains": [],
+          "schema_version": 1,
+          "sensors": [
+            {
+              "address": null,
+              "part_id": "BME280"
+            }
+          ],
+          "spi_devices": [],
+          "status_led_count": 1
+        },
+        "verification_ladder": [
+          {
+            "detail": "29 provenance-labeled statements",
+            "stage": "Requirements",
+            "status": "PASS"
+          },
+          {
+            "detail": "Electrical claims retain catalog/datasheet provenance; seed citations are not overstated",
+            "stage": "Datasheet evidence",
+            "status": "PASS_WITH_WARNINGS"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Identity",
+            "status": "VERIFIED",
+            "subsystem": "identity"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Connectivity",
+            "status": "VERIFIED",
+            "subsystem": "connectivity"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Pin Semantics",
+            "status": "VERIFIED",
+            "subsystem": "pin_semantics"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Electrical",
+            "status": "VERIFIED",
+            "subsystem": "electrical"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Interfaces",
+            "status": "VERIFIED",
+            "subsystem": "interfaces"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Thermal",
+            "status": "UNSUPPORTED",
+            "subsystem": "thermal"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Eda",
+            "status": "UNSUPPORTED",
+            "subsystem": "eda"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Simulation",
+            "status": "UNSUPPORTED",
+            "subsystem": "simulation"
+          },
+          {
+            "detail": "21 findings on exact schematic",
+            "stage": "KiCad ERC",
+            "status": "PASS_WITH_WARNINGS"
+          },
+          {
+            "detail": "51 geometry checks",
+            "stage": "Ohmni physical verification",
+            "status": "PASS"
+          },
+          {
+            "detail": "51 required connections",
+            "stage": "Ohmni routing verification",
+            "status": "PASS"
+          },
+          {
+            "detail": "0 violations / 0 unrouted",
+            "stage": "KiCad DRC",
+            "status": "PASS"
+          },
+          {
+            "detail": "Generic synthetic 2-layer prototype profile",
+            "stage": "Manufacturing profile",
+            "status": "PASS"
+          },
+          {
+            "detail": "Assembly risks and incomplete price coverage remain visible",
+            "stage": "Assembly / cost",
+            "status": "PASS_WITH_WARNINGS"
+          },
+          {
+            "detail": "No physical prototype has been measured",
+            "stage": "Bench verification",
+            "status": "NOT_YET_VERIFIED"
+          }
+        ],
+        "requirements_counts": {
+          "MET": 16,
+          "VIOLATED": 0,
+          "UNKNOWN": 13
+        }
+      },
+      {
+        "job_id": "ae5aa211194a",
+        "project_id": "89833e1eeb234fa3",
+        "revision_id": "c1e98e722c7d4a15",
+        "revision_number": 1,
+        "zip_sha256": "77135f0515a8c102217a560e7ce455c4c989e9a3bcc0770eff62a98a8eaab8a0",
+        "entries": 20,
+        "fabrication_hashes_matched": 9,
+        "brief": {
+          "archetype": "a2_usb_gpio_controller",
+          "board_height_mm": 70.0,
+          "board_width_mm": 100.0,
+          "budget_usd": 20.0,
+          "button_count": 1,
+          "description": "USB-C powered ESP32 controller with one button and one status LED.",
+          "hand_solderable_preferred": false,
+          "include_programming_header": true,
+          "input_power": "usb_c_5v",
+          "input_voltage_v": 5.0,
+          "logic_voltage_v": 3.3,
+          "max_board_layers": 2,
+          "mcu_part_id": "ESP32-WROOM-32E",
+          "project_name": "Button and light controller",
+          "safety_domains": [],
+          "schema_version": 1,
+          "sensors": [],
+          "spi_devices": [],
+          "status_led_count": 1
+        },
+        "verification_ladder": [
+          {
+            "detail": "28 provenance-labeled statements",
+            "stage": "Requirements",
+            "status": "PASS"
+          },
+          {
+            "detail": "Electrical claims retain catalog/datasheet provenance; seed citations are not overstated",
+            "stage": "Datasheet evidence",
+            "status": "PASS_WITH_WARNINGS"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Identity",
+            "status": "VERIFIED",
+            "subsystem": "identity"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Connectivity",
+            "status": "VERIFIED",
+            "subsystem": "connectivity"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Pin Semantics",
+            "status": "VERIFIED",
+            "subsystem": "pin_semantics"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Electrical",
+            "status": "VERIFIED",
+            "subsystem": "electrical"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Interfaces",
+            "status": "VERIFIED",
+            "subsystem": "interfaces"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Thermal",
+            "status": "UNSUPPORTED",
+            "subsystem": "thermal"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Eda",
+            "status": "UNSUPPORTED",
+            "subsystem": "eda"
+          },
+          {
+            "detail": "Deterministic subsystem roll-up from 25 rule results; initial proposal had 0 blocking findings",
+            "stage": "Ohmni semantic verification \u2014 Simulation",
+            "status": "UNSUPPORTED",
+            "subsystem": "simulation"
+          },
+          {
+            "detail": "18 findings on exact schematic",
+            "stage": "KiCad ERC",
+            "status": "PASS_WITH_WARNINGS"
+          },
+          {
+            "detail": "43 geometry checks",
+            "stage": "Ohmni physical verification",
+            "status": "PASS"
+          },
+          {
+            "detail": "41 required connections",
+            "stage": "Ohmni routing verification",
+            "status": "PASS"
+          },
+          {
+            "detail": "0 violations / 0 unrouted",
+            "stage": "KiCad DRC",
+            "status": "PASS"
+          },
+          {
+            "detail": "Generic synthetic 2-layer prototype profile",
+            "stage": "Manufacturing profile",
+            "status": "PASS"
+          },
+          {
+            "detail": "Assembly risks and incomplete price coverage remain visible",
+            "stage": "Assembly / cost",
+            "status": "PASS_WITH_WARNINGS"
+          },
+          {
+            "detail": "No physical prototype has been measured",
+            "stage": "Bench verification",
+            "status": "NOT_YET_VERIFIED"
+          }
+        ],
+        "requirements_counts": {
+          "MET": 14,
+          "VIOLATED": 0,
+          "UNKNOWN": 14
+        }
+      }
+    ],
+    "profile": "Agentverse README saved with agent identity, sponsor badges and setup/resources"
+  },
+  "review": {
+    "status": "UNAVAILABLE",
+    "independent": false
+  },
+  "limitations": [
+    "Existing core platform predates event; organizers decide reuse eligibility.",
+    "Video, safe public shared chat, Devpost and Submission Agent completion still require team deliverables.",
+    "No firmware, assembly or physical performance verified.",
+    "One initial transient gateway test failure was not reproduced; safe exception-class diagnostics added; final full suite passed.",
+    "Subsequent evidence commit changes only documentation and ledger."
+  ]
+}

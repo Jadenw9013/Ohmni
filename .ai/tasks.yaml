@@ -454,6 +454,14 @@
       "type": "product_milestone",
       "title": "Complete voice recorder project family",
       "review_policy": "independent review required for COMPLETE; unavailable permits VERIFIED only"
+    },
+    {
+      "id": "ASI-ACCEPTANCE-1",
+      "title": "ASI-only acceptance and Fetch submission readiness",
+      "type": "product_feature",
+      "status": "VERIFIED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/ASI-ACCEPTANCE-1.yaml"
     }
   ],
   "tasks": [
@@ -4301,7 +4309,7 @@
       "scope": "VOICE-RECORDER-1",
       "title": "Implement and verify voice recorder end to end",
       "priority": 100,
-      "status": "VERIFIED",
+      "status": "IMPLEMENTED",
       "dependencies": [],
       "blockers": [],
       "acceptance_criteria": [
@@ -4330,9 +4338,42 @@
           "native",
           "firmware"
         ],
-        "status": "PASSED",
+        "status": "PENDING",
         "record": ".ai/verification/VR-T01.yaml",
         "commit": "ec5a4ca7735d3f3191b1d16cf1368a3fceebc406"
+      }
+    },
+    {
+      "id": "ASI-T01",
+      "scope": "ASI-ACCEPTANCE-1",
+      "title": "Verify ASI generation, repair recovery and document submission requirements",
+      "priority": 100,
+      "status": "VERIFIED",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Fresh ordinary idea reaches confirmed native build and actual ZIP download using ASI only.",
+        "Exercise in-chat revision and clarification recovery; fix reproducible failures without bypassing confirmation or engineering gates.",
+        "Public README includes agent identity, setup and sponsor tags; submission docs distinguish demonstrated requirements from outstanding human deliverables."
+      ],
+      "implementation": {
+        "started_at_commit": "27567182854cb572905592d99780f5581d09e6b2",
+        "approval_evidence": ".ai/approvals/ASI-ACCEPTANCE-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": false,
+        "status": "UNAVAILABLE"
+      },
+      "verification": {
+        "required": [
+          "workflow",
+          "fast",
+          "live"
+        ],
+        "status": "PASSED",
+        "record": ".ai/verification/ASI-T01.yaml",
+        "commit": "676662cf160ceda46c20be06b95d6c7abfd1ecd6"
       }
     }
   ]

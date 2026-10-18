@@ -1,5 +1,8 @@
 # Ohmni
 
+![tag:innovationlab](https://img.shields.io/badge/innovationlab-3D8BD3)
+![tag:hackathon](https://img.shields.io/badge/hackathon-5F43F1)
+
 **Build circuits. Understand why.**
 
 Ohmni is an AI electronics engineering mentor. It turns supported product ideas
@@ -22,8 +25,9 @@ check is not a hardware bench test or a guarantee that a board is ready to build
 
 Start with the [Fetch.ai implementation and setup guide](docs/hackathon/FETCH_AI_IMPLEMENTATION_PLAN.md)
 for the weekend scope, local commands, integration checklist and fallback.
-The Fetch adapter supports reviewed board generation, private downloads, and an
-main Ohmni UI with saved projects, persistent board/component chat and reviewed revision editing. See [using Ohmni in ASI:One](docs/hackathon/FETCH_AGENT_SETUP.md). Paper redesign and new Sentry prize work
+The Fetch adapter supports reviewed board generation and private downloads directly
+in ASI:One, plus an optional main Ohmni UI with saved projects, persistent
+board/component chat and reviewed revision editing. See [using Ohmni in ASI:One](docs/hackathon/FETCH_AGENT_SETUP.md). Paper redesign and new Sentry prize work
 are deferred; the existing disabled telemetry core remains available.
 See [research and readiness](docs/hackathon/RESEARCH_AND_READINESS.md) for eligibility
 and submission details, and [assistant coordination](docs/hackathon/ASSISTANT_WORKFLOW.md)
@@ -42,6 +46,46 @@ For the physical companion, use the [Stack-chan developer handoff](docs/hackatho
 hardware setup, team ownership, a versioned USB connector contract, a Claude
 assignment and full-flow acceptance checks. This is an implementation handoff;
 robot and speech connectors are not yet shipped.
+
+### Fetch track: try the primary workflow in ASI:One
+
+**Agent:** Ohmni PCB Guide (`@ohmni-pcb-guide`)
+
+**Address:** `agent1qvzucpk72r48d4gys9npx2an8jjj5mqpzwfjz4yt6a7mnqyag5gzqm5dc32`
+
+[Chat in ASI:One](https://asi1.ai/ai/agent1qvzucpk72r48d4gys9npx2an8jjj5mqpzwfjz4yt6a7mnqyag5gzqm5dc32)
+· [Agentverse profile](https://agentverse.ai/agents/details/agent1qvzucpk72r48d4gys9npx2an8jjj5mqpzwfjz4yt6a7mnqyag5gzqm5dc32/profile)
+
+1. Keep Ohmni PCB Guide selected as the recipient. Ask: **“I want a USB-powered
+   board to measure the temperature and humidity in my room.”**
+2. Answer any necessary questions. Review the proposed components, dimensions,
+   assembly needs and limitations, then send the exact displayed `CONFIRM` code.
+3. Receive actual build progress and findings in the same conversation. `STATUS`
+   checks the existing run; it does not generate another board.
+4. Click the ZIP download delivered in chat, or send `FILES` for a fresh link.
+   No custom frontend is needed to plan, confirm, generate or obtain the files.
+5. Ask about the findings or request a supported change. A changed design needs
+   a new review and exact confirmation. `OPEN` optionally connects the same project
+   to Ohmni's 3D workspace; this is not a prerequisite for the ASI workflow.
+
+**Integration:** a Python uAgents agent implements Agent Chat Protocol (ACP),
+receives ASI requests and orchestrates Ohmni's existing planner, project store,
+KiCad generation/checks and artifact release. Anthropic supplies planning and
+explanations; engineering verdicts come from deterministic tools. One agent is
+implemented; multi-agent orchestration, Payment Protocol and Interactive Cards
+are not claimed. The original engineering platform predates this hackathon;
+the Fetch integration and event work must be attributed separately in the submission.
+
+**Run/test resources:** Python 3.13, pinned `uagents==0.26.1` /
+`uagents-core==0.4.12`, KiCad 10.0.5 with libraries, ngspice 42 for supported
+simulation, a privately configured Anthropic API key, stable agent seed, HTTPS
+endpoint and persistent storage. See [exact setup and tests](docs/hackathon/FETCH_AGENT_SETUP.md)
+and [native-tool installation](docs/LOCAL_ENGINEERING_SETUP.md). Hosted use needs
+an ASI account; a local offline test does not require registering another agent.
+
+See [ASI acceptance evidence and remaining submission items](docs/hackathon/ASI_TRACK_ACCEPTANCE.md)
+and [submission template](docs/hackathon/SUBMISSION_TEMPLATE.md). Design files are
+for human review; firmware, assembly and physical testing remain separate.
 
 ## Five-minute saved demo
 

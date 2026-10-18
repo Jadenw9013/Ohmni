@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import mimetypes
 
 from ohmni.application.request_budget import BudgetExceeded
@@ -32,8 +33,9 @@ async def start_gateway(bridge, public_port=8080, sdk_port=8081):
             response = web.Response(status=exc.status, text=exc.text, headers=exc.headers)
         except (ValueError, TypeError):
             response = web.json_response({'error': 'The request could not be completed. Check your selection and try again.'}, status=400)
-        except Exception:  # noqa: BLE001 - never expose provider or persistence details
-            response = web.json_response({'error': 'Teaching is temporarily unavailable. Your board has not changed. Please try again.'}, status=503)
+        except Exception as exc:  # noqa: BLE001 - never expose provider or persistence details
+            logging.getLogger(__name__).warning('Gateway operation unavailable (%s)', type(exc).__name__)
+            response = web.json_response({'error': 'This request is temporarily unavailable. Check STATUS before retrying a build.'}, status=503)
         if request.path.startswith(('/workspace', '/assets/', '/connected/')):
             response.headers.update(private_headers)
         return response

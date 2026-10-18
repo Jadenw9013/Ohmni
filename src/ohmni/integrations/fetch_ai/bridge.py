@@ -43,7 +43,7 @@ def owner_key(sender: str, session: str) -> str:
     return hashlib.sha256(json.dumps([sender, str(session)]).encode()).hexdigest()
 
 
-def review_plan(plan: dict) -> str:
+def review_plan(plan: dict, *, existing_project=False) -> str:
     brief = plan['brief']
     sensors = ', '.join(x['part_id'] for x in brief['sensors']) or 'none'
     spi = ', '.join(x['part_id'] for x in brief['spi_devices']) or 'none'
@@ -64,7 +64,9 @@ def review_plan(plan: dict) -> str:
         lines += ['There are no actionable changes to confirm. Describe a specific change, or reply STATUS.']
     elif plan['questions']:
         lines += ['Before building, please answer:'] + [f"- {x}" for x in plan['questions']]
-        lines += ['Reply with your answers or changes. No project has been saved and no build has started.']
+        lines += ['Reply with your answers or changes. ' + (
+            'Your existing project is unchanged; no revised plan has been saved and no new build has started.'
+            if existing_project else 'No project has been saved and no build has started.')]
     else:
         lines += [f"To save exactly this plan and generate its board, reply CONFIRM {plan['plan_id']}",
                   'Or reply with changes. Confirmation expires after 30 minutes.']
@@ -232,7 +234,7 @@ class ChatBridge:
                 'This first connectivity release lists options only: it has not saved a plan or started a build. Planning, explicit confirmation and build tools are the next integration step.',
                 'Describe your idea to prepare a plan. Review it, answer questions, then use its exact CONFIRM code to save and build. STATUS and FINDINGS inspect your latest build without model charges. OPEN opens that board in Ohmni’s 3D workspace and component tutor. TEACH followed by a component reference and question (for example, TEACH MIC1 How does it capture sound?) uses the same saved component tutor. For saved recorders, SIMULATE runs a digital scenario; SIMULATE help lists the scenarios.')
         if command in {'status', 'findings', 'files', 'download', 'open', 'view', 'workspace'}:
-            return self.result(owner)
+            return self.result(owner, include_workspace=command in {'open', 'view', 'workspace'})
         if command == 'teach' or command.startswith('teach '):
             match=re.fullmatch(r'teach\s+([A-Za-z][A-Za-z0-9]{0,15})\s+(.+)',text,flags=re.IGNORECASE|re.DOTALL)
             if not match: return 'Use TEACH followed by the component reference and your question, for example: TEACH MIC1 How does this microphone capture sound?'
@@ -291,7 +293,8 @@ class ChatBridge:
             with self.db() as db:
                 self._save(db, owner, state)
             return self._start(state)
-        if command.startswith('confirm') or command in {'yes', 'build', 'generate', 'generate board'}:
+        answering_question = bool((state.get('plan') or {}).get('questions'))
+        if command.startswith('confirm') or command in {'build', 'generate', 'generate board'} or (command == 'yes' and not answering_question):
             return 'Review the latest plan and reply with its exact CONFIRM code. A general yes cannot start a build.'
         if state.get('project_id') and not command.startswith('new '):
             with self.budget.admit('assistant'):
@@ -313,10 +316,10 @@ class ChatBridge:
                     'questions': turn['questions'], 'ready': turn['ready']}
             state.update(plan=plan, pending_change=True, plan_expires=self.clock() + 1800)
             changes = '\n'.join(f"- {change['field']}: {change['before']} → {change['after']}" for change in turn['changes'])
-            return 'Changes proposed to your existing revision:\n' + changes + '\n\n' + review_plan(plan)
+            return 'Changes proposed to your existing revision:\n' + changes + '\n\n' + review_plan(plan, existing_project=True)
         parent = state.get('plan') if not command.startswith('new ') else None
-        # A bounded transcript is reconstructed into a new proposal. Draft state
-        # survives restart without depending on the planner\'s ephemeral ID cache.
+        # Restore the owned draft's questions AND proposed alternative, including
+        # after restart. User-only concatenation loses what a short reply accepts.
         messages = [*(parent['messages'] if parent else []), text]
         combined = '\n'.join(messages)
         if len(messages) > 8 or len(combined) > 2000:
@@ -324,7 +327,8 @@ class ChatBridge:
         if command.startswith('new '):
             combined = text[4:]
         with self.budget.admit('planner'):
-            plan = self.planner.propose(combined)
+            plan = self.planner.propose(text[4:] if command.startswith('new ') else text,
+                                        previous_plan=parent)
         plan['messages'] = messages if not command.startswith('new ') else [combined]
         # Invalidate any former confirmation as soon as a new plan is displayed.
         state.clear()
@@ -346,7 +350,7 @@ class ChatBridge:
         with self.db() as db:
             return self._load(db, owner).get('job_id')
 
-    def result(self, owner):
+    def result(self, owner, *, include_workspace=False):
         with self.db() as db:
             state = self._load(db, owner)
         job_id = state.get('job_id')
@@ -367,7 +371,7 @@ class ChatBridge:
         if job is None:
             return 'The recorded job is unavailable. No replacement build was started.'
         reply = describe_result(job)
-        if state.get('project_id'):
+        if include_workspace and state.get('project_id'):
             reply += self._project_link(owner, state)
         if job['status'] == 'complete':
             check, _ = self.jobs.read_build_package(job_id)
@@ -380,6 +384,8 @@ class ChatBridge:
                           '\n\nThis private bearer link expires in one hour. Anyone you share it with can download these files.')
             else:
                 reply += '\n\nDownloads withheld: the artifact package is missing, stale, or does not pass release checks.'
+            if not include_workspace:
+                reply += '\n\nOptional: reply OPEN for the 3D workspace. You can ask questions, request changes and download files here in ASI without opening it.'
         return reply
 
     def _project_link(self, owner, state):

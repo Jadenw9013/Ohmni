@@ -175,6 +175,12 @@ class ProjectAssistant:
                     "Never resolve a conflict just by dropping the requested feature or relaxing a saved preference without explicit consent in the conversation. "
                     "For requested edits use kind change with a BoardPlan proposal. Preserve every unrequested field of the "
                     "saved brief (or previous proposal); apply explicit corrections. Use only project_options. "
+                    "An explicit supported edit is already permission to propose that edit: do not ask the user to reconfirm it. "
+                    "Preserve the saved assembly preference without asking again unless the requested edit actually conflicts with it. "
+                    "Use project_options.board_dimensions exactly; do not invent size limits or hypothetical placement obstacles. "
+                    "For a supported edit with no unresolved conflict, questions must be empty; explicit save/build confirmation is handled by the host. "
+                    "Interpret short replies against previous.questions and previous.brief. Acceptance resolves the offered choice, "
+                    "but refusal or uncertainty never permits dropping a requested feature. "
                     "Do not silently drop unsupported requests: list necessary questions in the proposal. Attribute stated "
                     "fields using exact quotes from messages. Questions cannot assert new engineering facts. "
                     "Never invent parts, evidence, prices, approval, verification or manufacturing verdicts."),
