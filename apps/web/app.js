@@ -962,6 +962,7 @@ const ROBOT_STATUS_TEXT = Object.freeze({
     connecting: "Desk robot: connecting…",
     connected: "Desk robot: connected",
     waiting: "Desk robot: not found, retrying",
+    elsewhere: "Desk robot: in another tab (click to use here)",
 });
 
 function robotPreference(value) {
@@ -981,7 +982,7 @@ function mountRobotLink() {
         onDisable: () => { setIsolated(null); state.boardControls?.sync(); },
         onStatus: (status) => {
             button.textContent = ROBOT_STATUS_TEXT[status] || ROBOT_STATUS_TEXT.off;
-            button.setAttribute("aria-pressed", String(status !== "off"));
+            button.setAttribute("aria-pressed", String(status !== "off" && status !== "elsewhere"));
             button.classList.toggle("on", status === "connected");
         },
     });

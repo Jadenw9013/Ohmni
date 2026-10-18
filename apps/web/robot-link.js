@@ -11,6 +11,7 @@ export const ROBOT_COMMANDS = Object.freeze(["focus", "isolate", "trace", "frame
 const MAX_QUESTION = 2000;
 const MAX_QUEUED = 4;          // commands waiting or running; more are refused as busy
 const MIN_ASK_INTERVAL_MS = 3000;
+export const REPLACED_CLOSE_CODE = 4001; // the companion switched to another tab
 
 // What the companion may know about the board: identities, plain-language component
 // cards, the deterministic tour and the recorded check statuses. No artifacts or tokens.
@@ -105,7 +106,8 @@ export async function runCommand(message, context, actions) {
     }
 }
 
-// The socket lifecycle. Statuses: off, connecting, connected, waiting (companion not found; retrying).
+// The socket lifecycle. Statuses: off, connecting, connected, waiting (companion not found; retrying),
+// elsewhere (another tab took the robot; enabling again takes it back).
 // Commands run one at a time, in order; the page never trusts the companion with concurrency.
 export function createRobotLink({
     url = ROBOT_LINK_URL,
@@ -178,8 +180,15 @@ export function createRobotLink({
             return chain;
         };
         ws.onerror = () => {};
-        ws.onclose = () => {
+        ws.onclose = (event) => {
             if (socket === ws) socket = null;
+            if (event?.code === REPLACED_CLOSE_CODE) {
+                // Do not fight the other tab with reconnects.
+                enabled = false;
+                lastSelected = null;
+                setStatus("elsewhere");
+                return;
+            }
             if (enabled) { setStatus("waiting"); schedule(); } else setStatus("off");
         };
     }

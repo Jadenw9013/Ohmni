@@ -158,8 +158,27 @@ def resolve_part(text: str, components: list[dict], selected: str | None = None)
     if not scores:
         return (selected, []) if selected else (None, [])
     best = max(scores.values())
-    top = [ref for ref, score in scores.items() if score == best]
+    top = sorted(ref for ref, score in scores.items() if score == best)
+    if selected and (selected in top or (best < 6 and re.search(r"\b(it|this|that|these|those|here)\b", text.lower()))):
+        # "Why is this capacitor here?" with C2 on screen means C2; a weak one-word overlap
+        # with another part's name does not beat what the user is looking at.
+        return selected, [selected]
     return (top[0], top) if len(top) == 1 else (None, top)
+
+
+ORDINALS = {"first": 0, "1st": 0, "one": 0, "second": 1, "2nd": 1, "two": 1, "third": 2, "3rd": 2, "three": 2}
+
+
+def choose_candidate(text: str, candidates: list[str], components: list[dict]) -> str | None:
+    """Resolve an answer to 'which one do you mean?': a reference, a name, or 'the second one'."""
+    words = re.findall(r"[a-z0-9]+", text.lower())
+    for ref in candidates:
+        if ref.lower() in words:
+            return ref
+    for word in words:
+        if word in ORDINALS and ORDINALS[word] < len(candidates):
+            return candidates[ORDINALS[word]]
+    return resolve_part(text, [p for p in components if p["ref"] in candidates])[0]
 
 
 def part_name(components: list[dict], ref: str) -> str:
@@ -168,8 +187,11 @@ def part_name(components: list[dict], ref: str) -> str:
 
 
 def spoken_answer(answer: dict) -> str:
-    """What the robot says for a tutor answer: labelled, unknowns kept, one follow-up offered."""
-    text = f"From your board's records: {answer.get('explanation', '').strip()}"
+    """What the robot says for a tutor answer: labelled as an explanation, unknowns kept, one follow-up."""
+    explanation = (answer.get("explanation") or "").strip()
+    if not explanation:
+        return "Ohmni didn't return an explanation for that."
+    text = f"Here's Ohmni's explanation, based on your board's records. {explanation}"
     unknowns = [u.strip() for u in answer.get("unknowns") or [] if u.strip()]
     if unknowns:
         text += " Not yet known: " + " ".join(unknowns)
@@ -213,6 +235,8 @@ class VoiceSession:
     last_levels: list = field(default_factory=list)  # RMS per chunk of the last capture, for tuning
     selected: str | None = None     # part currently selected in the workspace
     board_id: str | None = None     # job id of the board being narrated
+    pending_question: tuple[str, list[str]] | None = None  # asked "which one?": (question, candidates)
+    last_answer: str | None = None  # what the robot last answered, so "repeat" can replay it
 
     def __post_init__(self) -> None:
         self.bot.on_event = self._on_event
@@ -249,6 +273,14 @@ class VoiceSession:
     def sync_page(self) -> None:
         """Pick up a new board and user selections from the page."""
         if not self.page:
+            return
+        if not self.page.connected:
+            if self.board_id is not None:
+                # The page went away: stop narrating; a reconnect restarts the tour.
+                self.log("[page] workspace closed; narration paused")
+                self.narrating = False
+                self.board_id = None
+                self.page.context = None
             return
         context = self.page.context
         if context and context.get("job_id") != self.board_id:
@@ -382,6 +414,8 @@ class VoiceSession:
         self.log(f"[heard] {text!r} ({len(pcm) / 2 / SAMPLE_RATE:.1f}s audio, {time.monotonic() - t:.1f}s to transcribe)")
         if re.sub(r"[^\w\s]", "", text.lower()).strip() in HALLUCINATIONS:
             intent = "unclear"
+        elif self.pending_question and self._answer_pending_choice(text):
+            return
         else:
             intent, text = classify(text)
         self.log(f"[intent] {intent}")
@@ -401,7 +435,10 @@ class VoiceSession:
         elif intent == "back":
             self.index, self.sentence, self.narrating = max(self.index - 1, 0), 0, True
         elif intent == "repeat":
-            self.sentence, self.narrating = 0, True
+            if self.last_answer and not self.narrating:
+                self.say(self.last_answer)  # replay the answer (e.g. one cut short by a double tap)
+            else:
+                self.sentence, self.narrating = 0, True
         elif intent == "more":
             if seg and seg.more:
                 self.say(seg.more)
@@ -422,8 +459,10 @@ class VoiceSession:
         if ref is None:
             ref, candidates = resolve_part(question, components, self.selected)
             if ref is None and candidates:
+                self.pending_question = (question, candidates)
                 names = " or ".join(f"the {part_name(components, r)}, {r}" for r in candidates[:3])
-                self.say(f"Which one do you mean: {names}?", face="thinking")
+                extra = f", or one of {len(candidates) - 3} others" if len(candidates) > 3 else ""
+                self.say(f"Which one do you mean: {names}{extra}?", face="thinking")
                 return
             if ref is None:
                 self.say("Which part do you mean? Select it on the screen, or say its name.", face="thinking")
@@ -435,7 +474,20 @@ class VoiceSession:
             self.say("Sorry, I couldn't get an answer from Ohmni just now.", face="sad")
             return
         self.log(f"[tutor] {data.get('explanation', '')!r} ({time.monotonic() - t:.1f}s)")
-        self.say(spoken_answer(data))
+        self.last_answer = spoken_answer(data)
+        if not self.say(self.last_answer):
+            self.log("[tutor] answer interrupted; say 'repeat' to hear it")
+
+    def _answer_pending_choice(self, text: str) -> bool:
+        """After 'which one do you mean?', treat a reference, name or ordinal as the choice."""
+        question, candidates = self.pending_question
+        self.pending_question = None
+        ref = choose_candidate(text, candidates, self.components)
+        if ref is None:
+            return False
+        self.log(f"[intent] choice {ref} for {question!r}")
+        self.answer(question, ref=ref)
+        return True
 
     # -- main loop ------------------------------------------------------------
     def run(self) -> None:

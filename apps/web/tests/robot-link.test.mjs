@@ -211,3 +211,18 @@ test("selection notices are attributed explicitly, de-duplicated, and disabling 
     link.disable();
     assert.equal(disabled, 1);
 });
+
+test("a tab replaced by another stops reconnecting until the user takes the robot back", () => {
+    const { link, statuses, timers } = harness();
+    link.enable();
+    const socket = FakeSocket.made[0];
+    socket.open();
+    socket.readyState = 3;
+    socket.onclose({ code: 4001 });
+    assert.equal(link.status, "elsewhere");
+    assert.equal(link.enabled, false);
+    assert.equal(timers.length, 0, "no reconnect fight between tabs");
+    link.enable();
+    assert.equal(FakeSocket.made.length, 2, "clicking again takes the robot back");
+    assert.deepEqual(statuses.slice(0, 3), ["connecting", "connected", "elsewhere"]);
+});

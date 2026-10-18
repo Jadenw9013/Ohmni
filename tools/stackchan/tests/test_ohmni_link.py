@@ -3,7 +3,7 @@ import json
 import threading
 
 import pytest
-from ohmni_link import PageError, PageLink
+from ohmni_link import PageError, PageLink, normalize_origin
 from websockets.exceptions import InvalidStatus
 from websockets.sync.client import connect
 
@@ -75,3 +75,55 @@ def test_no_page_and_page_disconnect_raise(link):
         threading.Timer(0.2, page.close).start()
         with pytest.raises(PageError, match="disconnected"):
             link.command("frame", timeout=5)
+
+
+def test_origins_are_normalized_like_browser_origin_headers():
+    assert normalize_origin("https://Ohmni.Example/app/") == "https://ohmni.example"
+    assert normalize_origin("http://127.0.0.1:8765") == "http://127.0.0.1:8765"
+    with pytest.raises(ValueError):
+        normalize_origin("ohmni.example")
+
+
+def test_non_object_messages_are_ignored(link):
+    with connect(url(link), origin=ORIGIN) as page:
+        page.send("[1, 2]")
+        page.send("42")
+        page.send(json.dumps({"type": "result", "id": [1], "ok": True}))
+        page.send(json.dumps({"type": "context", "job_id": "b" * 12, "components": [], "tour": []}))
+        assert link.wait_for_context(timeout=5)["job_id"] == "b" * 12
+        assert link.connected, "malformed messages do not drop the connection"
+
+
+def test_a_newer_tab_replaces_the_old_one_and_fails_its_commands_at_once(link):
+    from websockets.exceptions import ConnectionClosed
+    with connect(url(link), origin=ORIGIN) as first:
+        for _ in range(100):
+            if link.connected:
+                break
+            threading.Event().wait(0.01)
+        errors = []
+        worker = threading.Thread(target=lambda: errors.append(pytest.raises(PageError, link.command, "ask", timeout=30)))
+        worker.start()
+        first.recv(timeout=5)  # the ask reached the first tab, which never answers
+        with connect(url(link), origin=ORIGIN):
+            worker.join(5)
+            assert not worker.is_alive(), "the replaced tab's command failed immediately"
+            assert "replaced" in str(errors[0].value)
+            with pytest.raises(ConnectionClosed) as closed:
+                first.recv(timeout=5)
+            assert closed.value.rcvd.code == 4001
+
+
+def test_a_page_closing_mid_send_raises_page_error_not_connection_closed(link):
+    with connect(url(link), origin=ORIGIN) as page:
+        for _ in range(100):
+            if link.connected:
+                break
+            threading.Event().wait(0.01)
+        page.close()
+        for _ in range(100):
+            try:
+                link.command("frame", timeout=1)
+            except PageError:
+                break
+        assert not link._pending or all(not v for v in link._pending.values())
