@@ -138,7 +138,10 @@ def test_workspace_robot_link_context_view_commands_and_tutor(tmp_path):
             assert command({"type": "command", "id": 2, "name": "trace", "args": {"ref": first_ref}})["ok"]
             assert command({"type": "command", "id": 3, "name": "camera", "args": {"preset": "back"}})["ok"]
             assert command({"type": "command", "id": 4, "name": "tour", "args": {"index": 0}})["data"] == {"title": "What you built"}
+            assert command({"type": "command", "id": 50, "name": "isolate", "args": {"ref": first_ref}})["ok"]
+            page.locator("#robot-show-all").wait_for(state="visible", timeout=5000)
             assert command({"type": "command", "id": 5, "name": "isolate", "args": {"ref": None}})["ok"]
+            page.locator("#robot-show-all").wait_for(state="hidden", timeout=5000)
 
             answer = command({"type": "command", "id": 6, "name": "ask", "args": {"ref": first_ref, "question": "What does this part do?"}})
             assert answer["ok"], answer

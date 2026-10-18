@@ -218,6 +218,30 @@ def spoken_answer(answer: dict) -> str:
     return text
 
 
+# ----------------------------------------------------------- view commands
+
+# Spoken phrases that steer the workspace view. Checked before question/command
+# classification because some read like questions ("what does it connect to").
+VIEW_PATTERNS = (
+    ("show_all", r"\b(show (me )?(everything|all( the parts)?)|show all|un ?isolate|bring (everything|them) back)\b"),
+    ("frame", r"\b(zoom (all the way )?out|whole board|reset (the )?view|fit (the )?board)\b"),
+    ("camera_back", r"\b(flip (it|the board)( over)?|turn (it|the board) over|(show|see) (me )?the (back|bottom|underside)|underside|back side)\b"),
+    ("camera_top", r"\b(top view|from above|look down on)\b"),
+    ("camera_front", r"\b(front view|show (me )?the front|(flip|turn) (it )?back)\b"),
+    ("isolate", r"\b(isolate|only show|show only|hide (the )?(others|rest|everything else))\b"),
+    ("trace", r"\b(what (does|is) (it|this|that|the [\w\s.-]+?) (connected|connect|wired|hooked up)( to)?|trace|show (me )?(its |the )?connections?|where does (it|this|that) connect)\b"),
+    ("focus", r"\b(show me(?! more)|zoom (in )?(on|to)|where('s| is)|point (to|at)|find|focus on|look at|go to|highlight)\b"),
+)
+
+
+def view_intent(text: str) -> str | None:
+    t = re.sub(r"[^\w\s'.-]", " ", text.lower())
+    for name, pattern in VIEW_PATTERNS:
+        if re.search(pattern, t):
+            return name
+    return None
+
+
 # ----------------------------------------------------------------- session
 
 @dataclass
@@ -253,6 +277,9 @@ class VoiceSession:
     selected: str | None = None     # part currently selected in the workspace
     board_id: str | None = None     # job id of the board being narrated
     pending_question: tuple[str, list[str]] | None = None  # asked "which one?": (question, candidates)
+    pending_view: tuple[str, list[str]] | None = None      # asked "which one?" for a view command
+    pending_ack: str | None = None  # a part the user just selected on screen
+    last_ack: str | None = None
     last_answer: str | None = None  # what the robot last answered, so "repeat" can replay it
     answer_rest: str | None = None  # the unspoken remainder of the last answer, for "more"
 
@@ -312,6 +339,20 @@ class VoiceSession:
             event = self.page.events.popleft()
             if event.get("type") == "selected":
                 self.selected = event.get("ref")
+                # Acknowledge clicks, not our own commands; rapid clicks collapse to the last one.
+                if event.get("by") == "user" and self.selected:
+                    self.pending_ack = self.selected
+
+    def acknowledge_selection(self) -> None:
+        ref, self.pending_ack = self.pending_ack, None
+        if not ref or ref == self.last_ack:
+            return
+        self.last_ack = ref
+        part = next((p for p in self.components if p["ref"] == ref), None)
+        if not part:
+            return
+        purpose = split_sentences(part.get("purpose") or "")
+        self.say(f"That's the {part['name']}, {ref}." + (f" {purpose[0]}" if purpose else ""), face="happy")
 
     # -- speaking -----------------------------------------------------------
     def say(self, text: str, face: str = "happy") -> bool:
@@ -431,11 +472,23 @@ class VoiceSession:
         text = self.transcriber.transcribe(pcm)
         self.log(f"[heard] {text!r} ({len(pcm) / 2 / SAMPLE_RATE:.1f}s audio, {time.monotonic() - t:.1f}s to transcribe)")
         if re.sub(r"[^\w\s]", "", text.lower()).strip() in HALLUCINATIONS:
-            intent = "unclear"
-        elif self.pending_question and self._answer_pending_choice(text):
+            self.log("[intent] unclear")
+            self.dispatch("unclear", text)
+            self.narrating = was_narrating
             return
-        else:
-            intent, text = classify(text)
+        if self.pending_question or self.pending_view:
+            view_choice = self.pending_view is not None
+            if self._answer_pending_choice(text):
+                # A view command resumes narration as before; an answered question stays paused.
+                self.narrating = was_narrating and view_choice
+                return
+        view = view_intent(text) if self.page else None
+        if view:
+            self.log(f"[intent] view:{view}")
+            self.view_command(view, text)
+            self.narrating = was_narrating
+            return
+        intent, text = classify(text)
         self.log(f"[intent] {intent}")
         self.dispatch(intent, text)
         if intent == "unclear":
@@ -502,14 +555,61 @@ class VoiceSession:
 
     def _answer_pending_choice(self, text: str) -> bool:
         """After 'which one do you mean?', treat a reference, name or ordinal as the choice."""
-        question, candidates = self.pending_question
-        self.pending_question = None
+        pending_question, pending_view = self.pending_question, self.pending_view
+        self.pending_question = self.pending_view = None
+        kind, (subject, candidates) = ("view", pending_view) if pending_view else ("question", pending_question)
         ref = choose_candidate(text, candidates, self.components)
         if ref is None:
             return False
-        self.log(f"[intent] choice {ref} for {question!r}")
-        self.answer(question, ref=ref)
+        self.log(f"[intent] choice {ref} for {kind} {subject!r}")
+        if kind == "view":
+            self.view_command(subject, "", ref=ref)
+        else:
+            self.answer(subject, ref=ref)
         return True
+
+    def view_command(self, view: str, text: str, ref: str | None = None) -> None:
+        """Carry out a spoken view command on the page (view-only)."""
+        if not self.page or not self.page.connected:
+            self.say("Open your board in the Ohmni workspace and connect the desk robot first.", face="sad")
+            return
+        simple = {"frame": ("frame", {}), "camera_back": ("camera", {"preset": "back"}),
+                  "camera_top": ("camera", {"preset": "top"}), "camera_front": ("camera", {"preset": "front"})}
+        if view in simple:
+            name, args = simple[view]
+            self.page_command(name, **args)
+            return
+        if view == "show_all":
+            self.page_command("isolate", ref=None)
+            return
+        components = self.components
+        if ref is None:
+            ref, candidates = resolve_part(text, components, self.selected)
+            if ref is None:
+                if candidates:
+                    self.pending_view = (view, candidates)
+                    names = " or ".join(f"the {part_name(components, r)}, {r}" for r in candidates[:3])
+                    extra = f", or one of {len(candidates) - 3} others" if len(candidates) > 3 else ""
+                    self.say(f"Which one do you mean: {names}{extra}?", face="thinking")
+                else:
+                    self.say("Which part? Say its name, or select it on the screen.", face="thinking")
+                return
+        name = part_name(components, ref)
+        if view == "focus":
+            self.page_command("focus", ref=ref)
+            self.say(f"Here's the {name}, {ref}.")
+        elif view == "isolate":
+            self.page_command("focus", ref=ref)
+            self.page_command("isolate", ref=ref)
+            self.say(f"Showing only the {name}. Say show everything to bring the rest back.")
+        elif view == "trace":
+            self.page_command("focus", ref=ref)
+            data = self.page_command("trace", ref=ref) or {}
+            nets = [n for n in data.get("nets", []) if n]
+            if nets:
+                self.say(f"The {name} connects to " + ", ".join(nets[:6]) + ". They're highlighted on the board.")
+            else:
+                self.say(f"I don't have connection records for the {name}.", face="sad")
 
     # -- main loop ------------------------------------------------------------
     def run(self) -> None:
@@ -519,6 +619,8 @@ class VoiceSession:
             self.sync_page()
             if self._listen_requested():
                 self.handle_listen()
+            elif self.pending_ack:
+                self.acknowledge_selection()
             elif self.narrating:
                 self.narrate_step()
             else:
