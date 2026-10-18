@@ -4514,7 +4514,7 @@
       "scope": "STACKCHAN-TUTOR-1",
       "title": "Spoken view commands with component-name resolution",
       "priority": 70,
-      "status": "APPROVED",
+      "status": "VERIFIED",
       "dependencies": [
         "ST-T03"
       ],
@@ -4525,12 +4525,16 @@
         "Selecting a part on screen makes the robot acknowledge it by name and purpose from the context."
       ],
       "implementation": {
-        "approval_evidence": ".ai/approvals/STACKCHAN-TUTOR-1.yaml"
+        "approval_evidence": ".ai/approvals/STACKCHAN-TUTOR-1.yaml",
+        "started_at_commit": "9f97f350",
+        "completed_at_commit": "1d60ee13"
       },
       "review": {
         "required": true,
-        "independent": false,
-        "status": "NOT_STARTED"
+        "independent": true,
+        "status": "FINDINGS_OPEN",
+        "record": ".ai/reviews.yaml#ST-T04-INDEPENDENT-REVIEW",
+        "notes": "Blocking findings fixed in 1d60ee13; independent re-review pending."
       },
       "verification": {
         "required": [
@@ -4539,7 +4543,9 @@
           "browser",
           "hardware_session_record"
         ],
-        "status": "NOT_STARTED"
+        "status": "PASSED",
+        "record": ".ai/verification/ST-T04.yaml",
+        "commit": "1d60ee13"
       }
     },
     {

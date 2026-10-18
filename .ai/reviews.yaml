@@ -1001,6 +1001,40 @@
         "ST-REV2-F8"
       ],
       "notes": "No BLOCKER/HIGH. Origin allowlist probed (missing, null, foreign, look-alike, case, trailing slash: all 403); no AI key or off-machine board data; ST-REV1-F5 resolved. Criteria 1-3 MET, criterion 4 PARTIAL before the F4 label fix. Noted that the browser test uses an aiohttp stand-in companion, so PageLink-to-page is shown by the hardware session."
+    },
+    {
+      "id": "ST-T04-INDEPENDENT-REVIEW",
+      "scope": "STACKCHAN-TUTOR-1",
+      "task": "ST-T04",
+      "reviewer": "independent Claude subagent (read-only; did not write the code)",
+      "independent": true,
+      "status": "FINDINGS_OPEN",
+      "commit": "e564fa01",
+      "finding_ids": [
+        "ST-REV3-HIGH-1",
+        "ST-REV3-HIGH-2",
+        "ST-REV3-MEDIUM-1",
+        "ST-REV3-MEDIUM-2",
+        "ST-REV3-MEDIUM-3",
+        "ST-REV3-MEDIUM-4",
+        "ST-REV3-LOW"
+      ],
+      "notes": "Found 2 HIGH (question hijacking, guessed parts) and 4 MEDIUM; criterion 3 MET, 1 PARTIAL, 2 NOT MET at e564fa01. HIGH-1/HIGH-2/MEDIUM-2 fixed in 1d60ee13 with the reviewer's phrases as regression tests; remaining MEDIUM/LOW deferred at the owner's request to prioritize delivery."
+    },
+    {
+      "id": "ST-T04-FIX-VERIFICATION",
+      "scope": "STACKCHAN-TUTOR-1",
+      "task": "ST-T04",
+      "reviewer": "implementing agent (not independent)",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "1d60ee13",
+      "finding_ids": [
+        "ST-REV3-HIGH-1",
+        "ST-REV3-HIGH-2",
+        "ST-REV3-MEDIUM-2"
+      ],
+      "notes": "Blocking findings resolved and covered by tests (95 companion tests). An independent re-review of the fixes has not been run, so ST-T04 is VERIFIED, not COMPLETE."
     }
   ],
   "findings": [
@@ -2838,6 +2872,111 @@
       "resolution": "Origins normalized to scheme://host[:port] in lower case; invalid values raise.",
       "resolution_commit": "b8395d42",
       "verification": "tools/stackchan/tests"
+    },
+    {
+      "id": "ST-REV3-HIGH-1",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "HIGH",
+      "status": "FIXED",
+      "title": "View patterns hijack ordinary questions and narration commands",
+      "description": "View patterns hijack ordinary questions and narration commands",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "View commands must start the filler-stripped utterance; question openers route to the tutor except the explicit connected-to form; reviewer phrases are regression tests.",
+      "resolution_commit": "1d60ee13",
+      "verification": "tools/stackchan/tests/test_view_commands.py"
+    },
+    {
+      "id": "ST-REV3-HIGH-2",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "HIGH",
+      "status": "FIXED",
+      "title": "Unknown part names in view commands fall back to the selection",
+      "description": "Unknown part names in view commands fall back to the selection",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Selection used only for pronouns/no target or when tied; unknown names get a clarifying reply.",
+      "resolution_commit": "1d60ee13",
+      "verification": "tools/stackchan/tests/test_view_commands.py"
+    },
+    {
+      "id": "ST-REV3-MEDIUM-1",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Choice handling guesses ('one', 'last one') and pending choices never expire",
+      "description": "Choice handling guesses ('one', 'last one') and pending choices never expire",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Deferred by the owner to prioritize delivery; follow-up.",
+      "resolution_commit": null,
+      "verification": null
+    },
+    {
+      "id": "ST-REV3-MEDIUM-2",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "View 'which one?' resumes narration immediately",
+      "description": "View 'which one?' resumes narration immediately",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Narration stays paused while a view choice is pending.",
+      "resolution_commit": "1d60ee13",
+      "verification": "tools/stackchan/tests/test_view_commands.py"
+    },
+    {
+      "id": "ST-REV3-MEDIUM-3",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "'more'/'repeat' read stale tutor state during the tour",
+      "description": "'more'/'repeat' read stale tutor state during the tour",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Deferred by the owner to prioritize delivery; follow-up.",
+      "resolution_commit": null,
+      "verification": null
+    },
+    {
+      "id": "ST-REV3-MEDIUM-4",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Robot isolation persists into the resumed tour",
+      "description": "Robot isolation persists into the resumed tour",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Deferred by the owner; the on-screen 'Show all parts' control and view reset still restore the board.",
+      "resolution_commit": null,
+      "verification": null
+    },
+    {
+      "id": "ST-REV3-LOW",
+      "scope": "STACKCHAN-TUTOR-1",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "L1-L6: flip-back mapping, acknowledgement dedup reset, swallowed page errors, abbreviation splitting, selection during a pending choice, 'zoom in' without target",
+      "description": "L1-L6: flip-back mapping, acknowledgement dedup reset, swallowed page errors, abbreviation splitting, selection during a pending choice, 'zoom in' without target",
+      "affected_files": [
+        "tools/stackchan/companion/voice.py"
+      ],
+      "found_at_commit": "e564fa01",
+      "resolution": "Deferred follow-ups.",
+      "resolution_commit": null,
+      "verification": null
     }
   ]
 }

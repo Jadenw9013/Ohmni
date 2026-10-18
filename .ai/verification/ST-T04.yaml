@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "id": "ST-T04",
+  "task": "ST-T04",
+  "scope": "STACKCHAN-TUTOR-1",
+  "status": "PASSED",
+  "commit": "1d60ee13",
+  "commands": [
+    {
+      "command": "tools/stackchan/.venv/bin/python -m pytest tools/stackchan/tests",
+      "result": "PASS",
+      "passed": 95,
+      "commit": "1d60ee13"
+    },
+    {
+      "command": "OHMNI_REQUIRE_BROWSER=1 pytest tests/test_stackchan_browser.py",
+      "result": "PASS",
+      "passed": 1,
+      "note": "Asserts the 'Show all parts' control appears on robot isolate and hides on restore."
+    },
+    {
+      "command": "ruff check tools/stackchan",
+      "result": "PASS"
+    }
+  ],
+  "hardware_session": {
+    "date": "2026-10-18",
+    "commit": "e564fa01",
+    "observed": [
+      "Real companion on the robot ran 'show me U1', 'what does it connect to', 'isolate it', 'show me everything', 'flip it over', 'zoom out', 'show me the capacitor' against the connected page; page selection followed (U1)",
+      "A click in the systems list made the robot name the part (J1) with its purpose"
+    ],
+    "not_observed": [
+      "Spoken commands captured from a real voice (text was injected)"
+    ]
+  },
+  "open_findings": [
+    "ST-REV3-MEDIUM-1",
+    "ST-REV3-MEDIUM-3",
+    "ST-REV3-MEDIUM-4",
+    "ST-REV3-LOW"
+  ]
+}
