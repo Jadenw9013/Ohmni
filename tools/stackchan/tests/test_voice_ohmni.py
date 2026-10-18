@@ -8,6 +8,7 @@ from voice import (
     part_name,
     resolve_part,
     segments_from_context,
+    split_answer,
     spoken_answer,
 )
 
@@ -169,3 +170,17 @@ def test_narration_pauses_when_the_page_disconnects():
     page.connected = False
     s.sync_page()
     assert not s.narrating and s.board_id is None and page.context is None
+
+
+def test_long_answers_speak_the_first_paragraph_and_keep_the_rest_for_more():
+    long = "C1 smooths the supply. It sits by U2.\n\nIt shares GND with many parts. No test data exists."
+    assert split_answer(long) == ("C1 smooths the supply. It sits by U2.", "It shares GND with many parts. No test data exists.")
+    spoken = spoken_answer({"explanation": long, "unknowns": [], "next_questions": []})
+    assert spoken.endswith("It sits by U2. Say more for the rest, or read it on the screen.")
+    page = FakePage({"job_id": "j1", "components": COMPONENTS, "tour": []},
+                    answer={"explanation": long, "unknowns": [], "next_questions": []})
+    s = session(page)
+    s.answer("Why does the regulator get warm?")
+    s.dispatch("more", "more")
+    assert s.spoken[-1] == "It shares GND with many parts. No test data exists."
+    assert s.answer_rest is None

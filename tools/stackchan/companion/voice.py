@@ -186,18 +186,35 @@ def part_name(components: list[dict], ref: str) -> str:
     return part["name"] if part and part.get("name") else ref
 
 
+def split_answer(explanation: str, max_sentences: int = 4) -> tuple[str, str]:
+    """Speak the first paragraph (at most a few sentences); the rest waits for 'more'.
+
+    The full answer is always shown in the page's tutor panel.
+    """
+    paragraphs = [p.strip() for p in re.split(r"\n\s*\n", explanation.strip()) if p.strip()]
+    if not paragraphs:
+        return "", ""
+    first = split_sentences(" ".join(paragraphs[0].split()))
+    head = " ".join(first[:max_sentences])
+    rest = " ".join(first[max_sentences:] + [" ".join(p.split()) for p in paragraphs[1:]])
+    return head, rest
+
+
 def spoken_answer(answer: dict) -> str:
     """What the robot says for a tutor answer: labelled as an explanation, unknowns kept, one follow-up."""
     explanation = (answer.get("explanation") or "").strip()
     if not explanation:
         return "Ohmni didn't return an explanation for that."
-    text = f"Here's Ohmni's explanation, based on your board's records. {explanation}"
+    head, rest = split_answer(explanation)
+    text = f"Here's Ohmni's explanation, based on your board's records. {head}"
     unknowns = [u.strip() for u in answer.get("unknowns") or [] if u.strip()]
     if unknowns:
         text += " Not yet known: " + " ".join(unknowns)
     follow = [q.strip() for q in answer.get("next_questions") or [] if q.strip()]
     if follow:
         text += f" You could ask: {follow[0]}"
+    if rest:
+        text += " Say more for the rest, or read it on the screen."
     return text
 
 
@@ -237,6 +254,7 @@ class VoiceSession:
     board_id: str | None = None     # job id of the board being narrated
     pending_question: tuple[str, list[str]] | None = None  # asked "which one?": (question, candidates)
     last_answer: str | None = None  # what the robot last answered, so "repeat" can replay it
+    answer_rest: str | None = None  # the unspoken remainder of the last answer, for "more"
 
     def __post_init__(self) -> None:
         self.bot.on_event = self._on_event
@@ -440,7 +458,10 @@ class VoiceSession:
             else:
                 self.sentence, self.narrating = 0, True
         elif intent == "more":
-            if seg and seg.more:
+            if self.answer_rest and not self.narrating:
+                rest, self.answer_rest = self.answer_rest, None
+                self.say(rest)
+            elif seg and seg.more:
                 self.say(seg.more)
             else:
                 ref = self.selected or (seg.refs[0] if seg and seg.refs else None)
@@ -475,6 +496,7 @@ class VoiceSession:
             return
         self.log(f"[tutor] {data.get('explanation', '')!r} ({time.monotonic() - t:.1f}s)")
         self.last_answer = spoken_answer(data)
+        self.answer_rest = split_answer(data.get("explanation") or "")[1] or None
         if not self.say(self.last_answer):
             self.log("[tutor] answer interrupted; say 'repeat' to hear it")
 
