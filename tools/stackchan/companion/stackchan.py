@@ -163,6 +163,10 @@ class StackChan:
     def tone(self, hz: int = 880, ms: int = 100) -> dict:
         return self.send("tone", hz=hz, ms=ms)
 
+    def volume(self, level: int) -> dict:
+        """Speaker volume 0-255 (default 160); the robot remembers it across restarts."""
+        return self.send("volume", level=level)
+
     def torque(self, on: bool) -> dict:
         return self.send("torque", on=on)
 
@@ -232,6 +236,7 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("face"); p.add_argument("expr"); p.add_argument("--mouth", type=float)
     p = sub.add_parser("led"); [p.add_argument(c, type=int) for c in "rgb"]
     p = sub.add_parser("tone"); p.add_argument("hz", type=int); p.add_argument("ms", type=int)
+    p = sub.add_parser("volume"); p.add_argument("level", type=int, help="0-255 (default 160)")
     p = sub.add_parser("torque"); p.add_argument("state", choices=["on", "off"])
     p = sub.add_parser("play"); p.add_argument("file", type=Path)
     p = sub.add_parser("record"); p.add_argument("file", type=Path)
@@ -253,6 +258,8 @@ def main(argv: list[str] | None = None) -> int:
                 bot.led(args.r, args.g, args.b)
             elif args.cmd == "tone":
                 bot.tone(args.hz, args.ms)
+            elif args.cmd == "volume":
+                print(json.dumps(bot.volume(args.level)))
             elif args.cmd == "torque":
                 bot.torque(args.state == "on")
             elif args.cmd == "play":

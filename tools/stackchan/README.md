@@ -74,6 +74,7 @@ is reused. The firmware only reads it.
 .venv/bin/python companion/stackchan.py face happy
 .venv/bin/python companion/stackchan.py pose 20 40 --ms 500
 .venv/bin/python companion/stackchan.py led 0 80 255
+.venv/bin/python companion/stackchan.py volume 200          # 0-255, default 160
 .venv/bin/python companion/stackchan.py play dances/hello.json
 .venv/bin/python companion/stackchan.py record dances/mine.json --seconds 8   # move the head by hand
 .venv/bin/python companion/voice.py listen-test --once   # double-tap, speak, see transcript + levels
@@ -90,13 +91,14 @@ One JSON object per line, each answered by one line with the same `id`:
 | cmd | params | notes |
 |---|---|---|
 | `ping` | | `{fw, version, ioe}` |
-| `state` | | `{yaw, pitch, torque, limits, face, battery}`; angles `null` if a servo doesn't answer |
+| `state` | | `{yaw, pitch, torque, limits, face, volume, battery}`; angles `null` if a servo doesn't answer |
 | `pose` | `yaw`, `pitch` (deg), `ms` | yaw −128..128, pitch 3..87 (factory limits, clamped) |
 | `torque` | `on` | `false` lets you move the head by hand (also clears stall limits) |
 | `reset_limits` | | clear limits narrowed by stalls |
 | `face` | `expr`, `mouth` 0..1 | neutral, happy, sad, angry, surprised, sleepy, thinking, listening |
 | `led` | `rgb:[r,g,b]` or `leds:[[r,g,b]×12]` | |
 | `tone` | `hz`, `ms` | error `listening` while listening |
+| `volume` | `level` 0..255 | speaker volume (default 160), remembered across restarts |
 | `play` | `pcm` (base64 int16 LE mono 16 kHz, ≤ 4096 samples) | replies once queued (real-time flow control); error `listening` while listening |
 | `play_stop` | | stop speech playback |
 | `listen` | `on` | start/stop streaming the microphone |

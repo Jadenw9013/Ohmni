@@ -19,7 +19,8 @@
 #include "SCSCL.h"
 
 static const char* kFirmware = "ohmni-stackchan";
-static const char* kVersion  = "0.3.0";
+static const char* kVersion  = "0.4.0";
+static constexpr uint8_t kDefaultVolume = 160;  // of 255; was 96 (too quiet)
 
 // ---------------------------------------------------------------- IO expander
 
@@ -510,6 +511,7 @@ int recNext = 0, recFree = kRecBufs;
 int16_t* play[kPlayBufs];
 int playNext = 0;
 
+bool ok = false;  // all audio buffers allocated
 bool listening = false, audioMouth = false;
 uint32_t listenStart = 0, seq = 0, drops = 0;
 String prevExpr;
@@ -526,10 +528,12 @@ void onRecDone(void*, void* data, size_t)
 
 void begin()
 {
-    for (auto& b : rec) b = (int16_t*)heap_caps_malloc(kRecLen * 2, MALLOC_CAP_8BIT);
-    for (auto& b : play) b = (int16_t*)heap_caps_malloc(kPlayMax * 2, MALLOC_CAP_8BIT);
+    ok = true;
+    for (auto& b : rec) ok &= (b = (int16_t*)heap_caps_malloc(kRecLen * 2, MALLOC_CAP_8BIT)) != nullptr;
+    for (auto& b : play) ok &= (b = (int16_t*)heap_caps_malloc(kPlayMax * 2, MALLOC_CAP_8BIT)) != nullptr;
     recReady = xQueueCreate(kRecBufs, sizeof(int));
-    M5.Mic.setBufferReleaseCallback(nullptr, onRecDone);
+    ok &= recReady != nullptr;
+    if (ok) M5.Mic.setBufferReleaseCallback(nullptr, onRecDone);
 }
 
 void sendEvent(const char* kind, const char* key, const char* value)
@@ -547,6 +551,7 @@ void sendEvent(const char* kind, const char* key, const char* value)
 
 bool startListening(const char* source)
 {
+    if (!ok) return false;
     if (listening) return true;
     M5.Speaker.stop();
     M5.Speaker.end();
@@ -621,6 +626,7 @@ void tick()
 // Queue one chunk of 16 kHz mono int16 PCM (base64). Returns an error string or nullptr.
 const char* playChunk(const char* b64, size_t b64len)
 {
+    if (!ok) return "audio unavailable";
     if (listening) return "listening";
     int16_t* buf = play[playNext];
     size_t bytes = 0;
@@ -630,9 +636,14 @@ const char* playChunk(const char* b64, size_t b64len)
     if (!samples) return nullptr;
 
     // Wait for a queue slot (the host waits for our reply: that is the flow control).
+    // This wait fills most of the time while talking, so keep polling touch here:
+    // a double tap starts listening, which stops the speaker.
     uint32_t t0 = millis();
     while (M5.Speaker.isPlaying(kPlayChannel) >= 2) {
         if (millis() - t0 > 1000) return "speaker busy";
+        touch::tick();
+        servo::monitor();  // keep stall protection sampling while talking
+        if (listening) return "listening";
         delay(2);
     }
     if (!M5.Speaker.playRaw(buf, samples, kRate, false, 1, kPlayChannel, false)) return "speaker refused";
@@ -652,6 +663,9 @@ const char* playChunk(const char* b64, size_t b64len)
 
 static void sendJson(JsonDocument& doc)
 {
+    // Wait briefly for room (microphone chunks can fill the buffer) rather than send half a line.
+    const size_t need = measureJson(doc) + 1;
+    for (uint32_t t0 = millis(); (size_t)Serial.availableForWrite() < need && millis() - t0 < 50;) delay(1);
     serializeJson(doc, Serial);
     Serial.print('\n');
 }
@@ -683,6 +697,7 @@ static void handle(JsonDocument& in)
             r.add(roundf(min(servo::rawToDeg(*a, a->rawMax), a->maxDeg) * 10) / 10);
         }
         out["face"]   = face::expr;
+        out["volume"] = M5.Speaker.getVolume();
         out["battery"] = M5.Power.getBatteryLevel();
     } else if (cmd == "torque") {
         servo::setTorque(in["on"] | false);
@@ -719,6 +734,7 @@ static void handle(JsonDocument& in)
         out["speaker"]    = M5.Speaker.isEnabled();
         out["mic"]        = M5.Mic.isEnabled();
         out["touch"]      = touch::ok;
+        out["audio"]      = audio::ok;
         out["volume"]     = M5.Speaker.getVolume();
         if (ioe::ok) {
             out["ioe_version"] = ioe::read8(ioe::REG_VERSION);
@@ -744,6 +760,21 @@ static void handle(JsonDocument& in)
             out["ok"]    = false;
             out["error"] = err;
         }
+    } else if (cmd == "volume") {
+        // {"level": 0..255}; remembered across restarts.
+        if (!in["level"].is<int>() || in["level"].as<int>() < 0 || in["level"].as<int>() > 255) {
+            out["ok"]    = false;
+            out["error"] = "level must be 0-255";
+        } else {
+            uint8_t level = in["level"].as<int>();
+            M5.Speaker.setVolume(level);
+            Preferences prefs;
+            if (prefs.begin("ohmni", false)) {
+                prefs.putUChar("volume", level);
+                prefs.end();
+            }
+            out["volume"] = level;
+        }
     } else if (cmd == "play_stop") {
         M5.Speaker.stop(audio::kPlayChannel);
     } else if (cmd == "listen") {
@@ -768,6 +799,16 @@ static size_t rxLen       = 0;
 static bool rxOverflow    = false;
 static bool hostSeen      = false;  // a host has talked to us since boot
 
+// Best effort: find a numeric "id" in a line that failed to parse, so the host can match the error.
+static void addIdFrom(const char* line, JsonDocument& out)
+{
+    const char* key = strstr(line, "\"id\":");
+    if (!key) return;
+    key += 5;
+    while (*key == ' ') key++;
+    if (*key >= '0' && *key <= '9') out["id"] = strtol(key, nullptr, 10);
+}
+
 static void pollSerial()
 {
     while (Serial.available()) {
@@ -784,6 +825,7 @@ static void pollSerial()
             JsonDocument in;
             if (deserializeJson(in, rxLine, rxLen)) {
                 JsonDocument out;
+                addIdFrom(rxLine, out);
                 out["ok"]    = false;
                 out["error"] = "bad json";
                 sendJson(out);
@@ -792,6 +834,8 @@ static void pollSerial()
             }
         } else if (rxOverflow) {
             JsonDocument out;
+            rxLine[rxLen] = 0;
+            addIdFrom(rxLine, out);
             out["ok"]    = false;
             out["error"] = "line too long";
             sendJson(out);
@@ -825,7 +869,15 @@ void setup()
 
     auto cfg = M5.config();
     M5.begin(cfg);
-    M5.Speaker.setVolume(96);
+    {
+        Preferences prefs;  // our own namespace; the factory "servo" namespace stays read-only
+        uint8_t volume = kDefaultVolume;
+        if (prefs.begin("ohmni", true)) {
+            volume = prefs.getUChar("volume", kDefaultVolume);
+            prefs.end();
+        }
+        M5.Speaker.setVolume(volume);
+    }
 
     face::begin();
     face::render();

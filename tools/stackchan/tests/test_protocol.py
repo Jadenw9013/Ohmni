@@ -112,3 +112,9 @@ def test_pose_only_sends_given_axes():
     bot = bot_with(ok)
     bot.pose(pitch=20, ms=500)
     assert bot._ser.written[0] == {"cmd": "pose", "id": 1, "ms": 500, "pitch": 20}
+
+
+def test_volume_command():
+    bot = bot_with(lambda msg: ok(msg, volume=msg["level"]))
+    assert bot.volume(200)["volume"] == 200
+    assert bot._ser.written[0] == {"cmd": "volume", "id": 1, "level": 200}
